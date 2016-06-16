@@ -1,14 +1,14 @@
-# Welcome! Thank you for contributing to jawa-compiler!
+# Welcome! Thank you for contributing to jawa2java!
 We follow the standard GitHub [fork & pull](https://help.github.com/articles/using-pull-requests/#fork--pull) 
 approach to pull requests. Just fork the official repo, develop in a branch, and submit a PR!
 
 You're always welcome to submit your PR straight away and start the discussion.
-The goal of these notes is to make your experience contributing to Amandroid as 
+The goal of these notes is to make your experience contributing to jawa2java as 
 smooth and pleasant as possible. We're happy to guide you through the process once you've submitted your PR.
 
 ## What kind of PR are you submitting?
 
-You don't need to submit separate PRs for different version of Amandroid.
+You don't need to submit separate PRs for different version of jawa2java.
 Any changes accepted on one of these branches will, in time, be merged into the later branches.
 
 ### Documentation
@@ -27,7 +27,7 @@ to avoid duplicated effort, or spending a lot of time reworking something we are
 change at this time in the release cycle, for example.
 
 #### Bug Fix
-Prefix your commit title with "#NN", where https://github.com/arguslab/jawa-compiler/issues/NN tracks the bug you're fixing. 
+Prefix your commit title with "#NN", where https://github.com/arguslab/jawa2java/issues/NN tracks the bug you're fixing. 
 We also recommend naming your branch after the ticket number.
 
 #### Enhancement or New Feature

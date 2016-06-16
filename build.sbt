@@ -20,17 +20,17 @@ bintrayReleaseOnPublish := false
 bintrayRepository := "maven"
 bintrayPackage := "jawa2java"
 
-//pomExtra := <scm>
-//  <url>https://github.com/arguslab/jawa2java</url>
-//  <connection>scm:git:https://github.com/arguslab/jawa2java.git</connection>
-//</scm>
-//<developers>
-//  <developer>
-//    <id>fgwei</id>
-//    <name>Fengguo Wei</name>
-//    <url>http://www.arguslab.org/~fgwei/</url>
-//  </developer>
-//</developers>
+pomExtra := <scm>
+  <url>https://github.com/arguslab/jawa2java</url>
+  <connection>scm:git:https://github.com/arguslab/jawa2java.git</connection>
+</scm>
+<developers>
+  <developer>
+    <id>fgwei</id>
+    <name>Fengguo Wei</name>
+    <url>http://www.arguslab.org/~fgwei/</url>
+  </developer>
+</developers>
 
 import com.typesafe.sbt.pgp.PgpKeys._
 
