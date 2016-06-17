@@ -10,7 +10,7 @@
 
 package org.argus.jawa.java
 
-import org.argus.jawa.compiler.parser.{ClassOrInterfaceDeclaration, CompilationUnit, JawaParser}
+import org.argus.jawa.compiler.parser._
 import org.argus.jawa.core.{AccessFlag, JawaType, Reporter}
 import org.argus.jawa.core.io.SourceFile
 import org.sireum.util._
@@ -38,12 +38,12 @@ class Jawa2Java(reporter: Reporter) {
   def visitCompilationUnit(cu: CompilationUnit): IMap[JawaType, String] = {
     cu.topDecls.map {
       case cid: ClassOrInterfaceDeclaration =>
-        val classST = visitClass(cid)
+        val classST = visitClassDeclaration(cid)
         cid.typ -> classST.render
     }.toMap
   }
 
-  def visitClass(cid: ClassOrInterfaceDeclaration): ST = {
+  def visitClassDeclaration(cid: ClassOrInterfaceDeclaration): ST = {
     val imports: MSet[JawaType] = msetEmpty
     val cuTemplate = template.getInstanceOf("CompilationUnit")
     val pkgTemplate = template.getInstanceOf("Package")
@@ -53,6 +53,37 @@ class Jawa2Java(reporter: Reporter) {
     classTemplate.add("accessFlag", AccessFlag.toString(AccessFlag.getAccessFlags(cid.accessModifier)))
     classTemplate.add("className", cid.typ.simpleName)
     cuTemplate.add("classDecl", classTemplate)
+    cid.extendsAndImplimentsClausesOpt match {
+      case Some(clause) =>
+        clause.superClassOpt match {
+          case Some(superClass) =>
+            imports += superClass
+            cuTemplate.add("exts", superClass.simpleName)
+          case None =>
+        }
+        val implements: Array[String] = clause.interfaces.map {
+          interface =>
+            imports += interface
+            interface.simpleName
+        }.toArray
+        cuTemplate.add("impls", implements)
+      case None =>
+    }
+
+    val fieldTemplates: Array[ST] = cid.fields.map {
+      field =>
+        val fieldTemplate = visitFieldDeclaration(field)
+        fieldTemplate
+    }.toArray
+    classTemplate.add("fields", fieldTemplates)
+
+    val methodTemplates: Array[ST] = cid.methods.map {
+      method =>
+        val methodTemplate = visitMethodDeclaration(method)
+        methodTemplate
+    }.toArray
+    classTemplate.add("methods", methodTemplates)
+
     val importTemplates: Array[ST] = imports.map {
       imp =>
         val importTemplate = template.getInstanceOf("Import")
@@ -61,5 +92,17 @@ class Jawa2Java(reporter: Reporter) {
     }.toArray
     cuTemplate.add("imports", importTemplates)
     cuTemplate
+  }
+
+  def visitFieldDeclaration(fd: Field with Declaration): ST = {
+    val fieldTemplate = template.getInstanceOf("FieldDecl")
+    // TODO Implement later
+    fieldTemplate
+  }
+
+  def visitMethodDeclaration(fd: MethodDeclaration): ST = {
+    val methodTemplate = template.getInstanceOf("MethodDecl")
+    // TODO Implement later
+    methodTemplate
   }
 }

@@ -12,7 +12,7 @@ package org.argus.jawa.java
 
 import java.io.File
 
-import org.argus.jawa.core.{MsgLevel, PrintReporter}
+import org.argus.jawa.core.DefaultReporter
 import org.argus.jawa.core.io.{FgSourceFile, PlainFile}
 import org.scalatest._
 
@@ -34,12 +34,14 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
 
   class TestFile(s: FgSourceFile) {
 
-    def produceJavaClass(classStr: String)() {
-      val reporter = new PrintReporter(MsgLevel.INFO)
-      val translator = new Jawa2Java(reporter)
-      val javaClass = translator.translate(Right(s)).values.mkString("")
-      require(javaClass == classStr)
+    def produceJavaClass(expectedClassStr: String)() {
+      it should ("translate >>>" + s.code + "<<< to >>>" + expectedClassStr + "<<<") in {
+        val reporter = new DefaultReporter
+        val translator = new Jawa2Java(reporter)
+        val javaClass = translator.translate(Right(s)).values.mkString("")
+        require(!reporter.hasErrors, reporter.problems)
+        require(javaClass == expectedClassStr)
+      }
     }
-
   }
 }
