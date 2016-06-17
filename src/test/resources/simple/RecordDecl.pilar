@@ -1,0 +1,2 @@
+record `com.fgwei.RecordDecl`  @kind class @AccessFlag PUBLIC {
+}

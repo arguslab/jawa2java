@@ -14,13 +14,8 @@ libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.6" % "test"
 libraryDependencies += "com.github.arguslab" %% "jawa-compiler" % "0.0.2"
 
 
-// Bintray
-bintrayOrganization := Some("arguslab")
-bintrayReleaseOnPublish := false
-bintrayRepository := "maven"
-bintrayPackage := "jawa2java"
-
-pomExtra := <scm>
+pomExtra :=
+<scm>
   <url>https://github.com/arguslab/jawa2java</url>
   <connection>scm:git:https://github.com/arguslab/jawa2java.git</connection>
 </scm>
@@ -31,6 +26,13 @@ pomExtra := <scm>
     <url>http://www.arguslab.org/~fgwei/</url>
   </developer>
 </developers>
+
+// Bintray
+bintrayOrganization := Some("arguslab")
+bintrayReleaseOnPublish := false
+bintrayRepository := "maven"
+bintrayPackage := "jawa2java"
+
 
 import com.typesafe.sbt.pgp.PgpKeys._
 

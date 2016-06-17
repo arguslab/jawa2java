@@ -1,0 +1,42 @@
+group JavaModelGenerator;
+
+delimiters "$", "$"
+
+CompilationUnit(package, imports, classDecl) ::= <<
+$package$
+
+$imports ; separator="\n"$
+
+$classDecl$
+>>
+
+Package(pkgName) ::= <<
+package $pkgName$;
+>>
+
+Import(className) ::= <<
+import $className$;
+>>
+
+ClassDecl(accessFlag, className, exts, impls, fields, methods) ::= <<
+$accessFlag$ class $className$$if(exts)$ extends $exts$$endif$$if(impls)$ implements $impls ; separator=", "$$endif$ {
+  $fields ; separator="\n"$
+  $methods ; separator="\n"$
+}
+>>
+
+FieldDecl(attrTyp, attrName, annotations) ::= <<
+$attrTyp$ `$attrName$` $annotations ; separator=" "$;
+>>
+
+MethodDecl(accessFlag, retTyp, methodName, params, localVars, body, catchClauses) ::= <<
+$accessFlag$ $retTyp$ $methodName$($params ; separator=", "$) {
+  $localVars ; separator="\n"$
+
+  $body$
+}
+>>
+
+Param(paramTyp, paramName) ::= <<
+$paramTyp$ $paramName$
+>>

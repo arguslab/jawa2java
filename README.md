@@ -1,4 +1,7 @@
 # jawa2java: Translate Jawa to Java.
+[![License](https://img.shields.io/badge/License-EPL%201.0-red.svg)](https://opensource.org/licenses/EPL-1.0)
+[![Download](https://api.bintray.com/packages/arguslab/maven/jawa2java/images/download.svg)](https://bintray.com/arguslab/maven/jawa2java/_latestVersion)
+[![Build Status](https://travis-ci.org/arguslab/jawa2java.svg?branch=master)](https://travis-ci.org/arguslab/jawa2java)
 
 
 ## Developing jawa2java
