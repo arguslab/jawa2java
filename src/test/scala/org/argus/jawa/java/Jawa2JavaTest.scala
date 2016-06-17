@@ -32,6 +32,18 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     |}
   """.stripMargin.trim
 
+//  new FgSourceFile(new PlainFile(new File("src/test/resources/array/ArrayAccess1.pilar"))) produceJavaClass
+//    """package com.fgwei;
+//      |
+//      |
+//      |public class RecordDecl {
+//      |  public static int main() {
+//      |    int_v2:= 2130903040I ;
+//      |
+//      |  }
+//      |}
+//    """.stripMargin.trim
+
   class TestFile(s: FgSourceFile) {
 
     def produceJavaClass(expectedClassStr: String)() {

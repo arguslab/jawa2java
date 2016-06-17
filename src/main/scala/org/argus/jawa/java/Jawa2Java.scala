@@ -46,9 +46,11 @@ class Jawa2Java(reporter: Reporter) {
   def visitClassDeclaration(cid: ClassOrInterfaceDeclaration): ST = {
     val imports: MSet[JawaType] = msetEmpty
     val cuTemplate = template.getInstanceOf("CompilationUnit")
+
     val pkgTemplate = template.getInstanceOf("Package")
     pkgTemplate.add("pkgName", cid.typ.getPackageName)
     cuTemplate.add("package", pkgTemplate)
+
     val classTemplate = template.getInstanceOf("ClassDecl")
     classTemplate.add("accessFlag", AccessFlag.toString(AccessFlag.getAccessFlags(cid.accessModifier)))
     classTemplate.add("className", cid.typ.simpleName)
@@ -58,7 +60,7 @@ class Jawa2Java(reporter: Reporter) {
         clause.superClassOpt match {
           case Some(superClass) =>
             imports += superClass
-            cuTemplate.add("exts", superClass.simpleName)
+            classTemplate.add("exts", superClass.simpleName)
           case None =>
         }
         val implements: Array[String] = clause.interfaces.map {
@@ -66,20 +68,20 @@ class Jawa2Java(reporter: Reporter) {
             imports += interface
             interface.simpleName
         }.toArray
-        cuTemplate.add("impls", implements)
+        classTemplate.add("impls", implements)
       case None =>
     }
 
     val fieldTemplates: Array[ST] = cid.fields.map {
       field =>
-        val fieldTemplate = visitFieldDeclaration(field)
+        val fieldTemplate = visitFieldDeclaration(field, imports)
         fieldTemplate
     }.toArray
     classTemplate.add("fields", fieldTemplates)
 
     val methodTemplates: Array[ST] = cid.methods.map {
       method =>
-        val methodTemplate = visitMethodDeclaration(method)
+        val methodTemplate = visitMethodDeclaration(method, imports)
         methodTemplate
     }.toArray
     classTemplate.add("methods", methodTemplates)
@@ -94,13 +96,13 @@ class Jawa2Java(reporter: Reporter) {
     cuTemplate
   }
 
-  def visitFieldDeclaration(fd: Field with Declaration): ST = {
+  def visitFieldDeclaration(fd: Field with Declaration, imports: MSet[JawaType]): ST = {
     val fieldTemplate = template.getInstanceOf("FieldDecl")
     // TODO Implement later
     fieldTemplate
   }
 
-  def visitMethodDeclaration(fd: MethodDeclaration): ST = {
+  def visitMethodDeclaration(fd: MethodDeclaration, imports: MSet[JawaType]): ST = {
     val methodTemplate = template.getInstanceOf("MethodDecl")
     // TODO Implement later
     methodTemplate
