@@ -141,7 +141,7 @@ class Jawa2Java(reporter: Reporter) {
     fieldTemplate.add("accessFlag", AccessFlag.toString(AccessFlag.getAccessFlags(lvd.accessModifier)))
     lvd.typOpt match {
       case Some(typ) =>
-        fieldTemplate.add("attrTyp", typ.typ.name)
+        fieldTemplate.add("attrTyp", typ.typ.simpleName)
         fieldTemplate.add("attrName", lvd.varSymbol.varName)
       case None =>
     }
@@ -153,7 +153,7 @@ class Jawa2Java(reporter: Reporter) {
   def visitParamDeclaration(param: Param, imports: MSet[JawaType] ): ST = {
     val paramTemplate = template.getInstanceOf("Param")
 
-    paramTemplate.add("paramTyp", param.typ.typ.name)
+    paramTemplate.add("paramTyp", param.typ.typ.simpleName)
     paramTemplate.add("paramName", param.name)
     addImport(param.typ.typ, imports)
 

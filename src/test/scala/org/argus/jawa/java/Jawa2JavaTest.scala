@@ -66,10 +66,10 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |
       |public class RecordDecl {
       |  private int i1;
-      |  public static int main(java.lang.String param1, java.util.ArrayList arr_param_1) {
+      |  public static int main(String param1, ArrayList arr_param_1) {
       |     int i2;
-      |     java.lang.String s1;
-      |     java.io.File file1;
+      |     String s1;
+      |     File file1;
       |
       |  }
       |}
