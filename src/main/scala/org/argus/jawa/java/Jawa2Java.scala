@@ -11,7 +11,7 @@
 package org.argus.jawa.java
 
 import org.argus.jawa.compiler.parser._
-import org.argus.jawa.core.{AccessFlag, JawaType, Reporter}
+import org.argus.jawa.core.{AccessFlag, JawaPackage, JawaType, Reporter}
 import org.argus.jawa.core.io.SourceFile
 import org.sireum.util._
 import org.stringtemplate.v4.{ST, STGroupFile}
@@ -102,12 +102,8 @@ class Jawa2Java(reporter: Reporter) {
 
     fieldTemplate.add("accessFlag", AccessFlag.toString(AccessFlag.getAccessFlags(fd.accessModifier)))
     fieldTemplate.add("attrTyp", fd.typ.typ.name)
-    fd.typ.typ.getPackage match {
-      case Some (pkg) =>
-        imports += fd.typ.typ
-      case None =>
-    }
     fieldTemplate.add("attrName", fd.fieldName)
+    addImport(fd.typ.typ, imports)
     fieldTemplate
   }
 
@@ -127,6 +123,15 @@ class Jawa2Java(reporter: Reporter) {
         methodTemplate.add("localVars", localVars )
       case UnresolvedBody(bodytokens) =>
     }
+
+    val paramTemplates: Array[ST] = md.paramlist.map{
+      param =>
+        val paramTemplate = visitParamDeclaration(param, imports)
+        paramTemplate
+    }.toArray
+
+    methodTemplate.add("params", paramTemplates)
+
     methodTemplate
   }
 
@@ -141,11 +146,25 @@ class Jawa2Java(reporter: Reporter) {
       case None =>
     }
 
-    lvd.typ.getPackage match {
+    addImport(lvd.typ, imports)
+    fieldTemplate
+  }
+
+  def visitParamDeclaration(param: Param, imports: MSet[JawaType] ): ST = {
+    val paramTemplate = template.getInstanceOf("Param")
+
+    paramTemplate.add("paramTyp", param.typ.typ.name)
+    paramTemplate.add("paramName", param.name)
+    addImport(param.typ.typ, imports)
+
+    paramTemplate
+  }
+
+  def addImport( jwt: JawaType, imports: MSet[JawaType]) = {
+    jwt.getPackage match {
       case Some (pkg) =>
-        imports += lvd.typ
+        imports += jwt
       case None =>
     }
-    fieldTemplate
   }
 }

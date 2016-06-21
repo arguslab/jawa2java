@@ -2,7 +2,7 @@ record `com.fgwei.RecordDecl`  @kind class @AccessFlag PUBLIC {
     `int` `com.fgwei.RecordDecl.i1`  @AccessFlag PRIVATE;
     }
 
-    procedure `int` `com.fgwei.RecordDecl.main` () @owner ^`com.fgwei.RecordDecl` @signature `Lcom/fgwei/RecordDecl;.main:()I` @AccessFlag PUBLIC_STATIC {
+    procedure `int` `com.fgwei.RecordDecl.main` (`java.lang.String` param1 @kind object, `java.util.ArrayList` arr_param_1 @kind object) @owner ^`com.fgwei.RecordDecl` @signature `Lcom/fgwei/RecordDecl;.main:()I` @AccessFlag PUBLIC_STATIC {
       `int` `i2`;
       `java.lang.String` s1;
       `java.io.File` file1;

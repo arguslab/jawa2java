@@ -1,0 +1,55 @@
+record `com.ksu.passwordPassTest.MainActivity` @kind class @AccessFlag PUBLIC extends `android.app.Activity` @kind class {
+  `android.widget.EditText` `com.ksu.passwordPassTest.MainActivity.editText` @AccessFlag ;
+  `android.widget.Button` `com.ksu.passwordPassTest.MainActivity.passButton` @AccessFlag ;
+}
+procedure `void` `com.ksu.passwordPassTest.MainActivity.<init>`(`com.ksu.passwordPassTest.MainActivity` MainActivity_v1 @kind this) @owner ^`com.ksu.passwordPassTest.MainActivity` @signature `Lcom/ksu/passwordPassTest/MainActivity;.<init>:()V` @AccessFlag PUBLIC_CONSTRUCTOR {
+    `java.lang.Object` Object_v0;
+    `int` int_v0;
+
+  #L047174.  Object_v0:= null  @type ^`java.lang.Object` @kind object;
+  #L047176.  call `android.app.Activity.<init>`(MainActivity_v1) @signature `Landroid/app/Activity;.<init>:()V` @classDescriptor ^`android.app.Activity` @kind direct;
+  #L04717c.  MainActivity_v1.`com.ksu.passwordPassTest.MainActivity.editText`:= Object_v0  @kind object @type ^`android.widget.EditText`;
+  #L047180.  MainActivity_v1.`com.ksu.passwordPassTest.MainActivity.passButton`:= Object_v0  @kind object @type ^`android.widget.Button`;
+  #L047184.  return  @kind void;
+}
+procedure `void` `com.ksu.passwordPassTest.MainActivity.onCreate`(`com.ksu.passwordPassTest.MainActivity` MainActivity_v2 @kind this, `android.os.Bundle` Bundle_v3 @kind object) @owner ^`com.ksu.passwordPassTest.MainActivity` @signature `Lcom/ksu/passwordPassTest/MainActivity;.onCreate:(Landroid/os/Bundle;)V` @AccessFlag PROTECTED {
+    `android.view.View` View_temp;
+    `android.widget.EditText` EditText_v0;
+    `int` int_v0;
+    `com.ksu.passwordPassTest.MainActivity$1` MainActivity$1_v1;
+    `android.widget.Button` Button_v0;
+    `android.view.View` View_v0;
+
+  #L047198.  call `android.app.Activity.onCreate`(MainActivity_v2, Bundle_v3) @signature `Landroid/app/Activity;.onCreate:(Landroid/os/Bundle;)V` @classDescriptor ^`android.app.Activity` @kind super;
+  #L04719e.  int_v0:= 2130903042I;
+  #L0471a4.  call `com.ksu.passwordPassTest.MainActivity.setContentView`(MainActivity_v2, int_v0) @signature `Lcom/ksu/passwordPassTest/MainActivity;.setContentView:(I)V` @classDescriptor ^`com.ksu.passwordPassTest.MainActivity` @kind virtual;
+  #L0471aa.  int_v0:= 2131230722I;
+  #L0471b0.  call View_temp:=  `com.ksu.passwordPassTest.MainActivity.findViewById`(MainActivity_v2, int_v0) @signature `Lcom/ksu/passwordPassTest/MainActivity;.findViewById:(I)Landroid/view/View;` @classDescriptor ^`com.ksu.passwordPassTest.MainActivity` @kind virtual;
+  #L0471b6.  View_v0:= View_temp  @kind object;
+  #L0471b8.  EditText_v0:= (`android.widget.EditText`)View_v0  @kind object;
+  #L0471bc.  MainActivity_v2.`com.ksu.passwordPassTest.MainActivity.editText`:= EditText_v0  @kind object @type ^`android.widget.EditText`;
+  #L0471c0.  int_v0:= 2131230723I;
+  #L0471c6.  call View_temp:=  `com.ksu.passwordPassTest.MainActivity.findViewById`(MainActivity_v2, int_v0) @signature `Lcom/ksu/passwordPassTest/MainActivity;.findViewById:(I)Landroid/view/View;` @classDescriptor ^`com.ksu.passwordPassTest.MainActivity` @kind virtual;
+  #L0471cc.  View_v0:= View_temp  @kind object;
+  #L0471ce.  Button_v0:= (`android.widget.Button`)View_v0  @kind object;
+  #L0471d2.  MainActivity_v2.`com.ksu.passwordPassTest.MainActivity.passButton`:= Button_v0  @kind object @type ^`android.widget.Button`;
+  #L0471d6.  Button_v0:= MainActivity_v2.`com.ksu.passwordPassTest.MainActivity.passButton`  @kind object @type ^`android.widget.Button`;
+  #L0471da.  MainActivity$1_v1:= new `com.ksu.passwordPassTest.MainActivity$1`;
+  #L0471de.  call `com.ksu.passwordPassTest.MainActivity$1.<init>`(MainActivity$1_v1, MainActivity_v2) @signature `Lcom/ksu/passwordPassTest/MainActivity$1;.<init>:(Lcom/ksu/passwordPassTest/MainActivity;)V` @classDescriptor ^`com.ksu.passwordPassTest.MainActivity$1` @kind direct;
+  #L0471e4.  call `android.widget.Button.setOnClickListener`(Button_v0, MainActivity$1_v1) @signature `Landroid/widget/Button;.setOnClickListener:(Landroid/view/View$OnClickListener;)V` @classDescriptor ^`android.widget.Button` @kind virtual;
+  #L0471ea.  return  @kind void;
+}
+procedure `boolean` `com.ksu.passwordPassTest.MainActivity.onCreateOptionsMenu`(`com.ksu.passwordPassTest.MainActivity` MainActivity_v2 @kind this, `android.view.Menu` Menu_v3 @kind object) @owner ^`com.ksu.passwordPassTest.MainActivity` @signature `Lcom/ksu/passwordPassTest/MainActivity;.onCreateOptionsMenu:(Landroid/view/Menu;)Z` @AccessFlag PUBLIC {
+    `android.view.MenuInflater` MenuInflater_v0;
+    `boolean` boolean_v0;
+    `int` int_v0;
+    `int` int_v1;
+    `android.view.MenuInflater` MenuInflater_temp;
+
+  #L0471fc.  call MenuInflater_temp:=  `com.ksu.passwordPassTest.MainActivity.getMenuInflater`(MainActivity_v2) @signature `Lcom/ksu/passwordPassTest/MainActivity;.getMenuInflater:()Landroid/view/MenuInflater;` @classDescriptor ^`com.ksu.passwordPassTest.MainActivity` @kind virtual;
+  #L047202.  MenuInflater_v0:= MenuInflater_temp  @kind object;
+  #L047204.  int_v1:= 2131165184I;
+  #L047208.  call `android.view.MenuInflater.inflate`(MenuInflater_v0, int_v1, Menu_v3) @signature `Landroid/view/MenuInflater;.inflate:(ILandroid/view/Menu;)V` @classDescriptor ^`android.view.MenuInflater` @kind virtual;
+  #L04720e.  boolean_v0:= 1I;
+  #L047210.  return boolean_v0;
+}
