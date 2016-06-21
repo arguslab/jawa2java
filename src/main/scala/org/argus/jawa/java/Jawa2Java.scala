@@ -108,11 +108,33 @@ class Jawa2Java(reporter: Reporter) {
 
   def visitMethodDeclaration(md: MethodDeclaration, imports: MSet[JawaType]): ST = {
     val methodTemplate = template.getInstanceOf("MethodDecl")
-    // TODO Implement later
 
     methodTemplate.add("accessFlag", AccessFlag.toString(AccessFlag.getAccessFlags(md.accessModifier)))
     methodTemplate.add("retTyp", md.returnType.typ.name)
     methodTemplate.add("methodName", md.name)
+    md.body match {
+      case resolvedBody: ResolvedBody =>
+        val localVars: Array[ST] = resolvedBody.locals.map {
+          lv =>
+            visitLocalVarDeclaration(lv)
+        }.toArray
+
+        methodTemplate.add("localVars", localVars )
+      case UnresolvedBody(bodytokens) =>
+    }
     methodTemplate
+  }
+
+  def visitLocalVarDeclaration(lvd: LocalVarDeclaration ): ST = {
+    val fieldTemplate = template.getInstanceOf("FieldDecl")
+
+    fieldTemplate.add("accessFlag", AccessFlag.toString(AccessFlag.getAccessFlags(lvd.accessModifier)))
+    lvd.typOpt match {
+      case Some(typ) =>
+        fieldTemplate.add("attrTyp", typ.typ.name)
+        fieldTemplate.add("attrName", lvd.varSymbol.varName)
+      case None =>
+    }
+    fieldTemplate
   }
 }

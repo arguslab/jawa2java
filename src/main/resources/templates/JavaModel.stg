@@ -26,7 +26,7 @@ $accessFlag$ class $className$$if(exts)$ extends $exts$$endif$$if(impls)$ implem
 >>
 
 FieldDecl(attrTyp, attrName, annotations, accessFlag) ::= <<
-$if(accessFlag)$$accessFlag$$endif$ $attrTyp$ $attrName$;
+$if(accessFlag)$$accessFlag$ $endif$$attrTyp$ $attrName$;
 >>
 
 MethodDecl(accessFlag, retTyp, methodName, params, localVars, body, catchClauses) ::= <<
