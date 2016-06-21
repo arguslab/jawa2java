@@ -102,6 +102,11 @@ class Jawa2Java(reporter: Reporter) {
 
     fieldTemplate.add("accessFlag", AccessFlag.toString(AccessFlag.getAccessFlags(fd.accessModifier)))
     fieldTemplate.add("attrTyp", fd.typ.typ.name)
+    fd.typ.typ.getPackage match {
+      case Some (pkg) =>
+        imports += fd.typ.typ
+      case None =>
+    }
     fieldTemplate.add("attrName", fd.fieldName)
     fieldTemplate
   }
@@ -116,7 +121,7 @@ class Jawa2Java(reporter: Reporter) {
       case resolvedBody: ResolvedBody =>
         val localVars: Array[ST] = resolvedBody.locals.map {
           lv =>
-            visitLocalVarDeclaration(lv)
+            visitLocalVarDeclaration(lv, imports)
         }.toArray
 
         methodTemplate.add("localVars", localVars )
@@ -125,7 +130,7 @@ class Jawa2Java(reporter: Reporter) {
     methodTemplate
   }
 
-  def visitLocalVarDeclaration(lvd: LocalVarDeclaration ): ST = {
+  def visitLocalVarDeclaration(lvd: LocalVarDeclaration, imports: MSet[JawaType] ): ST = {
     val fieldTemplate = template.getInstanceOf("FieldDecl")
 
     fieldTemplate.add("accessFlag", AccessFlag.toString(AccessFlag.getAccessFlags(lvd.accessModifier)))
@@ -133,6 +138,12 @@ class Jawa2Java(reporter: Reporter) {
       case Some(typ) =>
         fieldTemplate.add("attrTyp", typ.typ.name)
         fieldTemplate.add("attrName", lvd.varSymbol.varName)
+      case None =>
+    }
+
+    lvd.typ.getPackage match {
+      case Some (pkg) =>
+        imports += lvd.typ
       case None =>
     }
     fieldTemplate

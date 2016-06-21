@@ -57,6 +57,23 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |}
     """.stripMargin.trim
 
+  new FgSourceFile(new PlainFile(new File("src/test/resources/simple/RecordDecl2.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |import java.lang.String;
+      |import java.io.File;
+      |
+      |public class RecordDecl {
+      |  private int i1;
+      |  public static int main() {
+      |     int i2;
+      |     java.lang.String s1;
+      |     java.io.File file1;
+      |
+      |  }
+      |}
+    """.stripMargin.trim
+
 //  new FgSourceFile(new PlainFile(new File("src/test/resources/array/ArrayAccess1.pilar"))) produceJavaClass
 //    """package com.fgwei;
 //      |
@@ -76,10 +93,10 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
         val reporter = new DefaultReporter
         val translator = new Jawa2Java(reporter)
         val javaClass = translator.translate(Right(s)).values.mkString("")
-        println ("-----Translated Java Class:-----\n" + javaClass)
-        println ("\n\n*****expected*****: \n\n" + expectedClassStr)
+        println ("-----Translated Java Class:-----\n" + javaClass + "======")
+        println ("\n\n*****expected*****: \n\n" + expectedClassStr + "======")
         println {
-          "Differences: \n" + (javaClass diff expectedClassStr)
+          "Differences: \n||~" + (javaClass diff expectedClassStr) + "~||"
         }
         require(!reporter.hasErrors, reporter.problems)
         require(javaClass == expectedClassStr)
