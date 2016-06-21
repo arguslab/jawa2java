@@ -121,6 +121,23 @@ class Jawa2Java(reporter: Reporter) {
         }.toArray
 
         methodTemplate.add("localVars", localVars )
+
+        val assignmentTemplate = template.getInstanceOf("AssignmentStatement")
+
+        resolvedBody.locations foreach {
+          loc =>
+            println ("Location Symbol is: " + loc.locationSymbol)
+            println ("Location Statement is: " + loc.statement)
+
+            loc.statement match {
+              case assign: AssignmentStatement =>
+                assignmentTemplate.add("lhs", assign.lhs)
+                assignmentTemplate.add("op", assign.assignOP)
+                assignmentTemplate.add("rhs", assign.rhs)
+
+              case _ =>
+            }
+        }
       case UnresolvedBody(bodytokens) =>
     }
 

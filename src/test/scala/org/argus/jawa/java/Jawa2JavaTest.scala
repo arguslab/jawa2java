@@ -75,6 +75,26 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |}
     """.stripMargin.trim
 
+  new FgSourceFile(new PlainFile(new File("src/test/resources/simple/RecordDecl3_Locations.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |import java.lang.String;
+      |import java.io.File;
+      |import java.util.ArrayList;
+      |
+      |public class RecordDecl {
+      |  private int i1;
+      |  public static int main(String param1, ArrayList arr_param_1) {
+      |     int i2;
+      |     String s1;
+      |     File file1;
+      |
+      |     s1 = "testing" ;
+      |
+      |  }
+      |}
+    """.stripMargin.trim
+
 //  new FgSourceFile(new PlainFile(new File("src/test/resources/array/ArrayAccess1.pilar"))) produceJavaClass
 //    """package com.fgwei;
 //      |

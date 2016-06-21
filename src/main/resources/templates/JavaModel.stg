@@ -40,3 +40,7 @@ $accessFlag$ $retTyp$ $methodName$($params ; separator=", "$) {
 Param(paramTyp, paramName) ::= <<
 $paramTyp$ $paramName$
 >>
+
+AssignmentStatement(lhs, op, rhs) ::= <<
+$lhs$ $op$ $rhs$
+>>
