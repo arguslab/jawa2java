@@ -21,6 +21,7 @@ import org.stringtemplate.v4.{ST, STGroupFile}
   * Translate Jawa to Java.
   *
   * @author <a href="mailto:fgwei521@gmail.com">Fengguo Wei</a>
+  * @author <a href="mailto:anwesh.tuladhar@gmail.com">Anwesh Tuladhar</a>
   */
 class Jawa2Java(reporter: Reporter) {
 
@@ -65,7 +66,7 @@ class Jawa2Java(reporter: Reporter) {
         }
         val implements: Array[String] = clause.interfaces.map {
           interface =>
-            imports += interface
+            imports += interface        // Fully qualified name in interface?
             interface.simpleName
         }.toArray
         classTemplate.add("impls", implements)
@@ -98,13 +99,20 @@ class Jawa2Java(reporter: Reporter) {
 
   def visitFieldDeclaration(fd: Field with Declaration, imports: MSet[JawaType]): ST = {
     val fieldTemplate = template.getInstanceOf("FieldDecl")
-    // TODO Implement later
+
+    fieldTemplate.add("accessFlag", AccessFlag.toString(AccessFlag.getAccessFlags(fd.accessModifier)))
+    fieldTemplate.add("attrTyp", fd.typ.typ.name)
+    fieldTemplate.add("attrName", fd.fieldName)
     fieldTemplate
   }
 
-  def visitMethodDeclaration(fd: MethodDeclaration, imports: MSet[JawaType]): ST = {
+  def visitMethodDeclaration(md: MethodDeclaration, imports: MSet[JawaType]): ST = {
     val methodTemplate = template.getInstanceOf("MethodDecl")
     // TODO Implement later
+
+    methodTemplate.add("accessFlag", AccessFlag.toString(AccessFlag.getAccessFlags(md.accessModifier)))
+    methodTemplate.add("retTyp", md.returnType.typ.name)
+    methodTemplate.add("methodName", md.name)
     methodTemplate
   }
 }

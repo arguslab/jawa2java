@@ -24,13 +24,25 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
   implicit def file2TestFile(s: FgSourceFile): TestFile =
     new TestFile(s)
 
-  new FgSourceFile(new PlainFile(new File("src/test/resources/simple/RecordDecl.pilar"))) produceJavaClass
+/*  new FgSourceFile(new PlainFile(new File("src/test/resources/simple/RecordDecl.pilar"))) produceJavaClass
   """package com.fgwei;
     |
     |
     |public class RecordDecl {
     |}
-  """.stripMargin.trim
+  """.stripMargin.trim*/
+
+  new FgSourceFile(new PlainFile(new File("src/test/resources/simple/RecordDecl.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |
+      |public class RecordDecl {
+      |  private int i1;
+      |  public static int main() {
+      |
+      |  }
+      |}
+    """.stripMargin.trim
 
 //  new FgSourceFile(new PlainFile(new File("src/test/resources/array/ArrayAccess1.pilar"))) produceJavaClass
 //    """package com.fgwei;
@@ -51,6 +63,11 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
         val reporter = new DefaultReporter
         val translator = new Jawa2Java(reporter)
         val javaClass = translator.translate(Right(s)).values.mkString("")
+        println (javaClass)
+        println ("\n\nexpected: \n\n" + expectedClassStr)
+        println {
+          "Differences: \n" + (javaClass diff expectedClassStr)
+        }
         require(!reporter.hasErrors, reporter.problems)
         require(javaClass == expectedClassStr)
       }
