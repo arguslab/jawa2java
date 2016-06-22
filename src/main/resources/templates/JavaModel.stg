@@ -41,6 +41,30 @@ Param(paramTyp, paramName) ::= <<
 $paramTyp$ $paramName$
 >>
 
-AssignmentStatement(lhs, op, rhs) ::= <<
-$lhs$ $op$ $rhs$
+Body(statements) ::= <<
+$statements ; separator="\n"$
+>>
+
+NewExpression(baseType, params) ::= <<
+new $baseType$()
+>>
+
+NameExpression(name) ::= <<
+$name$
+>>
+
+StringLiteral(str) ::= <<
+"$str$"
+>>
+
+NumericalLiteral(nm) ::= <<
+$nm$
+>>
+
+AssignmentStatement(lhs, rhs) ::= <<
+$lhs$ = $rhs$;
+>>
+
+ReturnStatement(varName) ::= <<
+return $varName$;
 >>

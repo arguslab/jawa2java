@@ -40,6 +40,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |  private int i1;
       |  public static int main() {
       |
+      |
       |  }
       |}
     """.stripMargin.trim
@@ -53,6 +54,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |  public static int main() {
       |     int i2;
       |
+      |
       |  }
       |}
     """.stripMargin.trim
@@ -60,8 +62,8 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
   new FgSourceFile(new PlainFile(new File("src/test/resources/simple/RecordDecl2.pilar"))) produceJavaClass
     """package com.fgwei;
       |
-      |import java.lang.String;
       |import java.io.File;
+      |import java.lang.String;
       |import java.util.ArrayList;
       |
       |public class RecordDecl {
@@ -78,19 +80,22 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
   new FgSourceFile(new PlainFile(new File("src/test/resources/simple/RecordDecl3_Locations.pilar"))) produceJavaClass
     """package com.fgwei;
       |
-      |import java.lang.String;
       |import java.io.File;
+      |import java.lang.String;
       |import java.util.ArrayList;
       |
       |public class RecordDecl {
       |  private int i1;
+      |   int i3;
       |  public static int main(String param1, ArrayList arr_param_1) {
-      |     int i2;
-      |     String s1;
-      |     File file1;
+      |    int i2;
+      |    String s1;
+      |    String s2;
+      |    File file1;
       |
-      |     s1 = "testing" ;
-      |
+      |    s1 = "testing";
+      |    s2 = new String();
+      |    return s1;
       |  }
       |}
     """.stripMargin.trim
@@ -116,16 +121,41 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
         val javaClass = translator.translate(Right(s)).values.mkString("")
         println ("-----Translated Java Class:-----\n" + javaClass + "======")
         println ("\n\n*****expected*****: \n\n" + expectedClassStr + "======")
-        println {
-          "Differences: \n||~" + (javaClass diff expectedClassStr) + "~||"
-        }
+
         require(!reporter.hasErrors, reporter.problems)
         //        require(javaClass == expectedClassStr)
 
         /* Using String diff -> sorting in arrays causing test failures. */
-        val requireCheck: Boolean = javaClass.diff(expectedClassStr) == ""
-        require(requireCheck)
+//        val requireCheck: Boolean = javaClass.diff(expectedClassStr) == "" && expectedClassStr.diff(javaClass) == ""
+//        require(requireCheck)
+        require(compare(javaClass, expectedClassStr))
       }
+    }
+
+    /** Compares two Strings.
+      * Ignores white spaces and empty lines.
+      * @param translated translated java code
+      * @param expected expected java code
+      * @return
+      */
+    def compare(translated: String, expected: String): Boolean = {
+      val translatedLines: List[String] = (translated.split("\n") map {
+        l =>
+          l.trim()
+      } filterNot(_ == "")).toList
+
+      val expectedLines = (expected.split("\n") map {
+        l =>
+          l.trim()
+      } filterNot(_ == "")).toList
+
+      println ( "Differences1: \n||~" + (translatedLines.mkString("") diff expectedLines.mkString("")) + "~||" )
+      println ( "Differences2: \n||~" + (expectedLines.mkString("") diff translatedLines.mkString("")) + "~||" )
+
+      //      translatedLines.mkString("") == expectedLines.mkString("")
+      println ("translated: " + translatedLines.toList)
+      println ("expected  : " + expectedLines.toList)
+      translatedLines == expectedLines
     }
   }
 }

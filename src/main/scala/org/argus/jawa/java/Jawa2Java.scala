@@ -10,6 +10,7 @@
 
 package org.argus.jawa.java
 
+import org.argus.jawa.compiler.lexer.Tokens._
 import org.argus.jawa.compiler.parser._
 import org.argus.jawa.core.{AccessFlag, JawaPackage, JawaType, Reporter}
 import org.argus.jawa.core.io.SourceFile
@@ -87,7 +88,9 @@ class Jawa2Java(reporter: Reporter) {
     }.toArray
     classTemplate.add("methods", methodTemplates)
 
-    val importTemplates: Array[ST] = imports.map {
+    val sortedImports = imports.toList.sortWith((x, y) => x.baseTyp < y.baseTyp)
+
+    val importTemplates: Array[ST] = sortedImports.map {
       imp =>
         val importTemplate = template.getInstanceOf("Import")
         importTemplate.add("className", imp.baseTyp)
@@ -109,10 +112,12 @@ class Jawa2Java(reporter: Reporter) {
 
   def visitMethodDeclaration(md: MethodDeclaration, imports: MSet[JawaType]): ST = {
     val methodTemplate = template.getInstanceOf("MethodDecl")
+    val bodyStatements: MList[(Int, ST)] = mlistEmpty
 
     methodTemplate.add("accessFlag", AccessFlag.toString(AccessFlag.getAccessFlags(md.accessModifier)))
     methodTemplate.add("retTyp", md.returnType.typ.name)
     methodTemplate.add("methodName", md.name)
+
     md.body match {
       case resolvedBody: ResolvedBody =>
         val localVars: Array[ST] = resolvedBody.locals.map {
@@ -122,8 +127,6 @@ class Jawa2Java(reporter: Reporter) {
 
         methodTemplate.add("localVars", localVars )
 
-        val assignmentTemplate = template.getInstanceOf("AssignmentStatement")
-
         resolvedBody.locations foreach {
           loc =>
             println ("Location Symbol is: " + loc.locationSymbol)
@@ -131,15 +134,32 @@ class Jawa2Java(reporter: Reporter) {
 
             loc.statement match {
               case assign: AssignmentStatement =>
-                assignmentTemplate.add("lhs", assign.lhs)
-                assignmentTemplate.add("op", assign.assignOP)
-                assignmentTemplate.add("rhs", assign.rhs)
+                bodyStatements += ((loc.locationIndex, assignmentStatement(assign)))
+
+              case ret: ReturnStatement =>
+                ret.varOpt match {
+                  case Some(v) =>
+                    val returnTemplate = template.getInstanceOf("ReturnStatement")
+                    println ("Return Statement is: " + v.varName)
+                    returnTemplate.add("varName", v.varName)
+
+                    bodyStatements += ((loc.locationIndex, returnTemplate))
+                  case None =>
+                }
 
               case _ =>
             }
         }
       case UnresolvedBody(bodytokens) =>
     }
+
+    val bodyTemplate = template.getInstanceOf("Body")
+    bodyStatements.sortBy(_._1).map {
+      st =>
+        bodyTemplate.add("statements", st._2)
+    }
+    methodTemplate.add("body", bodyTemplate)
+    println ("Body Statements are: " + bodyStatements)
 
     val paramTemplates: Array[ST] = md.paramlist.map{
       param =>
@@ -150,6 +170,71 @@ class Jawa2Java(reporter: Reporter) {
     methodTemplate.add("params", paramTemplates)
 
     methodTemplate
+  }
+
+  private def assignmentStatement(as: AssignmentStatement): ST = {
+    val assignmentTemplate = template.getInstanceOf("AssignmentStatement")
+    val lhs: Option[ST] = expression_lhs(as.lhs)
+    val rhs: Option[ST] = expression_rhs(as.rhs)
+
+    lhs match {
+      case Some(l) =>
+        assignmentTemplate.add("lhs", l)
+      case None =>
+    }
+
+    rhs match {
+      case Some(r) =>
+        assignmentTemplate.add("rhs", r)
+      case None =>
+    }
+
+    assignmentTemplate
+  }
+
+  private def expression_lhs(lhs: Expression with LHS): Option[ST] = {
+    lhs match {
+      case ne: NameExpression =>
+        Some(nameExpression(ne))
+      case _ => None
+    }
+  }
+
+  private def expression_rhs(rhs: Expression with RHS): Option[ST] = {
+    rhs match {
+      case ne: NameExpression =>
+        Some(nameExpression(ne))
+
+      case newExp: NewExpression =>
+        println ("in new rhs expressions" + newExp.typ.simpleName)
+        val newTemplate: ST = template.getInstanceOf("NewExpression")
+        newTemplate.add("baseType", newExp.typ.simpleName)
+        Some(newTemplate)
+
+      case le: LiteralExpression =>
+        literalExpression(le)
+
+      case _ =>
+        println ("Case non in rhs." + rhs.getClass)
+        None
+    }
+  }
+
+  private def nameExpression(ne: NameExpression): ST = {
+    val nameTemplate = template.getInstanceOf("NameExpression")
+    nameTemplate.add("name", ne.name)
+    nameTemplate
+  }
+
+  private def literalExpression(le: LiteralExpression): Option[ST] = {
+    le.lastToken.tokenType match  {
+      case STRING_LITERAL =>
+        val literalTemplate = template.getInstanceOf("StringLiteral")
+        literalTemplate.add("str", le.getString)
+        Some(literalTemplate)
+      case _ =>
+        None
+    }
   }
 
   def visitLocalVarDeclaration(lvd: LocalVarDeclaration, imports: MSet[JawaType] ): ST = {
