@@ -88,11 +88,12 @@ class Jawa2Java(reporter: Reporter) {
     }.toArray
     classTemplate.add("methods", methodTemplates)
 
-    val sortedImports = imports.toList.sortWith((x, y) => x.baseTyp < y.baseTyp)
+    val sortedImports = imports.toList filterNot(_.baseTyp == cid.typ.name) sortWith((x, y) => x.baseTyp < y.baseTyp)
 
     val importTemplates: Array[ST] = sortedImports.map {
       imp =>
         val importTemplate = template.getInstanceOf("Import")
+        println ("THIS IS MY CLASS TYPE:::: " + cid.typ.name)
         importTemplate.add("className", imp.baseTyp)
         importTemplate
     }.toArray
@@ -108,6 +109,16 @@ class Jawa2Java(reporter: Reporter) {
     fieldTemplate.add("attrTyp", fd.typ.typ.simpleName)
     fieldTemplate.add("attrName", fd.fieldName)
     addImport(fd.typ.typ, imports)
+
+    //todo Need to check Instance or Static for translation??? Access Flag already determines it.
+   /* fd match {
+      case ifd: InstanceFieldDeclaration =>
+        println ("instance field declaration: " + ifd.fieldName)
+      case sfd: StaticFieldDeclaration =>
+        println ("static field declaration: " + sfd.fieldName)
+      case _ => println ("no match : " + fd.fieldName)
+    }*/
+
     fieldTemplate
   }
 
@@ -135,7 +146,7 @@ class Jawa2Java(reporter: Reporter) {
 
             loc.statement match {
               case assign: AssignmentStatement =>
-                bodyStatements += ((loc.locationIndex, visitAssignmentStatement(assign)))
+                bodyStatements += ((loc.locationIndex, visitAssignmentStatement(assign, imports)))
 
               case ret: ReturnStatement =>
                 ret.varOpt match {
@@ -173,10 +184,10 @@ class Jawa2Java(reporter: Reporter) {
     methodTemplate
   }
 
-  private def visitAssignmentStatement(as: AssignmentStatement): ST = {
+  private def visitAssignmentStatement(as: AssignmentStatement, imports: MSet[JawaType]): ST = {
     val assignmentTemplate = template.getInstanceOf("AssignmentStatement")
-    val lhs: ST = visitExpressionLHS(as.lhs)
-    val rhs: ST = visitExpressionRHS(as.rhs)
+    val lhs: ST = visitExpressionLHS(as.lhs, imports)
+    val rhs: ST = visitExpressionRHS(as.rhs, imports)
 
     assignmentTemplate.add("lhs", lhs)
     assignmentTemplate.add("rhs", rhs)
@@ -184,18 +195,22 @@ class Jawa2Java(reporter: Reporter) {
     assignmentTemplate
   }
 
-  private def visitExpressionLHS(lhs: Expression with LHS): ST = {
+  private def visitExpressionLHS(lhs: Expression with LHS, imports: MSet[JawaType]): ST = {
     lhs match {
       case ne: NameExpression =>
-        visitNameExpression(ne)
+        visitNameExpression(ne, imports)
+
+      /*case ae: AccessExpression =>
+        println ("THis is access expression: " + ae.fieldName)
+        template.getInstanceOf("NewExpression")*/
       case _ => throw new Jawa2JavaTranslateException("No matching LHS expression on line: " + lhs.pos.line + ":" + lhs.pos.column )
     }
   }
 
-  private def visitExpressionRHS(rhs: Expression with RHS): ST = {
+  private def visitExpressionRHS(rhs: Expression with RHS, imports: MSet[JawaType]): ST = {
     rhs match {
       case ne: NameExpression =>
-        visitNameExpression(ne)
+        visitNameExpression(ne, imports)
 
       case newExp: NewExpression =>
         println ("in new rhs expressions" + newExp.typ.simpleName)
@@ -210,11 +225,26 @@ class Jawa2Java(reporter: Reporter) {
     }
   }
 
-  private def visitNameExpression(ne: NameExpression): ST = {
-    val nameTemplate = template.getInstanceOf("NameExpression")
-    nameTemplate.add("name", ne.name)
-    println ("in name expression : " + ne.name)
-    nameTemplate
+  private def visitNameExpression(ne: NameExpression, imports: MSet[JawaType]): ST = {
+
+    ne.varSymbol match {
+      case Left(varSymbol) =>
+        println ("in name expression Not Static: " + ne.name)
+
+        val nameTemplate = template.getInstanceOf("NameExpression")
+        nameTemplate.add("name", ne.name)
+        nameTemplate
+
+      case Right(fieldNameSymbol) =>
+        println ("in name expression Static: " + ne.name)
+
+        val staticTemplate = template.getInstanceOf("StaticNameExpression")
+        staticTemplate.add("baseTyp", fieldNameSymbol.baseType.simpleName)
+        staticTemplate.add("name", fieldNameSymbol.fieldName)
+        addImport(fieldNameSymbol.baseType, imports)
+
+        staticTemplate
+    }
   }
 
   private def visitLiteralExpression(le: LiteralExpression): ST = {

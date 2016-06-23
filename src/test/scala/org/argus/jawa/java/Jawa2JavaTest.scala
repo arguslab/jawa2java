@@ -80,6 +80,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
   new FgSourceFile(new PlainFile(new File("src/test/resources/simple/RecordDecl3_Locations.pilar"))) produceJavaClass
     """package com.fgwei;
       |
+      |import com.fgwei.RecordDecl1;
       |import java.io.File;
       |import java.lang.String;
       |import java.util.ArrayList;
@@ -88,6 +89,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |  private int i1;
       |   int i3;
       |   int[] int_arr1;
+      |   static String str1;
       |
       |  public static int main(String param1, ArrayList arr_param_1) {
       |    int i2;
@@ -102,6 +104,9 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |    s2 = new String();
       |    i2 = 55;
       |    f1 = 1.5;
+      |    String_arr1 = new String[]();
+      |    RecordDecl.str1 = "StringStatic";
+      |    RecordDecl1.str1 = "StringStatic_import";
       |    return i2;
       |  }
       |}

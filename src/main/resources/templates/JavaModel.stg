@@ -53,6 +53,10 @@ NameExpression(name) ::= <<
 $name$
 >>
 
+StaticNameExpression(baseTyp, name) ::= <<
+$baseTyp$.$name$
+>>
+
 StringLiteral(str) ::= <<
 "$str$"
 >>

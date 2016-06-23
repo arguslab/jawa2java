@@ -5,6 +5,8 @@ record `com.fgwei.RecordDecl`  @kind class @AccessFlag PUBLIC {
 
     }
 
+    global `java.lang.String` `@@com.fgwei.RecordDecl.str1` @AccessFlag STATIC;
+
     procedure `int` `com.fgwei.RecordDecl.main` (`java.lang.String` param1 @kind object, `java.util.ArrayList` arr_param_1 @kind object) @owner ^`com.fgwei.RecordDecl` @signature `Lcom/fgwei/RecordDecl;.main:()I` @AccessFlag PUBLIC_STATIC {
       `int` `i2`;
       `java.lang.String` s1;
@@ -18,6 +20,10 @@ record `com.fgwei.RecordDecl`  @kind class @AccessFlag PUBLIC {
       #L026e4e.   s2:= new `String` ;
       #L026e5e.   i2:= 55;
       #L026e6e.   f1:= 1.5;
+      #L00057c.   String_arr1:= new `java.lang.String`[i2];
+      #L027048.   `@@com.fgwei.RecordDecl.str1`:= "StringStatic" ;
+      #L027048.   `@@com.fgwei.RecordDecl1.str1`:= "StringStatic_import" ;
+
       #L026eb0.   return i2;
 
     }
