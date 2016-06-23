@@ -200,15 +200,13 @@ class Jawa2Java(reporter: Reporter) {
       case ne: NameExpression =>
         visitNameExpression(ne, imports)
 
-        //todo only tested for RHS
+      //todo only tested for RHS
       case ae: AccessExpression =>
-        println ("THis is access expression in LHS : " + ae.fieldName)
         visitAccessExpression(ae, imports)
 
       case ie: IndexingExpression =>
        visitIndexingExpression(ie)
 
-//        template.getInstanceOf("NewExpression")
       case _ => throw new Jawa2JavaTranslateException("No matching LHS expression on line: " + lhs.pos.line + ":" + lhs.pos.column )
     }
   }
@@ -301,7 +299,7 @@ class Jawa2Java(reporter: Reporter) {
     }
   }
 
-  def visitAccessExpression(ae: AccessExpression, imports: MSet[JawaType]): ST = {
+  private def visitAccessExpression(ae: AccessExpression, imports: MSet[JawaType]): ST = {
     val accessTemplate = template.getInstanceOf("StaticNameExpression")
     accessTemplate.add("baseTyp", ae.base)
     accessTemplate.add("name", ae.fieldName)
@@ -309,19 +307,8 @@ class Jawa2Java(reporter: Reporter) {
     accessTemplate
   }
 
-  def visitLocalVarDeclaration(lvd: LocalVarDeclaration, imports: MSet[JawaType] ): ST = {
-    val fieldTemplate = template.getInstanceOf("FieldDecl")
-
-    fieldTemplate.add("accessFlag", AccessFlag.toString(AccessFlag.getAccessFlags(lvd.accessModifier)))
-    fieldTemplate.add("attrTyp", lvd.typ.simpleName)
-    fieldTemplate.add("attrName", lvd.varSymbol.varName)
-
-    addImport(lvd.typ, imports)
-    fieldTemplate
-  }
-
-  def visitIndexingExpression(ie: IndexingExpression): ST = {
-    println ("IN indexing expression")
+  private def visitIndexingExpression(ie: IndexingExpression): ST = {
+    println ("IN indexing expression" + ie.base)
     val indexingTemplate = template.getInstanceOf("IndexingExpression")
     indexingTemplate.add("name", ie.base)
     val indices: Array[Any] = ie.indices.map {
@@ -340,7 +327,18 @@ class Jawa2Java(reporter: Reporter) {
     indexingTemplate
   }
 
-  def visitParamDeclaration(param: Param, imports: MSet[JawaType] ): ST = {
+  def visitLocalVarDeclaration(lvd: LocalVarDeclaration, imports: MSet[JawaType] ): ST = {
+    val fieldTemplate = template.getInstanceOf("FieldDecl")
+
+    fieldTemplate.add("accessFlag", AccessFlag.toString(AccessFlag.getAccessFlags(lvd.accessModifier)))
+    fieldTemplate.add("attrTyp", lvd.typ.simpleName)
+    fieldTemplate.add("attrName", lvd.varSymbol.varName)
+
+    addImport(lvd.typ, imports)
+    fieldTemplate
+  }
+
+   def visitParamDeclaration(param: Param, imports: MSet[JawaType] ): ST = {
     val paramTemplate = template.getInstanceOf("Param")
 
     paramTemplate.add("paramTyp", param.typ.typ.simpleName)

@@ -99,7 +99,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |    File file1;
       |    float f1;
       |    String[] String_arr1;
-      |    int[] int_arr2;
+      |    int[][] int_arr2;
       |    Test test;
       |
       |    test = new Test();
@@ -111,6 +111,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |    RecordDecl.str1 = "StringStatic";
       |    RecordDecl1.str1 = "StringStatic_import";
       |    s2 = test.s1;
+      |    int_arr2[i2][i2] = test.s1;
       |    return i2;
       |  }
       |}
