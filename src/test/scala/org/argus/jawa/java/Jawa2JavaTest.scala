@@ -87,12 +87,16 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |public class RecordDecl {
       |  private int i1;
       |   int i3;
+      |   int[] int_arr1;
+      |
       |  public static int main(String param1, ArrayList arr_param_1) {
       |    int i2;
       |    String s1;
       |    String s2;
       |    File file1;
       |    float f1;
+      |    String[] String_arr1;
+      |    int[] int_arr2;
       |
       |    s1 = "testing";
       |    s2 = new String();
@@ -137,6 +141,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
 
     /** Compares two Strings.
       * Ignores white spaces and empty lines.
+      *
       * @param translated translated java code
       * @param expected expected java code
       * @return

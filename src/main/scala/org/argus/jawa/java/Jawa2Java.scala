@@ -104,7 +104,8 @@ class Jawa2Java(reporter: Reporter) {
     val fieldTemplate = template.getInstanceOf("FieldDecl")
 
     fieldTemplate.add("accessFlag", AccessFlag.toString(AccessFlag.getAccessFlags(fd.accessModifier)))
-    fieldTemplate.add("attrTyp", fd.typ.typ.name)
+
+    fieldTemplate.add("attrTyp", fd.typ.typ.simpleName)
     fieldTemplate.add("attrName", fd.fieldName)
     addImport(fd.typ.typ, imports)
     fieldTemplate
@@ -212,6 +213,7 @@ class Jawa2Java(reporter: Reporter) {
   private def visitNameExpression(ne: NameExpression): ST = {
     val nameTemplate = template.getInstanceOf("NameExpression")
     nameTemplate.add("name", ne.name)
+    println ("in name expression : " + ne.name)
     nameTemplate
   }
 
@@ -243,12 +245,8 @@ class Jawa2Java(reporter: Reporter) {
     val fieldTemplate = template.getInstanceOf("FieldDecl")
 
     fieldTemplate.add("accessFlag", AccessFlag.toString(AccessFlag.getAccessFlags(lvd.accessModifier)))
-    lvd.typOpt match {
-      case Some(typ) =>
-        fieldTemplate.add("attrTyp", typ.typ.simpleName)
-        fieldTemplate.add("attrName", lvd.varSymbol.varName)
-      case None =>
-    }
+    fieldTemplate.add("attrTyp", lvd.typ.simpleName)
+    fieldTemplate.add("attrName", lvd.varSymbol.varName)
 
     addImport(lvd.typ, imports)
     fieldTemplate
