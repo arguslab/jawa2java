@@ -27,7 +27,7 @@ record `com.fgwei.RecordDecl`  @kind class @AccessFlag PUBLIC {
       #L027048.   `@@com.fgwei.RecordDecl.str1`:= "StringStatic" ;
       #L027058.   `@@com.fgwei.RecordDecl1.str1`:= "StringStatic_import" ;
       #L027068.   s2:= test.`com.fgwei.Test.s1`;
-      #L027098.   int_arr2[i2][i2]:= test.`com.fgwei.Test.s1`;
+      #L027098.   int_arr2[i2][1]:= test.`com.fgwei.Test.s1`;
 
       #L026eb0.   return i2;
 

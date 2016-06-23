@@ -319,7 +319,11 @@ class Jawa2Java(reporter: Reporter) {
             arrayTemplate.add("arrayLength", varSymbol.varName)
             println ("Indexing suffix  "+ varSymbol.varName)
             arrayTemplate
-          case Right(token) =>
+          case Right(lit) =>
+            val arrayTemplate = template.getInstanceOf("ArrayAccess")
+            arrayTemplate.add("arrayLength", lit.text)
+            println ("Indexing suffix  "+ lit.text)
+            arrayTemplate
         }
     }.toArray
 
