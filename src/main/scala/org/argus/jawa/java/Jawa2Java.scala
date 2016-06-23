@@ -88,12 +88,11 @@ class Jawa2Java(reporter: Reporter) {
     }.toArray
     classTemplate.add("methods", methodTemplates)
 
-    val sortedImports = imports.toList filterNot(_.baseTyp == cid.typ.name) sortWith((x, y) => x.baseTyp < y.baseTyp)
+    val sortedImports: List[JawaType] = imports.toList filterNot(_.baseTyp == cid.typ.name) sortWith((x, y) => x.baseTyp < y.baseTyp)
 
     val importTemplates: Array[ST] = sortedImports.map {
       imp =>
         val importTemplate = template.getInstanceOf("Import")
-        println ("THIS IS MY CLASS TYPE:::: " + cid.typ.name)
         importTemplate.add("className", imp.baseTyp)
         importTemplate
     }.toArray
@@ -221,7 +220,12 @@ class Jawa2Java(reporter: Reporter) {
       case le: LiteralExpression =>
         visitLiteralExpression(le)
 
-      case _ => throw new Jawa2JavaTranslateException("No matching RHS expression on line: " + rhs.pos.line + ":" + rhs.pos.column )
+      case ae: AccessExpression =>
+        visitAccessExpression(ae, imports)
+      case _ =>
+        println ("In RHS :" + rhs.getClass)
+        println ("In RHS :" + rhs.getFields)
+        throw new Jawa2JavaTranslateException("No matching RHS expression on line: " + rhs.pos.line + ":" + rhs.pos.column )
     }
   }
 
@@ -269,6 +273,14 @@ class Jawa2Java(reporter: Reporter) {
 
       case _ => throw new Jawa2JavaTranslateException("No matching Literal Expression: " + le.pos.line + ":" + le.pos.column )
     }
+  }
+
+  def visitAccessExpression(ae: AccessExpression, imports: MSet[JawaType]): ST = {
+    val accessTemplate = template.getInstanceOf("StaticNameExpression")
+    accessTemplate.add("baseTyp", ae.base)
+    accessTemplate.add("name", ae.fieldName)
+
+    accessTemplate
   }
 
   def visitLocalVarDeclaration(lvd: LocalVarDeclaration, imports: MSet[JawaType] ): ST = {

@@ -15,14 +15,18 @@ record `com.fgwei.RecordDecl`  @kind class @AccessFlag PUBLIC {
       `float` `f1`;
       `java.lang.String`[] String_arr1;
       `int`[] int_arr2;
+      `com.fgwei.Test` test;
 
+
+      #L027040.   test:= new `com.fgwei.Test`;
       #L026e42.   s1:= "testing" ;
       #L026e4e.   s2:= new `String` ;
       #L026e5e.   i2:= 55;
       #L026e6e.   f1:= 1.5;
       #L00057c.   String_arr1:= new `java.lang.String`[i2];
       #L027048.   `@@com.fgwei.RecordDecl.str1`:= "StringStatic" ;
-      #L027048.   `@@com.fgwei.RecordDecl1.str1`:= "StringStatic_import" ;
+      #L027058.   `@@com.fgwei.RecordDecl1.str1`:= "StringStatic_import" ;
+      #L027068.   s2:= test.`com.fgwei.Test.s1`;
 
       #L026eb0.   return i2;
 

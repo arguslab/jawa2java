@@ -81,6 +81,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     """package com.fgwei;
       |
       |import com.fgwei.RecordDecl1;
+      |import com.fgwei.Test;
       |import java.io.File;
       |import java.lang.String;
       |import java.util.ArrayList;
@@ -99,7 +100,9 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |    float f1;
       |    String[] String_arr1;
       |    int[] int_arr2;
+      |    Test test;
       |
+      |    test = new Test();
       |    s1 = "testing";
       |    s2 = new String();
       |    i2 = 55;
@@ -107,6 +110,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |    String_arr1 = new String[]();
       |    RecordDecl.str1 = "StringStatic";
       |    RecordDecl1.str1 = "StringStatic_import";
+      |    s2 = test.s1;
       |    return i2;
       |  }
       |}
