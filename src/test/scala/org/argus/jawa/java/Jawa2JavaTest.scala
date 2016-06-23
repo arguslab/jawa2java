@@ -116,6 +116,87 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |}
     """.stripMargin.trim
 
+  new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/array/ArrayAccess1.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |
+      |public class ArrayAccess1 {
+      |  public static int main() {
+      |     int int_v0;
+      |     int int_v1;
+      |     int[] int_arr1_v1;
+      |     int int_v2;
+      |     int int_v3;
+      |
+      |    int_v2 = 2130903040;
+      |    int_v1 = 3;
+      |    int_arr1_v1 = new int[int_v1];
+      |    int_v3 = 0;
+      |    int_arr1_v1[int_v3] = int_v2;
+      |    int_v3 = int_arr1_v1[int_v3];
+      |    return int_v3;
+      |  }
+      |}
+    """.stripMargin.trim
+
+  new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/array/ArrayAccess2.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |import java.lang.String;
+      |
+      |public class ArrayAccess2 {
+      |  public static String main() {
+      |     int int_v1;
+      |     String[] String_arr1_v1;
+      |     int int_v3;
+      |     String String_v3;
+      |     String String_v4;
+      |
+      |    int_v1 = 3;
+      |    String_arr1_v1 = new String[int_v1];
+      |    int_v3 = 0;
+      |    String_v4 = "element 1 is tainted:";
+      |    String_arr1_v1[int_v3] = String_v4;
+      |    String_v3 = String_arr1_v1[int_v3];
+      |    return String_v3;
+      |  }
+      |}
+    """.stripMargin.trim
+
+  new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/array/ArrayAccess3.pilar"))) produceJavaClass
+  """package com.fgwei;
+    |
+    |import java.lang.String;
+    |
+    |public class ArrayAccess3 {
+    |  public static String main() {
+    |     int int_v1;
+    |     String[] String_arr1_v1;
+    |     int int_v2;
+    |     int int_v3;
+    |     String String_v3;
+    |     String String_v4;
+    |     int int_v5;
+    |
+    |    int_v5 = 2;
+    |    int_v2 = 0;
+    |    int_v1 = 2130903040;
+    |    int_v1 = 3;
+    |    String_arr1_v1 = new String[int_v1];
+    |    int_v3 = 0;
+    |    String_v4 = "element 1 is tainted:";
+    |    String_arr1_v1[int_v3] = String_v4;
+    |    int_v3 = 1;
+    |    String_v4 = "phone";
+    |    String_arr1_v1[int_v3] = String_v4;
+    |    String_v4 = "neutral text";
+    |    String_arr1_v1[int_v5] = String_v4;
+    |    String_v3 = String_arr1_v1[int_v5];
+    |    return String_v3;
+    |  }
+    |}
+  """.stripMargin.trim
+
 //  new FgSourceFile(new PlainFile(new File("src/test/resources/array/ArrayAccess1.pilar"))) produceJavaClass
 //    """package com.fgwei;
 //      |

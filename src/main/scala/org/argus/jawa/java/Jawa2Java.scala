@@ -126,8 +126,9 @@ class Jawa2Java(reporter: Reporter) {
     val bodyStatements: MList[(Int, ST)] = mlistEmpty
 
     methodTemplate.add("accessFlag", AccessFlag.toString(AccessFlag.getAccessFlags(md.accessModifier)))
-    methodTemplate.add("retTyp", md.returnType.typ.name)
+    methodTemplate.add("retTyp", md.returnType.typ.simpleName)
     methodTemplate.add("methodName", md.name)
+    addImport(md.returnType.typ, imports)
 
     md.body match {
       case resolvedBody: ResolvedBody =>
@@ -199,9 +200,15 @@ class Jawa2Java(reporter: Reporter) {
       case ne: NameExpression =>
         visitNameExpression(ne, imports)
 
-      /*case ae: AccessExpression =>
-        println ("THis is access expression: " + ae.fieldName)
-        template.getInstanceOf("NewExpression")*/
+        //todo only tested for RHS
+      case ae: AccessExpression =>
+        println ("THis is access expression in LHS : " + ae.fieldName)
+        visitAccessExpression(ae, imports)
+
+      case ie: IndexingExpression =>
+       visitIndexingExpression(ie)
+
+//        template.getInstanceOf("NewExpression")
       case _ => throw new Jawa2JavaTranslateException("No matching LHS expression on line: " + lhs.pos.line + ":" + lhs.pos.column )
     }
   }
@@ -237,6 +244,10 @@ class Jawa2Java(reporter: Reporter) {
 
       case ae: AccessExpression =>
         visitAccessExpression(ae, imports)
+
+      case ie: IndexingExpression =>
+        visitIndexingExpression(ie)
+
       case _ =>
         println ("In RHS :" + rhs.getClass)
         println ("In RHS :" + rhs.getFields)
@@ -307,6 +318,26 @@ class Jawa2Java(reporter: Reporter) {
 
     addImport(lvd.typ, imports)
     fieldTemplate
+  }
+
+  def visitIndexingExpression(ie: IndexingExpression): ST = {
+    println ("IN indexing expression")
+    val indexingTemplate = template.getInstanceOf("IndexingExpression")
+    indexingTemplate.add("name", ie.base)
+    val indices: Array[Any] = ie.indices.map {
+      idx =>
+        idx.index match {
+          case Left(varSymbol) =>
+            val arrayTemplate = template.getInstanceOf("ArrayAccess")
+            arrayTemplate.add("arrayLength", varSymbol.varName)
+            println ("Indexing suffix  "+ varSymbol.varName)
+            arrayTemplate
+          case Right(token) =>
+        }
+    }.toArray
+
+    indexingTemplate.add("indices", indices)
+    indexingTemplate
   }
 
   def visitParamDeclaration(param: Param, imports: MSet[JawaType] ): ST = {

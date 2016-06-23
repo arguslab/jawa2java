@@ -57,6 +57,10 @@ NameExpression(name) ::= <<
 $name$
 >>
 
+IndexingExpression(name, indices) ::= <<
+$name$$indices ; separator=""$
+>>
+
 StaticNameExpression(baseTyp, name) ::= <<
 $baseTyp$.$name$
 >>
