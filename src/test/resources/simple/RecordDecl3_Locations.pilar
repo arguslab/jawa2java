@@ -20,7 +20,7 @@ record `com.fgwei.RecordDecl`  @kind class @AccessFlag PUBLIC {
 
       #L027040.   test:= new `com.fgwei.Test`;
       #L026e42.   s1:= "testing" ;
-      #L026e4e.   s2:= new `String` ;
+      #L026e4e.   s2:= new `java.lang.String` ;
       #L026e5e.   i2:= 55;
       #L026e6e.   f1:= 1.5;
       #L00057c.   String_arr1:= new `java.lang.String`[i2];

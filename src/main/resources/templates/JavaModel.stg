@@ -45,8 +45,12 @@ Body(statements) ::= <<
 $statements ; separator="\n"$
 >>
 
-NewExpression(baseType, params) ::= <<
-new $baseType$()
+NewExpression(baseType, arrays) ::= <<
+new $baseType$$if(arrays)$$arrays ; separator=""$$else$()$endif$
+>>
+
+ArrayAccess(arrayLength) ::= <<
+[$arrayLength$]
 >>
 
 NameExpression(name) ::= <<

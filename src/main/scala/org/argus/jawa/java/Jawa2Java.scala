@@ -214,7 +214,22 @@ class Jawa2Java(reporter: Reporter) {
       case newExp: NewExpression =>
         println ("in new rhs expressions" + newExp.typ.simpleName)
         val newTemplate: ST = template.getInstanceOf("NewExpression")
-        newTemplate.add("baseType", newExp.typ.simpleName)
+        if (newExp.dimentions > 0) {
+          newTemplate.add("baseType", newExp.typ.simpleName.replace("[]", ""))
+          val params: Array[ST] = newExp.typeFragmentsWithInit.flatMap { t =>
+            t.varNames map {
+              v =>
+                val arrayTemplate = template.getInstanceOf("ArrayAccess")
+                arrayTemplate.add("arrayLength", v)
+                println ("INside ")
+                arrayTemplate
+            }
+          }.toArray
+
+          newTemplate.add("arrays", params)
+        } else {
+          newTemplate.add("baseType", newExp.typ.simpleName)
+        }
         newTemplate
 
       case le: LiteralExpression =>

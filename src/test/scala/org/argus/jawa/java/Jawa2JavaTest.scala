@@ -107,7 +107,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |    s2 = new String();
       |    i2 = 55;
       |    f1 = 1.5;
-      |    String_arr1 = new String[]();
+      |    String_arr1 = new String[i2];
       |    RecordDecl.str1 = "StringStatic";
       |    RecordDecl1.str1 = "StringStatic_import";
       |    s2 = test.s1;
