@@ -134,7 +134,7 @@ class Jawa2Java(reporter: Reporter) {
 
             loc.statement match {
               case assign: AssignmentStatement =>
-                bodyStatements += ((loc.locationIndex, assignmentStatement(assign)))
+                bodyStatements += ((loc.locationIndex, visitAssignmentStatement(assign)))
 
               case ret: ReturnStatement =>
                 ret.varOpt match {
@@ -172,68 +172,70 @@ class Jawa2Java(reporter: Reporter) {
     methodTemplate
   }
 
-  private def assignmentStatement(as: AssignmentStatement): ST = {
+  private def visitAssignmentStatement(as: AssignmentStatement): ST = {
     val assignmentTemplate = template.getInstanceOf("AssignmentStatement")
-    val lhs: Option[ST] = expression_lhs(as.lhs)
-    val rhs: Option[ST] = expression_rhs(as.rhs)
+    val lhs: ST = visitExpressionLHS(as.lhs)
+    val rhs: ST = visitExpressionRHS(as.rhs)
 
-    lhs match {
-      case Some(l) =>
-        assignmentTemplate.add("lhs", l)
-      case None =>
-    }
-
-    rhs match {
-      case Some(r) =>
-        assignmentTemplate.add("rhs", r)
-      case None =>
-    }
+    assignmentTemplate.add("lhs", lhs)
+    assignmentTemplate.add("rhs", rhs)
 
     assignmentTemplate
   }
 
-  private def expression_lhs(lhs: Expression with LHS): Option[ST] = {
+  private def visitExpressionLHS(lhs: Expression with LHS): ST = {
     lhs match {
       case ne: NameExpression =>
-        Some(nameExpression(ne))
-      case _ => None
+        visitNameExpression(ne)
+      case _ => throw new Jawa2JavaTranslateException("No matching LHS expression on line: " + lhs.pos.line + ":" + lhs.pos.column )
     }
   }
 
-  private def expression_rhs(rhs: Expression with RHS): Option[ST] = {
+  private def visitExpressionRHS(rhs: Expression with RHS): ST = {
     rhs match {
       case ne: NameExpression =>
-        Some(nameExpression(ne))
+        visitNameExpression(ne)
 
       case newExp: NewExpression =>
         println ("in new rhs expressions" + newExp.typ.simpleName)
         val newTemplate: ST = template.getInstanceOf("NewExpression")
         newTemplate.add("baseType", newExp.typ.simpleName)
-        Some(newTemplate)
+        newTemplate
 
       case le: LiteralExpression =>
-        literalExpression(le)
+        visitLiteralExpression(le)
 
-      case _ =>
-        println ("Case non in rhs." + rhs.getClass)
-        None
+      case _ => throw new Jawa2JavaTranslateException("No matching RHS expression on line: " + rhs.pos.line + ":" + rhs.pos.column )
     }
   }
 
-  private def nameExpression(ne: NameExpression): ST = {
+  private def visitNameExpression(ne: NameExpression): ST = {
     val nameTemplate = template.getInstanceOf("NameExpression")
     nameTemplate.add("name", ne.name)
     nameTemplate
   }
 
-  private def literalExpression(le: LiteralExpression): Option[ST] = {
-    le.lastToken.tokenType match  {
+  private def visitLiteralExpression(le: LiteralExpression): ST = {
+    le.constant.tokenType match  {
       case STRING_LITERAL =>
         val literalTemplate = template.getInstanceOf("StringLiteral")
         literalTemplate.add("str", le.getString)
-        Some(literalTemplate)
-      case _ =>
-        None
+        literalTemplate
+
+        //todo int vs Integer cases???
+      case FLOATING_POINT_LITERAL | INTEGER_LITERAL=>
+        val numTemplate = template.getInstanceOf("NumericalLiteral")
+
+        println ("inside numerical literal")
+        numTemplate.add("nm", le.getString)
+        numTemplate
+
+      case CHARACTER_LITERAL =>
+        val charTemplate = template.getInstanceOf("CharLiteral")
+        charTemplate.add("chr", le.getString)
+        charTemplate
+
+      case _ => throw new Jawa2JavaTranslateException("No matching Literal Expression: " + le.pos.line + ":" + le.pos.column )
     }
   }
 

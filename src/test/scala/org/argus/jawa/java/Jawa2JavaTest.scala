@@ -92,10 +92,13 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |    String s1;
       |    String s2;
       |    File file1;
+      |    float f1;
       |
       |    s1 = "testing";
       |    s2 = new String();
-      |    return s1;
+      |    i2 = 55;
+      |    f1 = 1.5;
+      |    return i2;
       |  }
       |}
     """.stripMargin.trim

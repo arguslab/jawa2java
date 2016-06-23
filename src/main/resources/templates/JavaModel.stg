@@ -57,6 +57,10 @@ StringLiteral(str) ::= <<
 "$str$"
 >>
 
+CharLiteral(chr) ::= <<
+'$chr$'
+>>
+
 NumericalLiteral(nm) ::= <<
 $nm$
 >>

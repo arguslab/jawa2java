@@ -8,9 +8,12 @@ record `com.fgwei.RecordDecl`  @kind class @AccessFlag PUBLIC {
       `java.lang.String` s1;
       `java.lang.String` s2;
       `java.io.File` file1;
+      `float` `f1`;
 
       #L026e42.   s1:= "testing" ;
       #L026e4e.   s2:= new `String` ;
-      #L026eb0.   return s1;
+      #L026e5e.   i2:= 55;
+      #L026e6e.   f1:= 1.5;
+      #L026eb0.   return i2;
 
     }
