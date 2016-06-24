@@ -276,6 +276,8 @@ class Jawa2Java(reporter: Reporter) {
   }
 
   private def visitLiteralExpression(le: LiteralExpression): ST = {
+    val litToken = le.constant.text
+
     le.constant.tokenType match  {
       case STRING_LITERAL =>
         val literalTemplate = template.getInstanceOf("StringLiteral")
@@ -283,11 +285,26 @@ class Jawa2Java(reporter: Reporter) {
         literalTemplate
 
         //todo int vs Integer cases???
-      case FLOATING_POINT_LITERAL | INTEGER_LITERAL=>
+      case FLOATING_POINT_LITERAL =>
         val numTemplate = template.getInstanceOf("NumericalLiteral")
+        val leVal = litToken match {
+          case x if x.endsWith("F") => le.getString + "F"
+          case x if x.endsWith("D") => le.getString + "D"
+          case _ => litToken
+        }
+        println ("inside numerical literal Floating point")
+        numTemplate.add("nm", leVal)
+        numTemplate
 
-        println ("inside numerical literal")
-        numTemplate.add("nm", le.getString)
+      case INTEGER_LITERAL =>
+        val numTemplate = template.getInstanceOf("NumericalLiteral")
+        val leVal = litToken match {
+          case x if x.endsWith("I") => le.getString + "I"
+          case x if x.endsWith("L") => le.getString + "L"
+          case _ => litToken
+        }
+        println ("inside numerical literal Integer.")
+        numTemplate.add("nm", leVal)
         numTemplate
 
       case CHARACTER_LITERAL =>
