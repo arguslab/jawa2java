@@ -245,6 +245,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |    double_v0 = 0.12;
       |    double_v2 = 0.471239;
       |    double_temp = Math.sin(double_v0);
+      |    double_v0 = (double) float_v5;
       |    float_v0 = 0.1;
       |    return float_v0;
       |  }

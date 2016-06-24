@@ -88,3 +88,7 @@ return $varName$;
 CallStatement(func, params, isAssignment) ::= <<
 $func$($params ; separator=", "$)$if(!isAssignment)$;$endif$
 >>
+
+CastExpression(type, varName) ::= <<
+($type$) $varName$
+>>

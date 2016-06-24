@@ -14,6 +14,7 @@ record `com.fgwei.DoubleLong1`  @kind class @AccessFlag PUBLIC {
 #L021c8a.   double_v0:= 0.12D @kind double;
 #L021c8c.   double_v2:= 0.471239D  @kind double;
 #L021c9c.   call double_temp:=  `java.lang.Math.sin`(double_v0) @signature `Ljava/lang/Math;.sin:(D)D` @classDescriptor ^`java.lang.Math` @kind static;
+#L021c9a.   double_v0:= (`double`)float_v5  @kind f2d;
 #L021ca4.   float_v0:= 0.1;
 #L021ca6.   return float_v0;
 

@@ -250,6 +250,9 @@ class Jawa2Java(reporter: Reporter) {
       case ie: IndexingExpression =>
         visitIndexingExpression(ie)
 
+      case ce: CastExpression =>
+        visitCastExpression(ce, imports)
+
       case _ =>
         println ("In RHS :" + rhs.getClass)
         println ("In RHS :" + rhs.getFields)
@@ -258,7 +261,6 @@ class Jawa2Java(reporter: Reporter) {
   }
 
   private def visitNameExpression(ne: NameExpression, imports: MSet[JawaType]): ST = {
-
     ne.varSymbol match {
       case Left(varSymbol) =>
         println ("in name expression Not Static: " + ne.name)
@@ -335,6 +337,15 @@ class Jawa2Java(reporter: Reporter) {
 
     indexingTemplate.add("indices", indices)
     indexingTemplate
+  }
+
+  private def visitCastExpression(ce: CastExpression, imports: MSet[JawaType]) = {
+    val castTemplate: ST = template.getInstanceOf("CastExpression")
+    castTemplate.add("type", ce.typ.typ.simpleName)
+    castTemplate.add("varName", ce.varName)
+    addImport(ce.typ.baseType, imports)
+
+    castTemplate
   }
 
   private def visitCallStatement(cs: CallStatement, imports: MSet[JawaType]): ST = {
