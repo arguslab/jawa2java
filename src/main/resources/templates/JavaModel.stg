@@ -85,6 +85,6 @@ ReturnStatement(varName) ::= <<
 return $varName$;
 >>
 
-CallStatement(func, params) ::= <<
-$func$($params ; separator=", "$);
+CallStatement(func, params, isAssignment) ::= <<
+$func$($params ; separator=", "$)$if(!isAssignment)$;$endif$
 >>

@@ -225,6 +225,10 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     |}
   """.stripMargin.trim
 
+  new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/simple/RecodDecl4_call_with_assignment.pilar"))) produceJavaClass
+    """TEST
+    """.stripMargin.trim
+
 //  new FgSourceFile(new PlainFile(new File("src/test/resources/array/ArrayAccess1.pilar"))) produceJavaClass
 //    """package com.fgwei;
 //      |

@@ -345,7 +345,7 @@ class Jawa2Java(reporter: Reporter) {
 
     if(cs.isStatic) {
       val staticTemplate = template.getInstanceOf("StaticNameExpression")
-      //                  staticTemplate.add("baseTyp", cs.classDescriptor)
+
       staticTemplate.add("baseTyp", baseType.simpleName)
       staticTemplate.add("name", cs.methodNameSymbol.methodName)
       callTemplate.add("func", staticTemplate)
@@ -354,12 +354,18 @@ class Jawa2Java(reporter: Reporter) {
     }
 
     callTemplate.add("params", cs.args.toArray)
-
-    //                addImport(cs.classDescriptor, imports)
-    //                addImport(JavaKnowledge.getClassTypeFromFieldFQN(cs.classDescriptor), imports)
     addImport(baseType, imports)
 
-    callTemplate
+    cs.lhsOpt match {
+      case Some(lhs) =>
+        val assignmentTemplate = template.getInstanceOf("AssignmentStatement")
+        assignmentTemplate.add("lhs", lhs.lhs.varName)
+        callTemplate.add("isAssignment", true)
+        assignmentTemplate.add("rhs", callTemplate)
+        assignmentTemplate
+      case None =>
+        callTemplate
+    }
   }
 
   def visitLocalVarDeclaration(lvd: LocalVarDeclaration, imports: MSet[JawaType] ): ST = {
