@@ -129,10 +129,10 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |     int int_v2;
       |     int int_v3;
       |
-      |    int_v2 = 2130903040I;
-      |    int_v1 = 3I;
+      |    int_v2 = 2130903040;
+      |    int_v1 = 3;
       |    int_arr1_v1 = new int[int_v1];
-      |    int_v3 = 0I;
+      |    int_v3 = 0;
       |    int_arr1_v1[int_v3] = int_v2;
       |    int_v3 = int_arr1_v1[int_v3];
       |    return int_v3;
@@ -153,9 +153,9 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |     String String_v3;
       |     String String_v4;
       |
-      |    int_v1 = 3I;
+      |    int_v1 = 3;
       |    String_arr1_v1 = new String[int_v1];
-      |    int_v3 = 0I;
+      |    int_v3 = 0;
       |    String_v4 = "element 1 is tainted:";
       |    String_arr1_v1[int_v3] = String_v4;
       |    String_v3 = String_arr1_v1[int_v3];
@@ -179,15 +179,15 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     |     String String_v4;
     |     int int_v5;
     |
-    |    int_v5 = 2I;
-    |    int_v2 = 0I;
-    |    int_v1 = 2130903040I;
-    |    int_v1 = 3I;
+    |    int_v5 = 2;
+    |    int_v2 = 0;
+    |    int_v1 = 2130903040;
+    |    int_v1 = 3;
     |    String_arr1_v1 = new String[int_v1];
-    |    int_v3 = 0I;
+    |    int_v3 = 0;
     |    String_v4 = "element 1 is tainted:";
     |    String_arr1_v1[int_v3] = String_v4;
-    |    int_v3 = 1I;
+    |    int_v3 = 1;
     |    String_v4 = "phone";
     |    String_arr1_v1[int_v3] = String_v4;
     |    String_v4 = "neutral text";
@@ -199,7 +199,30 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
   """.stripMargin.trim
 
   new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/array/ArrayCopy.pilar"))) produceJavaClass
-  """Test
+  """package com.fgwei;
+    |
+    |import java.lang.String;
+    |import java.lang.System;
+    |
+    |public class ArrayCopy {
+    |  public static String main() {
+    |     String[] String_arr1_v0;
+    |     String[] String_arr1_v1;
+    |     String String_v4;
+    |     int int_v5;
+    |     int int_v6;
+    |
+    |    int_v6 = 1;
+    |    int_v5 = 0;
+    |    String_v4 = "phone";
+    |    String_arr1_v0 = new String[int_v6];
+    |    String_arr1_v0[int_v5] = String_v4;
+    |    String_arr1_v1 = new String[int_v6];
+    |    System.arraycopy(String_arr1_v0, int_v5, String_arr1_v1, int_v5, int_v6);
+    |    String_v4 = String_arr1_v1[int_v5];
+    |    return String_v4;
+    |  }
+    |}
   """.stripMargin.trim
 
 //  new FgSourceFile(new PlainFile(new File("src/test/resources/array/ArrayAccess1.pilar"))) produceJavaClass

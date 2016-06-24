@@ -84,3 +84,7 @@ $lhs$ = $rhs$;
 ReturnStatement(varName) ::= <<
 return $varName$;
 >>
+
+CallStatement(func, params) ::= <<
+$func$($params ; separator=", "$);
+>>

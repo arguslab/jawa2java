@@ -12,7 +12,7 @@ package org.argus.jawa.java
 
 import org.argus.jawa.compiler.lexer.Tokens._
 import org.argus.jawa.compiler.parser._
-import org.argus.jawa.core.{AccessFlag, JawaPackage, JawaType, Reporter}
+import org.argus.jawa.core.{AccessFlag, JawaPackage, JawaType, Reporter, JavaKnowledge}
 import org.argus.jawa.core.io.SourceFile
 import org.sireum.util._
 import org.stringtemplate.v4.{ST, STGroupFile}
@@ -145,11 +145,11 @@ class Jawa2Java(reporter: Reporter) {
             println ("Location Statement is: " + loc.statement)
 
             loc.statement match {
-              case assign: AssignmentStatement =>
-                bodyStatements += ((loc.locationIndex, visitAssignmentStatement(assign, imports)))
+              case as: AssignmentStatement =>
+                bodyStatements += ((loc.locationIndex, visitAssignmentStatement(as, imports)))
 
-              case ret: ReturnStatement =>
-                ret.varOpt match {
+              case rs: ReturnStatement =>
+                rs.varOpt match {
                   case Some(v) =>
                     val returnTemplate = template.getInstanceOf("ReturnStatement")
                     println ("Return Statement is: " + v.varName)
@@ -159,7 +159,11 @@ class Jawa2Java(reporter: Reporter) {
                   case None =>
                 }
 
+              case cs: CallStatement =>
+                bodyStatements += ((loc.locationIndex, visitCallStatement(cs, imports)))
+
               case _ =>
+                println ("Location statement not identified: " + loc.statement.getClass)
             }
         }
       case UnresolvedBody(bodytokens) =>
@@ -284,27 +288,12 @@ class Jawa2Java(reporter: Reporter) {
         literalTemplate.add("str", le.getString)
         literalTemplate
 
-        //todo int vs Integer cases???
-      case FLOATING_POINT_LITERAL =>
+        //todo int vs Integer cases??? Does Java byte code separate int vs long, float vs double???
+      case FLOATING_POINT_LITERAL | INTEGER_LITERAL=>
         val numTemplate = template.getInstanceOf("NumericalLiteral")
-        val leVal = litToken match {
-          case x if x.endsWith("F") => le.getString + "F"
-          case x if x.endsWith("D") => le.getString + "D"
-          case _ => litToken
-        }
-        println ("inside numerical literal Floating point")
-        numTemplate.add("nm", leVal)
-        numTemplate
 
-      case INTEGER_LITERAL =>
-        val numTemplate = template.getInstanceOf("NumericalLiteral")
-        val leVal = litToken match {
-          case x if x.endsWith("I") => le.getString + "I"
-          case x if x.endsWith("L") => le.getString + "L"
-          case _ => litToken
-        }
-        println ("inside numerical literal Integer.")
-        numTemplate.add("nm", leVal)
+        println ("inside numerical literal")
+        numTemplate.add("nm", le.getString)
         numTemplate
 
       case CHARACTER_LITERAL =>
@@ -346,6 +335,31 @@ class Jawa2Java(reporter: Reporter) {
 
     indexingTemplate.add("indices", indices)
     indexingTemplate
+  }
+
+  private def visitCallStatement(cs: CallStatement, imports: MSet[JawaType]): ST = {
+    val callTemplate = template.getInstanceOf("CallStatement")
+    // todo Check with Fengguo
+
+    val baseType: JawaType = JavaKnowledge.getClassTypeFromFieldFQN(cs.methodNameSymbol.id.text)
+
+    if(cs.isStatic) {
+      val staticTemplate = template.getInstanceOf("StaticNameExpression")
+      //                  staticTemplate.add("baseTyp", cs.classDescriptor)
+      staticTemplate.add("baseTyp", baseType.simpleName)
+      staticTemplate.add("name", cs.methodNameSymbol.methodName)
+      callTemplate.add("func", staticTemplate)
+    } else {
+      callTemplate.add("func", cs.methodNameSymbol.methodName)
+    }
+
+    callTemplate.add("params", cs.args.toArray)
+
+    //                addImport(cs.classDescriptor, imports)
+    //                addImport(JavaKnowledge.getClassTypeFromFieldFQN(cs.classDescriptor), imports)
+    addImport(baseType, imports)
+
+    callTemplate
   }
 
   def visitLocalVarDeclaration(lvd: LocalVarDeclaration, imports: MSet[JawaType] ): ST = {
