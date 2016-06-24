@@ -92,3 +92,7 @@ $func$($params ; separator=", "$)$if(!isAssignment)$;$endif$
 CastExpression(type, varName) ::= <<
 ($type$) $varName$
 >>
+
+BinaryExpression(left, op, right) ::= <<
+$left$ $op$ $right$
+>>

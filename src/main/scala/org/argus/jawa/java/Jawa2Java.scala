@@ -253,6 +253,9 @@ class Jawa2Java(reporter: Reporter) {
       case ce: CastExpression =>
         visitCastExpression(ce, imports)
 
+      case be: BinaryExpression =>
+        visitBinaryExpression(be)
+
       case _ =>
         println ("In RHS :" + rhs.getClass)
         println ("In RHS :" + rhs.getFields)
@@ -339,13 +342,25 @@ class Jawa2Java(reporter: Reporter) {
     indexingTemplate
   }
 
-  private def visitCastExpression(ce: CastExpression, imports: MSet[JawaType]) = {
+  private def visitCastExpression(ce: CastExpression, imports: MSet[JawaType]): ST = {
     val castTemplate: ST = template.getInstanceOf("CastExpression")
     castTemplate.add("type", ce.typ.typ.simpleName)
     castTemplate.add("varName", ce.varName)
     addImport(ce.typ.baseType, imports)
 
     castTemplate
+  }
+
+  private def visitBinaryExpression(be: BinaryExpression): ST = {
+    val binaryTemplate: ST = template.getInstanceOf("BinaryExpression")
+    binaryTemplate.add("left", be.left.varName)
+    binaryTemplate.add("op", be.op.text)
+    val right: String = be.right match {
+      case Left(varSym) => varSym.varName
+      case Right(lit) => lit.text
+    }
+    binaryTemplate.add("right", right)
+    binaryTemplate
   }
 
   private def visitCallStatement(cs: CallStatement, imports: MSet[JawaType]): ST = {

@@ -247,12 +247,44 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |    double_temp = Math.sin(double_v0);
       |    double_v0 = (double) float_v5;
       |    float_v0 = 0.1;
+      |    float_v3 = float_v5 - int_v0;
       |    return float_v0;
       |  }
       |}
     """.stripMargin.trim
 
-//  new FgSourceFile(new PlainFile(new File("src/test/resources/array/ArrayAccess1.pilar"))) produceJavaClass
+  new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/doublelong/DoubleLong1.pilar"))) produceJavaClass
+  """package com.fgwei;
+    |
+    |import java.lang.Math;
+    |
+    |public class DoubleLong1 {
+    |  public static float main() {
+    |     double double_temp;
+    |     int int_v0;
+    |     float float_v0;
+    |     double double_v0;
+    |     double double_v2;
+    |     float float_v3;
+    |     float float_v5;
+    |
+    |    int_v0 = 1056964608;
+    |    float_v5 = 1111111111.00;
+    |    float_v3 = float_v5 - int_v0;
+    |    double_v0 = (double) float_v5;
+    |    double_v2 = 0.471239;
+    |    double_v0 = double_v0 * double_v2;
+    |    float_v5 = (float) double_v0;
+    |    double_v0 = (double) float_v5;
+    |    double_temp = Math.sin(double_v0);
+    |    double_v0 = double_temp;
+    |    float_v0 = (float) double_v0;
+    |    return float_v0;
+    |  }
+    |}
+  """.stripMargin.trim
+
+  //  new FgSourceFile(new PlainFile(new File("src/test/resources/array/ArrayAccess1.pilar"))) produceJavaClass
 //    """package com.fgwei;
 //      |
 //      |
