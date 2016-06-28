@@ -12,7 +12,7 @@ package org.argus.jawa.java
 
 import org.argus.jawa.compiler.lexer.Tokens._
 import org.argus.jawa.compiler.parser._
-import org.argus.jawa.core.{AccessFlag, JawaPackage, JawaType, Reporter, JavaKnowledge}
+import org.argus.jawa.core.{AccessFlag, JawaPackage, JawaType, Reporter}
 import org.argus.jawa.core.io.SourceFile
 import org.sireum.util._
 import org.stringtemplate.v4.{ST, STGroupFile}
@@ -110,13 +110,13 @@ class Jawa2Java(reporter: Reporter) {
     addImport(fd.typ.typ, imports)
 
     //todo Need to check Instance or Static for translation??? Access Flag already determines it.
-   /* fd match {
-      case ifd: InstanceFieldDeclaration =>
-        println ("instance field declaration: " + ifd.fieldName)
-      case sfd: StaticFieldDeclaration =>
-        println ("static field declaration: " + sfd.fieldName)
-      case _ => println ("no match : " + fd.fieldName)
-    }*/
+    /* fd match {
+       case ifd: InstanceFieldDeclaration =>
+         println ("instance field declaration: " + ifd.fieldName)
+       case sfd: StaticFieldDeclaration =>
+         println ("static field declaration: " + sfd.fieldName)
+       case _ => println ("no match : " + fd.fieldName)
+     }*/
 
     fieldTemplate
   }
@@ -125,10 +125,25 @@ class Jawa2Java(reporter: Reporter) {
     val methodTemplate = template.getInstanceOf("MethodDecl")
     val bodyStatements: MList[(Int, ST)] = mlistEmpty
 
-    methodTemplate.add("accessFlag", AccessFlag.toString(AccessFlag.getAccessFlags(md.accessModifier)))
-    methodTemplate.add("retTyp", md.returnType.typ.simpleName)
-    methodTemplate.add("methodName", md.name)
-    addImport(md.returnType.typ, imports)
+
+    if(md.isConstructor) {
+      println ("is Constructor Declaration: " + md.signature.getClassName)
+      println ("is Constructor Declaration: " + md.accessModifier)
+      methodTemplate.add("accessFlag", AccessFlag.toString(AccessFlag.getAccessFlags(md.accessModifier)).replace("constructor", "").trim)
+      methodTemplate.add("methodName", md.signature.classTyp.simpleName)
+    } else {
+      methodTemplate.add("accessFlag", AccessFlag.toString(AccessFlag.getAccessFlags(md.accessModifier)))
+      methodTemplate.add("retTyp", md.returnType.typ.simpleName)
+      methodTemplate.add("methodName", md.name)
+      addImport(md.returnType.typ, imports)
+    }
+
+    val paramTemplates: Array[ST] = md.paramlist.map{
+      param =>
+        val paramTemplate = visitParamDeclaration(param, imports)
+        paramTemplate
+    }.toArray
+    methodTemplate.add("params", paramTemplates)
 
     md.body match {
       case resolvedBody: ResolvedBody =>
@@ -139,6 +154,7 @@ class Jawa2Java(reporter: Reporter) {
 
         methodTemplate.add("localVars", localVars )
 
+        val thisParam: Option[Param] = md.thisParam
         resolvedBody.locations foreach {
           loc =>
             println ("Location Symbol is: " + loc.locationSymbol)
@@ -146,7 +162,7 @@ class Jawa2Java(reporter: Reporter) {
 
             loc.statement match {
               case as: AssignmentStatement =>
-                bodyStatements += ((loc.locationIndex, visitAssignmentStatement(as, imports)))
+                bodyStatements += ((loc.locationIndex, visitAssignmentStatement(as, thisParam, imports)))
 
               case rs: ReturnStatement =>
                 rs.varOpt match {
@@ -160,7 +176,36 @@ class Jawa2Java(reporter: Reporter) {
                 }
 
               case cs: CallStatement =>
-                bodyStatements += ((loc.locationIndex, visitCallStatement(cs, imports)))
+                if(!(cs.methodNameSymbol.methodName equals  "<init>" )){
+                  bodyStatements += ((loc.locationIndex, visitCallStatement(cs, imports)))
+                } else {
+                  println (" THis is Constructor : " + cs.args)
+
+                  if(cs.args.nonEmpty) {
+                    val constructorCall: ST = visitConstructorCall(cs, imports)
+
+                    if(cs.isSuper) {
+                      println ("This is a super Constructor!!!")
+                      constructorCall.remove("func")
+                      constructorCall.add("func", "super")
+                      bodyStatements += ((loc.locationIndex, constructorCall))
+                    } else {
+                      println("Body Last: "  + bodyStatements.lastOption)
+                      val prevLine: Option[(Int, ST)] = bodyStatements.lastOption
+                      prevLine match {
+                        case Some(prev) =>
+                          val prevTemplate = prev._2
+                          constructorCall.add("isAssignment", true)
+                          prevTemplate.remove("rhs")
+                          prevTemplate.add("rhs", constructorCall)
+                          bodyStatements(bodyStatements.length - 1) = (loc.locationIndex, prevTemplate)
+                        //                  bodyStatements += ((loc.locationIndex, constructorCall))
+
+                        case None =>
+                      }
+                    }
+                  }
+                }
 
               case _ =>
                 println ("Location statement not identified: " + loc.statement.getClass)
@@ -177,21 +222,13 @@ class Jawa2Java(reporter: Reporter) {
     methodTemplate.add("body", bodyTemplate)
     println ("Body Statements are: " + bodyStatements)
 
-    val paramTemplates: Array[ST] = md.paramlist.map{
-      param =>
-        val paramTemplate = visitParamDeclaration(param, imports)
-        paramTemplate
-    }.toArray
-
-    methodTemplate.add("params", paramTemplates)
-
     methodTemplate
   }
 
-  private def visitAssignmentStatement(as: AssignmentStatement, imports: MSet[JawaType]): ST = {
+  private def visitAssignmentStatement(as: AssignmentStatement, thisParam: Option[Param], imports: MSet[JawaType]): ST = {
     val assignmentTemplate = template.getInstanceOf("AssignmentStatement")
-    val lhs: ST = visitExpressionLHS(as.lhs, imports)
-    val rhs: ST = visitExpressionRHS(as.rhs, imports)
+    val lhs: ST = visitExpressionLHS(as.lhs, thisParam, imports)
+    val rhs: ST = visitExpressionRHS(as.rhs, thisParam, imports)
 
     assignmentTemplate.add("lhs", lhs)
     assignmentTemplate.add("rhs", rhs)
@@ -199,23 +236,23 @@ class Jawa2Java(reporter: Reporter) {
     assignmentTemplate
   }
 
-  private def visitExpressionLHS(lhs: Expression with LHS, imports: MSet[JawaType]): ST = {
+  private def visitExpressionLHS(lhs: Expression with LHS, thisParam: Option[Param], imports: MSet[JawaType]): ST = {
     lhs match {
       case ne: NameExpression =>
         visitNameExpression(ne, imports)
 
       //todo only tested for RHS
       case ae: AccessExpression =>
-        visitAccessExpression(ae, imports)
+        visitAccessExpression(ae, thisParam, imports)
 
       case ie: IndexingExpression =>
-       visitIndexingExpression(ie)
+        visitIndexingExpression(ie)
 
       case _ => throw new Jawa2JavaTranslateException("No matching LHS expression on line: " + lhs.pos.line + ":" + lhs.pos.column )
     }
   }
 
-  private def visitExpressionRHS(rhs: Expression with RHS, imports: MSet[JawaType]): ST = {
+  private def visitExpressionRHS(rhs: Expression with RHS, thisParam:Option[Param], imports: MSet[JawaType]): ST = {
     rhs match {
       case ne: NameExpression =>
         visitNameExpression(ne, imports)
@@ -245,7 +282,7 @@ class Jawa2Java(reporter: Reporter) {
         visitLiteralExpression(le)
 
       case ae: AccessExpression =>
-        visitAccessExpression(ae, imports)
+        visitAccessExpression(ae, thisParam, imports)
 
       case ie: IndexingExpression =>
         visitIndexingExpression(ie)
@@ -293,7 +330,7 @@ class Jawa2Java(reporter: Reporter) {
         literalTemplate.add("str", le.getString)
         literalTemplate
 
-        //todo int vs Integer cases??? Does Java byte code separate int vs long, float vs double???
+      //todo int vs Integer cases??? Does Java byte code separate int vs long, float vs double???
       case FLOATING_POINT_LITERAL | INTEGER_LITERAL=>
         val numTemplate = template.getInstanceOf("NumericalLiteral")
 
@@ -310,11 +347,17 @@ class Jawa2Java(reporter: Reporter) {
     }
   }
 
-  private def visitAccessExpression(ae: AccessExpression, imports: MSet[JawaType]): ST = {
+  private def visitAccessExpression(ae: AccessExpression, thisParam: Option[Param], imports: MSet[JawaType]): ST = {
     val accessTemplate = template.getInstanceOf("StaticNameExpression")
-    accessTemplate.add("baseTyp", ae.base)
+    val baseType: String = thisParam match {
+      case Some(p) => if (p.name == ae.base) "this" else ae.base
+      case None => ae.base
+    }
+    accessTemplate.add("baseTyp", baseType)
     accessTemplate.add("name", ae.fieldName)
-
+    println ("Access Expression : " + ae)
+    println ("Access Expression Base : " + ae.varSymbol.id)
+    println ("Access Expression Field Name: " + ae.fieldName)
     accessTemplate
   }
 
@@ -363,11 +406,23 @@ class Jawa2Java(reporter: Reporter) {
     binaryTemplate
   }
 
+  private def visitConstructorCall(cc: CallStatement, imports: MSet[JawaType]): ST = {
+    val callTemplate = template.getInstanceOf("CallStatement")
+    val baseType: JawaType = cc.signature.getClassType
+    callTemplate.add("func", baseType.simpleName)
+    callTemplate.add("params", cc.args.toArray)
+    addImport(baseType, imports)
+
+    println ("Visit Constructor Call function name: " + baseType.simpleName)
+    println ("Visit Constructor Call args: " + cc.args)
+
+    callTemplate
+  }
+
+
   private def visitCallStatement(cs: CallStatement, imports: MSet[JawaType]): ST = {
     val callTemplate = template.getInstanceOf("CallStatement")
-    // todo Check with Fengguo
-
-    val baseType: JawaType = JavaKnowledge.getClassTypeFromFieldFQN(cs.methodNameSymbol.id.text)
+    val baseType: JawaType = cs.signature.getClassType
 
     if(cs.isStatic) {
       val staticTemplate = template.getInstanceOf("StaticNameExpression")
@@ -405,7 +460,7 @@ class Jawa2Java(reporter: Reporter) {
     fieldTemplate
   }
 
-   def visitParamDeclaration(param: Param, imports: MSet[JawaType] ): ST = {
+  def visitParamDeclaration(param: Param, imports: MSet[JawaType] ): ST = {
     val paramTemplate = template.getInstanceOf("Param")
 
     paramTemplate.add("paramTyp", param.typ.typ.simpleName)

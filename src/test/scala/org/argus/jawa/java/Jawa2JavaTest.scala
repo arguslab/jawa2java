@@ -284,6 +284,46 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     |}
   """.stripMargin.trim
 
+  new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/simple/RecordDecl5_constructor.pilar"))) produceJavaClass
+  """package com.fgwei;
+    |
+    |import java.lang.Object;
+    |
+    |public class FieldAccess1 {
+    |  private int i1;
+    |  private  FieldAccess1(String str1) {
+    |     String String_v0;
+    |     int int_v1;
+    |
+    |     String_v0 = str1;
+    |     int_v1 = 0;
+    |  }
+    |  private int getTaint(FieldAccess1 FieldAccess1_v6) {
+    |     int int_v3;
+    |
+    |    int_v3 = FieldAccess1_v6.i1;
+    |    return int_v3;
+    |  }
+    |  private void setTaint(int int_v3) {
+    |
+    |    FieldAccess1_v2.i1 = int_v3;
+    |  }
+    |  public static int main() {
+    |     int int_temp;
+    |     int int_v0;
+    |     FieldAccess1 FieldAccess1_v1;
+    |     int int_v2;
+    |
+    |    FieldAccess1_v1 = new FieldAccess1();
+    |    <init>();
+    |    int_v0 = 1;
+    |    setTaint(int_v0);
+    |    int_temp = getTaint();
+    |    int_v2 = int_temp;
+    |    return int_v2;
+    |  }
+    |}""".stripMargin.trim
+
   //  new FgSourceFile(new PlainFile(new File("src/test/resources/array/ArrayAccess1.pilar"))) produceJavaClass
 //    """package com.fgwei;
 //      |
