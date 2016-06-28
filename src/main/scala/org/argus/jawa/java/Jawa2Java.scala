@@ -124,9 +124,9 @@ class Jawa2Java(reporter: Reporter) {
   def visitMethodDeclaration(md: MethodDeclaration, imports: MSet[JawaType]): ST = {
     val methodTemplate = template.getInstanceOf("MethodDecl")
     val bodyStatements: MList[(Int, ST)] = mlistEmpty
+    val isConstructor: Boolean = md.isConstructor
 
-
-    if(md.isConstructor) {
+    if(isConstructor) {
       println ("is Constructor Declaration: " + md.signature.getClassName)
       println ("is Constructor Declaration: " + md.accessModifier)
       methodTemplate.add("accessFlag", AccessFlag.toString(AccessFlag.getAccessFlags(md.accessModifier)).replace("constructor", "").trim)
@@ -181,30 +181,30 @@ class Jawa2Java(reporter: Reporter) {
                 } else {
                   println (" THis is Constructor : " + cs.args)
 
-                  if(cs.args.nonEmpty) {
                     val constructorCall: ST = visitConstructorCall(cs, imports)
 
-                    if(cs.isSuper) {
+                    if(cs.isSuper && isConstructor) {
                       println ("This is a super Constructor!!!")
                       constructorCall.remove("func")
                       constructorCall.add("func", "super")
                       bodyStatements += ((loc.locationIndex, constructorCall))
                     } else {
-                      println("Body Last: "  + bodyStatements.lastOption)
                       val prevLine: Option[(Int, ST)] = bodyStatements.lastOption
                       prevLine match {
                         case Some(prev) =>
-                          val prevTemplate = prev._2
-                          constructorCall.add("isAssignment", true)
+                          val prevTemplate: ST = prev._2
+                          val newTemplate: ST = template.getInstanceOf("NewExpression")
+
+                          newTemplate.add("baseType", constructorCall.getAttribute("func"))
+                          newTemplate.add("params", constructorCall.getAttribute("params"))
+
                           prevTemplate.remove("rhs")
-                          prevTemplate.add("rhs", constructorCall)
+                          prevTemplate.add("rhs", newTemplate)
                           bodyStatements(bodyStatements.length - 1) = (loc.locationIndex, prevTemplate)
-                        //                  bodyStatements += ((loc.locationIndex, constructorCall))
 
                         case None =>
                       }
                     }
-                  }
                 }
 
               case _ =>
@@ -408,9 +408,10 @@ class Jawa2Java(reporter: Reporter) {
 
   private def visitConstructorCall(cc: CallStatement, imports: MSet[JawaType]): ST = {
     val callTemplate = template.getInstanceOf("CallStatement")
+    val paramsTemplate = template.getInstanceOf("Params")
     val baseType: JawaType = cc.signature.getClassType
     callTemplate.add("func", baseType.simpleName)
-    callTemplate.add("params", cc.args.toArray)
+    callTemplate.add("params", paramsTemplate.add("params", cc.args.toArray))
     addImport(baseType, imports)
 
     println ("Visit Constructor Call function name: " + baseType.simpleName)
@@ -422,6 +423,7 @@ class Jawa2Java(reporter: Reporter) {
 
   private def visitCallStatement(cs: CallStatement, imports: MSet[JawaType]): ST = {
     val callTemplate = template.getInstanceOf("CallStatement")
+    val paramsTemplate = template.getInstanceOf("Params")
     val baseType: JawaType = cs.signature.getClassType
 
     if(cs.isStatic) {
@@ -434,7 +436,7 @@ class Jawa2Java(reporter: Reporter) {
       callTemplate.add("func", cs.methodNameSymbol.methodName)
     }
 
-    callTemplate.add("params", cs.args.toArray)
+    callTemplate.add("params", paramsTemplate.add("params", cs.args.toArray))
     addImport(baseType, imports)
 
     cs.lhsOpt match {

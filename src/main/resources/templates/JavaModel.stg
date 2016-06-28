@@ -19,6 +19,7 @@ import $className$;
 >>
 
 ClassDecl(accessFlag, className, exts, impls, fields, methods) ::= <<
+
 $accessFlag$ class $className$$if(exts)$ extends $exts$$endif$$if(impls)$ implements $impls ; separator=", "$$endif$ {
   $fields ; separator="\n"$
   $methods ; separator="\n"$
@@ -30,6 +31,7 @@ $if(accessFlag)$$accessFlag$ $endif$$attrTyp$ $attrName$;
 >>
 
 MethodDecl(accessFlag, retTyp, methodName, params, localVars, body, catchClauses) ::= <<
+
 $accessFlag$ $retTyp$ $methodName$($params ; separator=", "$) {
   $localVars ; separator="\n"$
 
@@ -45,12 +47,18 @@ Body(statements) ::= <<
 $statements ; separator="\n"$
 >>
 
-NewExpression(baseType, arrays) ::= <<
-new $baseType$$if(arrays)$$arrays ; separator=""$$else$()$endif$
+NewExpression(baseType, arrays, params) ::= <<
+$! new $baseType$$if(arrays)$$arrays ; separator=""$$else$()$endif$ !$
+$! new $baseType$$if(arrays)$$arrays ; separator=""$$endif$$if(params)$$params$$else$()$endif$ !$
+new $baseType$$if(arrays)$$arrays ; separator=""$$elseif(params)$$params$$else$()$endif$
 >>
 
 ArrayAccess(arrayLength) ::= <<
 [$arrayLength$]
+>>
+
+Params(params) ::= <<
+($params ; separator=", "$)
 >>
 
 NameExpression(name) ::= <<
@@ -86,7 +94,8 @@ return $varName$;
 >>
 
 CallStatement(func, params, isAssignment) ::= <<
-$func$($params ; separator=", "$)$if(!isAssignment)$;$endif$
+$! $func$($params ; separator=", "$)$if(!isAssignment)$;$endif$ !$
+$func$$params$$if(!isAssignment)$;$endif$
 >>
 
 CastExpression(type, varName) ::= <<

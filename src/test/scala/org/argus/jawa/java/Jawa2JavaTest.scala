@@ -288,6 +288,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
   """package com.fgwei;
     |
     |import java.lang.Object;
+    |import java.lang.String;
     |
     |public class FieldAccess1 {
     |  private int i1;
@@ -295,27 +296,43 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     |     String String_v0;
     |     int int_v1;
     |
-    |     String_v0 = str1;
-    |     int_v1 = 0;
+    |    super();
+    |    String_v0 = str1;
+    |    int_v1 = 0;
     |  }
-    |  private int getTaint(FieldAccess1 FieldAccess1_v6) {
+    |
+    |  private  FieldAccess1(String str1, String str2) {
+    |     String String_v0;
+    |     int int_v1;
+    |
+    |    String_v0 = str1;
+    |    int_v1 = 0;
+    |    super(String_v0);
+    |  }
+    |
+    |  private int getTaint() {
     |     int int_v3;
     |
-    |    int_v3 = FieldAccess1_v6.i1;
+    |    int_v3 = this.i1;
     |    return int_v3;
     |  }
+    |
     |  private void setTaint(int int_v3) {
     |
-    |    FieldAccess1_v2.i1 = int_v3;
+    |    this.i1 = int_v3;
     |  }
+    |
     |  public static int main() {
     |     int int_temp;
     |     int int_v0;
     |     FieldAccess1 FieldAccess1_v1;
+    |     FieldAccess1 FieldAccess1_v2;
     |     int int_v2;
+    |     String s1;
     |
-    |    FieldAccess1_v1 = new FieldAccess1();
-    |    <init>();
+    |    s1 = "ConstructorString";
+    |    FieldAccess1_v1 = new FieldAccess1(s1);
+    |    FieldAccess1_v2 = new FieldAccess1(s1, s1);
     |    int_v0 = 1;
     |    setTaint(int_v0);
     |    int_temp = getTaint();
