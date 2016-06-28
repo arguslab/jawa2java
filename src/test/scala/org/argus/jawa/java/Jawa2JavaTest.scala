@@ -341,6 +341,123 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     |  }
     |}""".stripMargin.trim
 
+  new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/field/FieldAccess1.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |import java.lang.Object;
+      |
+      |public class FieldAccess1 {
+      |  private int i1;
+      |    FieldAccess1() {
+      |
+      |  }
+      |
+      |  private int getTaint() {
+      |     int int_v3;
+      |
+      |    int_v3 = this.i1;
+      |    return int_v3;
+      |  }
+      |
+      |  private void setTaint(int int_v3) {
+      |
+      |    this.i1 = int_v3;
+      |  }
+      |
+      |  public static int main() {
+      |     int int_temp;
+      |     int int_v0;
+      |     FieldAccess1 FieldAccess1_v1;
+      |     int int_v2;
+      |
+      |    FieldAccess1_v1 = new FieldAccess1();
+      |    int_v0 = 1;
+      |    setTaint(int_v0);
+      |    int_temp = getTaint();
+      |    int_v2 = int_temp;
+      |    return int_v2;
+      |  }
+      |}
+      |""".stripMargin.trim
+
+  new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/field/FieldAccess2.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |import java.lang.Object;
+      |import java.lang.String;
+      |
+      |public class FieldAccess2 {
+      |  private String i1;
+      |    FieldAccess2() {
+      |
+      |  }
+      |
+      |  private String getTaint() {
+      |     String String_v3;
+      |
+      |    String_v3 = this.i1;
+      |    return String_v3;
+      |  }
+      |
+      |  private void setTaint(String String_v3) {
+      |
+      |    this.i1 = String_v3;
+      |  }
+      |
+      |  public static String main() {
+      |     String String_temp;
+      |     String String_v0;
+      |     FieldAccess2 FieldAccess2_v1;
+      |     String String_v2;
+      |
+      |    FieldAccess2_v1 = new FieldAccess2();
+      |    String_v0 = "test";
+      |    setTaint(String_v0);
+      |    String_temp = getTaint();
+      |    String_v2 = String_temp;
+      |    return String_v2;
+      |  }
+      |}
+      |""".stripMargin.trim
+
+  new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/instance/Instanceof1.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |import java.lang.String;
+      |
+      |public class Instanceof1 {
+      |  public static boolean main() {
+      |     String String_v0;
+      |     boolean boolean_v1;
+      |
+      |    String_v0 = "abcd";
+      |    boolean_v1 = String_v0 instanceof String;
+      |    return boolean_v1;
+      |  }
+      |}
+      |""".stripMargin.trim
+
+  new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/instance/Instanceof2.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |import java.lang.Class;
+      |import java.lang.Object;
+      |
+      |public class Instanceof2 {
+      |  public static boolean main() {
+      |     Object Object_v0;
+      |     boolean boolean_v1;
+      |
+      |    Object_v0 = "abcd";
+      |    boolean_v1 = Object_v0 instanceof Class;
+      |    return boolean_v1;
+      |  }
+      |}
+      |""".stripMargin.trim
+
+ /* new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/cmp/Cmp1.pilar"))) produceJavaClass
+    """TEST""".stripMargin.trim*/
+
   //  new FgSourceFile(new PlainFile(new File("src/test/resources/array/ArrayAccess1.pilar"))) produceJavaClass
 //    """package com.fgwei;
 //      |

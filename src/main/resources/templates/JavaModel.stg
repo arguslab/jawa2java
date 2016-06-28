@@ -105,3 +105,7 @@ CastExpression(type, varName) ::= <<
 BinaryExpression(left, op, right) ::= <<
 $left$ $op$ $right$
 >>
+
+InstanceofExpression(var, type) ::= <<
+$var$ instanceof $type$
+>>

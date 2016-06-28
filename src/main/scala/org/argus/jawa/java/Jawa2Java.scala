@@ -293,6 +293,18 @@ class Jawa2Java(reporter: Reporter) {
       case be: BinaryExpression =>
         visitBinaryExpression(be)
 
+      //todo implement this.
+      case cmp: CmpExpression =>
+        println("In Cmp Expression: ")
+        println("In Cmp Expression var1: " + cmp.var1Symbol.varName)
+        println("In Cmp Expression: " + cmp.cmp.text)
+        println("In Cmp Expression var2: " + cmp.var2Symbol.varName)
+        println("In Cmp Expression var2: " + cmp.cmp.rawtext)
+        template.getInstanceOf("newTemplate")
+
+      case insof: InstanceofExpression =>
+        visitInstanceofExpression(insof, imports)
+
       case _ =>
         println ("In RHS :" + rhs.getClass)
         println ("In RHS :" + rhs.getFields)
@@ -404,6 +416,18 @@ class Jawa2Java(reporter: Reporter) {
     }
     binaryTemplate.add("right", right)
     binaryTemplate
+  }
+
+  private def visitInstanceofExpression(insof: InstanceofExpression, imports: MSet[JawaType]): ST = {
+    println ("This is instance of expression: ")
+    println ("This is instance of expression: " + insof.typExp.typ.simpleName + " instance " + insof.varSymbol.varName)
+
+    val insofTemplate = template.getInstanceOf("InstanceofExpression")
+    insofTemplate.add("var", insof.varSymbol.varName)
+    insofTemplate.add("type", insof.typExp.typ.simpleName)
+    addImport(insof.typExp.typ, imports)
+
+    insofTemplate
   }
 
   private def visitConstructorCall(cc: CallStatement, imports: MSet[JawaType]): ST = {
