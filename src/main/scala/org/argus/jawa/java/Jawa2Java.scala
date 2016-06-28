@@ -293,14 +293,9 @@ class Jawa2Java(reporter: Reporter) {
       case be: BinaryExpression =>
         visitBinaryExpression(be)
 
-      //todo implement this.
+      //todo verify with fengguo.
       case cmp: CmpExpression =>
-        println("In Cmp Expression: ")
-        println("In Cmp Expression var1: " + cmp.var1Symbol.varName)
-        println("In Cmp Expression: " + cmp.cmp.text)
-        println("In Cmp Expression var2: " + cmp.var2Symbol.varName)
-        println("In Cmp Expression var2: " + cmp.cmp.rawtext)
-        template.getInstanceOf("newTemplate")
+        visitCmpExpression(cmp)
 
       case insof: InstanceofExpression =>
         visitInstanceofExpression(insof, imports)
@@ -343,11 +338,26 @@ class Jawa2Java(reporter: Reporter) {
         literalTemplate
 
       //todo int vs Integer cases??? Does Java byte code separate int vs long, float vs double???
-      case FLOATING_POINT_LITERAL | INTEGER_LITERAL=>
+      case FLOATING_POINT_LITERAL =>
         val numTemplate = template.getInstanceOf("NumericalLiteral")
+        val leVal = litToken match {
+          case x if x.endsWith("F") => le.getString + "F"
+          case x if x.endsWith("D") => le.getString + "D"
+          case _ => litToken
+        }
+        println ("inside numerical literal Floating point")
+        numTemplate.add("nm", leVal)
+        numTemplate
 
-        println ("inside numerical literal")
-        numTemplate.add("nm", le.getString)
+      case INTEGER_LITERAL =>
+        val numTemplate = template.getInstanceOf("NumericalLiteral")
+        val leVal = litToken match {
+          case x if x.endsWith("I") => le.getString
+          case x if x.endsWith("L") => le.getString + "L"
+          case _ => litToken
+        }
+        println ("inside numerical literal Integer.")
+        numTemplate.add("nm", leVal)
         numTemplate
 
       case CHARACTER_LITERAL =>
@@ -428,6 +438,21 @@ class Jawa2Java(reporter: Reporter) {
     addImport(insof.typExp.typ, imports)
 
     insofTemplate
+  }
+
+  private def visitCmpExpression(cmp: CmpExpression): ST = {
+    val cmpTemplate: ST = template.getInstanceOf("BinaryExpression")
+    println("In Cmp Expression var1: " + cmp.var1Symbol.varName)
+    println("In Cmp Expression: " + cmp.cmp.text)
+    println("In Cmp Expression var2: " + cmp.var2Symbol.varName)
+    val op: String = cmp.cmp.text match {
+      case "fcmpl" | "fcmpg" | "dcmpl" | "dcmpg" | "lcmp" => "<"
+      case _ => throw new Jawa2JavaTranslateException("Unidentified cmp expression." + cmp.pos.line + ":" + cmp.pos.column )
+    }
+    cmpTemplate.add("left", cmp.var1Symbol.varName)
+    cmpTemplate.add("op", op)
+    cmpTemplate.add("right", cmp.var2Symbol.varName)
+    cmpTemplate
   }
 
   private def visitConstructorCall(cc: CallStatement, imports: MSet[JawaType]): ST = {

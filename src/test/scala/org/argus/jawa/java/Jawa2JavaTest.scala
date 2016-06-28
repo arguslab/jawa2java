@@ -241,12 +241,12 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |     float float_v5;
       |
       |    int_v0 = 1056964608;
-      |    float_v5 = 1111111111.00;
-      |    double_v0 = 0.12;
-      |    double_v2 = 0.471239;
+      |    float_v5 = 1111111111.00F;
+      |    double_v0 = 0.12D;
+      |    double_v2 = 0.471239D;
       |    double_temp = Math.sin(double_v0);
       |    double_v0 = (double) float_v5;
-      |    float_v0 = 0.1;
+      |    float_v0 = 0.1F;
       |    float_v3 = float_v5 - int_v0;
       |    return float_v0;
       |  }
@@ -269,10 +269,10 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     |     float float_v5;
     |
     |    int_v0 = 1056964608;
-    |    float_v5 = 1111111111.00;
+    |    float_v5 = 1111111111.00F;
     |    float_v3 = float_v5 - int_v0;
     |    double_v0 = (double) float_v5;
-    |    double_v2 = 0.471239;
+    |    double_v2 = 0.471239D;
     |    double_v0 = double_v0 * double_v2;
     |    float_v5 = (float) double_v0;
     |    double_v0 = (double) float_v5;
@@ -455,8 +455,23 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |}
       |""".stripMargin.trim
 
- /* new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/cmp/Cmp1.pilar"))) produceJavaClass
-    """TEST""".stripMargin.trim*/
+  new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/cmp/Cmp1.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |
+      |public class Cmp1 {
+      |  public static boolean main() {
+      |     float float_v1;
+      |     float float_v2;
+      |     boolean boolean_v3;
+      |
+      |    float_v1 = 2F;
+      |    float_v2 = 3F;
+      |    boolean_v3 = float_v1 < float_v2;
+      |    return boolean_v3;
+      |  }
+      |}
+      |""".stripMargin.trim
 
   //  new FgSourceFile(new PlainFile(new File("src/test/resources/array/ArrayAccess1.pilar"))) produceJavaClass
 //    """package com.fgwei;
