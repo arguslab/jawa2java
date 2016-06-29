@@ -45,6 +45,14 @@ class Jawa2Java(reporter: Reporter) {
     }
   }
 
+  case class CurrentState(
+                           isConstructor: Boolean,
+                           var isIfStatement: Boolean,
+                           var isElseIfStatement: Boolean,
+                           var isElseStatement: Boolean,
+                           var targetLocation: String,
+                           var locationOffset: Int = 0)
+
   def translate(source: Either[String, SourceFile]): IMap[JawaType, String] = {
     JawaParser.parse[CompilationUnit](source, resolveBody = true, reporter) match {
       case Some(cu) =>
@@ -172,7 +180,6 @@ class Jawa2Java(reporter: Reporter) {
         methodTemplate.add("localVars", localVars )
 
         val thisParam: Option[Param] = md.thisParam
-//        val locationIter = resolvedBody.locations.toIterator
         val locationIter = LocationIterator(resolvedBody.locations)
         val currentState = CurrentState(isConstructor = isConstructor, isIfStatement = false, isElseIfStatement = false, isElseStatement = false, null)
 
@@ -192,9 +199,7 @@ class Jawa2Java(reporter: Reporter) {
     methodTemplate
   }
 
-  //  private def visitLocation(imports: MSet[JawaType], bodyStatements: MList[(Int, ST)], isConstructor: Boolean, thisParam: Option[Param], loc: Location): Any = {
-//  private def visitLocation(imports: MSet[JawaType], bodyStatements: MList[(Int, ST)], isConstructor: Boolean, thisParam: Option[Param], locationIter: Iterator[Location], currentState: CurrentState): Any = {
-  private def visitLocation(imports: MSet[JawaType], bodyStatements: MList[(Int, ST)], isConstructor: Boolean, thisParam: Option[Param], locationIter: LocationIterator, currentState: CurrentState): Any = {
+  private def visitLocation(imports: MSet[JawaType], bodyStatements: MList[(Int, ST)], isConstructor: Boolean, thisParam: Option[Param], locationIter: LocationIterator, currentState: CurrentState): Unit = {
     val loc: Location = locationIter.next()
     println ("Location Symbol is: " + loc.locationSymbol)
     println ("Location Statement is: " + loc.statement)
@@ -213,7 +218,7 @@ class Jawa2Java(reporter: Reporter) {
                              bodyStatements: MList[(Int, ST)],
                              isConstructor: Boolean,
                              thisParam: Option[Param],
-//                             locationIter: Iterator[Location],
+                             //                             locationIter: Iterator[Location],
                              locationIter: LocationIterator,
                              loc: Location,
                              statement: Statement,
@@ -268,50 +273,19 @@ class Jawa2Java(reporter: Reporter) {
 
       case ifStatement: IfStatement =>
         visitIfStatement(imports, bodyStatements, isConstructor, thisParam, locationIter, loc, currentState, ifStatement)
-      /* //-----
-       if(currentState.isElseStatement) {
-         val elseTemplate: ST = template.getInstanceOf("IfStatement")
-         elseTemplate.add("token", "else")
-//          elseTemplate.add("cond", visitBinaryExpression(ifStatement.cond))
-
-         val elseCurrentState = CurrentState(isConstructor = isConstructor, isIfStatement = false, isElseIfStatement = true, isElseStatement = false, Some(ifStatement.targetLocation.location))
-
-         val elseBodyStatements: MList[(Int, ST)] = mlistEmpty
-
-         visitIfBodyLocation(imports, elseBodyStatements, isConstructor, thisParam, locationIter, elseCurrentState, bodyStatements)
-
-         val elseBodyTemplate = template.getInstanceOf("Body")
-         elseBodyStatements.sortBy(_._1).map {
-           st =>
-             elseBodyTemplate.add("statements", st._2)
-         }
-         elseTemplate.add("body", elseBodyTemplate)
-         println ("Else Body Statements are: " + elseBodyStatements)
-         println ("location index after returning from Else: " + loc.locationIndex)
-
-         bodyStatements += ((loc.locationIndex + 1, elseTemplate))
-       }*/
 
       case _ =>
         println("Location statement not identified: " + loc.statement.getClass)
     }
   }
 
-//  def visitIfStatement(imports: MSet[JawaType], bodyStatements: MList[(Int, ST)], isConstructor: Boolean, thisParam: Option[Param], locationIter: Iterator[Location], loc: Location, currentState: CurrentState, ifStatement: IfStatement): Unit = {
   def visitIfStatement(imports: MSet[JawaType], bodyStatements: MList[(Int, ST)], isConstructor: Boolean, thisParam: Option[Param], locationIter: LocationIterator, loc: Location, currentState: CurrentState, ifStatement: IfStatement): Unit = {
-    //        val currentState = CurrentState(isConstructor = isConstructor, isIfStatement = true, isElseIfStatement = false, isElseStatement = false, ifStatement.targetLocation.location)
-    //        val currentState = CurrentState(isConstructor = isConstructor, isIfStatement = true, isElseIfStatement = false, isElseStatement = false, Some(ifStatement.targetLocation.location))
     if (!currentState.isIfStatement && !currentState.isElseIfStatement && !currentState.isElseStatement) {
       println ("inside Original If Statement")
       currentState.isIfStatement = true
       currentState.targetLocation = ifStatement.targetLocation.location
-    } else {
-      println(" Original if check failed. : " + currentState.isIfStatement)
-      println(" Original if check failed. : " + currentState.isElseIfStatement)
-      println(" Original if check failed. : " + currentState.isElseStatement)
     }
 
-    //        currentState.isIfStatement = true
     println("If Statement: " + ifStatement.cond) //Binary Expression
     println("If Statement: " + ifStatement.targetLocation.location)
     println("location index before visiting if: " + loc.locationIndex)
@@ -340,27 +314,21 @@ class Jawa2Java(reporter: Reporter) {
     println("Body Statements are: " + ifBodyStatements)
     println("location index after returning from if: " + loc.locationIndex)
 
-    bodyStatements += ((loc.locationIndex, ifTemplate))
+    bodyStatements += ((loc.locationIndex + currentState.locationOffset, ifTemplate))
 
     if(currentState.isElseStatement) {
       println ("this is else statement. calling visitIfStatement again")
+      currentState.locationOffset += 1
       visitIfStatement(imports, bodyStatements, isConstructor, thisParam, locationIter, loc, currentState, ifStatement)
+    } else {
+      currentState.locationOffset = 0
     }
   }
-
-  case class CurrentState(
-                           isConstructor: Boolean,
-                           var isIfStatement: Boolean,
-                           var isElseIfStatement: Boolean,
-                           var isElseStatement: Boolean,
-                                                        var targetLocation: String)
-//                           var targetLocation: Option[String])
 
   private def visitIfBodyLocation(imports: MSet[JawaType],
                                   ifBodyStatements: MList[(Int, ST)],
                                   isConstructor: Boolean,
                                   thisParam: Option[Param],
-//                                  locationIter: Iterator[Location],
                                   locationIter: LocationIterator,
                                   currentState: CurrentState,
                                   bodyStatements: MList[(Int, ST)]
@@ -371,14 +339,6 @@ class Jawa2Java(reporter: Reporter) {
     println ("If Body Location Statement is: " + loc.statement)
 
     val statement: Statement = loc.statement
-
-    /*if(loc.locationUri == currentState.targetLocation) {
-      println ("In the target location..No else statement required." )
-      currentState.isIfStatement= false
-      currentState.isElseIfStatement = false
-      currentState.isElseStatement = false
-      return
-    }*/
 
     println ("Here in If target location: ")
     statement match {
@@ -401,7 +361,6 @@ class Jawa2Java(reporter: Reporter) {
 
       case _ =>
         println ("case wild card!!!!")
-//        visitStatement(imports, ifBodyStatements, isConstructor, thisParam, locationIter, loc, statement)
         visitStatement(imports, ifBodyStatements, isConstructor, thisParam, locationIter, loc, statement, currentState)
     }
 
