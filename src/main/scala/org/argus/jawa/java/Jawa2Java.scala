@@ -11,7 +11,7 @@
 package org.argus.jawa.java
 
 import org.argus.jawa.compiler.lexer.Tokens._
-import org.argus.jawa.compiler.parser._
+import org.argus.jawa.compiler.parser.{Location, _}
 import org.argus.jawa.core.{AccessFlag, JawaPackage, JawaType, Reporter}
 import org.argus.jawa.core.io.SourceFile
 import org.sireum.util._
@@ -27,6 +27,23 @@ import org.stringtemplate.v4.{ST, STGroupFile}
 class Jawa2Java(reporter: Reporter) {
 
   private val template = new STGroupFile("templates/JavaModel.stg")
+
+  case class LocationIterator (locations: IList[Location]) {
+    var pos = 0
+    def next(): Location = {
+      val current: Location = locations(pos)
+      pos += 1
+      current
+    }
+
+    def hasNext: Boolean = {
+      pos < locations.length
+    }
+
+    def lookahead(): Location = {
+      locations(pos)
+    }
+  }
 
   def translate(source: Either[String, SourceFile]): IMap[JawaType, String] = {
     JawaParser.parse[CompilationUnit](source, resolveBody = true, reporter) match {
@@ -155,62 +172,12 @@ class Jawa2Java(reporter: Reporter) {
         methodTemplate.add("localVars", localVars )
 
         val thisParam: Option[Param] = md.thisParam
-        resolvedBody.locations foreach {
-          loc =>
-            println ("Location Symbol is: " + loc.locationSymbol)
-            println ("Location Statement is: " + loc.statement)
+//        val locationIter = resolvedBody.locations.toIterator
+        val locationIter = LocationIterator(resolvedBody.locations)
+        val currentState = CurrentState(isConstructor = isConstructor, isIfStatement = false, isElseIfStatement = false, isElseStatement = false, null)
 
-            loc.statement match {
-              case as: AssignmentStatement =>
-                bodyStatements += ((loc.locationIndex, visitAssignmentStatement(as, thisParam, imports)))
+        if (locationIter.hasNext) visitLocation(imports, bodyStatements, isConstructor, thisParam, locationIter, currentState)
 
-              case rs: ReturnStatement =>
-                rs.varOpt match {
-                  case Some(v) =>
-                    val returnTemplate = template.getInstanceOf("ReturnStatement")
-                    println ("Return Statement is: " + v.varName)
-                    returnTemplate.add("varName", v.varName)
-
-                    bodyStatements += ((loc.locationIndex, returnTemplate))
-                  case None =>
-                }
-
-              case cs: CallStatement =>
-                if(!(cs.methodNameSymbol.methodName equals  "<init>" )){
-                  bodyStatements += ((loc.locationIndex, visitCallStatement(cs, imports)))
-                } else {
-                  println (" THis is Constructor : " + cs.args)
-
-                    val constructorCall: ST = visitConstructorCall(cs, imports)
-
-                    if(cs.isSuper && isConstructor) {
-                      println ("This is a super Constructor!!!")
-                      constructorCall.remove("func")
-                      constructorCall.add("func", "super")
-                      bodyStatements += ((loc.locationIndex, constructorCall))
-                    } else {
-                      val prevLine: Option[(Int, ST)] = bodyStatements.lastOption
-                      prevLine match {
-                        case Some(prev) =>
-                          val prevTemplate: ST = prev._2
-                          val newTemplate: ST = template.getInstanceOf("NewExpression")
-
-                          newTemplate.add("baseType", constructorCall.getAttribute("func"))
-                          newTemplate.add("params", constructorCall.getAttribute("params"))
-
-                          prevTemplate.remove("rhs")
-                          prevTemplate.add("rhs", newTemplate)
-                          bodyStatements(bodyStatements.length - 1) = (loc.locationIndex, prevTemplate)
-
-                        case None =>
-                      }
-                    }
-                }
-
-              case _ =>
-                println ("Location statement not identified: " + loc.statement.getClass)
-            }
-        }
       case UnresolvedBody(bodytokens) =>
     }
 
@@ -223,6 +190,237 @@ class Jawa2Java(reporter: Reporter) {
     println ("Body Statements are: " + bodyStatements)
 
     methodTemplate
+  }
+
+  //  private def visitLocation(imports: MSet[JawaType], bodyStatements: MList[(Int, ST)], isConstructor: Boolean, thisParam: Option[Param], loc: Location): Any = {
+//  private def visitLocation(imports: MSet[JawaType], bodyStatements: MList[(Int, ST)], isConstructor: Boolean, thisParam: Option[Param], locationIter: Iterator[Location], currentState: CurrentState): Any = {
+  private def visitLocation(imports: MSet[JawaType], bodyStatements: MList[(Int, ST)], isConstructor: Boolean, thisParam: Option[Param], locationIter: LocationIterator, currentState: CurrentState): Any = {
+    val loc: Location = locationIter.next()
+    println ("Location Symbol is: " + loc.locationSymbol)
+    println ("Location Statement is: " + loc.statement)
+
+    val statement: Statement = loc.statement
+    //    visitStatement(imports, bodyStatements, isConstructor, thisParam, locationIter, loc, statement)
+    visitStatement(imports, bodyStatements, isConstructor, thisParam, locationIter, loc, statement, currentState)
+
+    if(locationIter.hasNext){
+      //      visitLocation(imports, bodyStatements, isConstructor, thisParam, locationIter)
+      visitLocation(imports, bodyStatements, isConstructor, thisParam, locationIter, currentState)
+    }
+  }
+
+  private def visitStatement(imports: MSet[JawaType],
+                             bodyStatements: MList[(Int, ST)],
+                             isConstructor: Boolean,
+                             thisParam: Option[Param],
+//                             locationIter: Iterator[Location],
+                             locationIter: LocationIterator,
+                             loc: Location,
+                             statement: Statement,
+                             currentState: CurrentState): Any = {
+    println ("current location is : " + loc.locationIndex)
+    statement match {
+      case as: AssignmentStatement =>
+        bodyStatements += ((loc.locationIndex, visitAssignmentStatement(as, thisParam, imports)))
+
+      case rs: ReturnStatement =>
+        rs.varOpt match {
+          case Some(v) =>
+            val returnTemplate = template.getInstanceOf("ReturnStatement")
+            println("Return Statement is: " + v.varName)
+            returnTemplate.add("varName", v.varName)
+
+            bodyStatements += ((loc.locationIndex, returnTemplate))
+          case None =>
+        }
+
+      case cs: CallStatement =>
+        if (!(cs.methodNameSymbol.methodName equals "<init>")) {
+          bodyStatements += ((loc.locationIndex, visitCallStatement(cs, imports)))
+        } else {
+          println(" THis is Constructor : " + cs.args)
+
+          val constructorCall: ST = visitConstructorCall(cs, imports)
+
+          if (cs.isSuper && isConstructor) {
+            println("This is a super Constructor!!!")
+            constructorCall.remove("func")
+            constructorCall.add("func", "super")
+            bodyStatements += ((loc.locationIndex, constructorCall))
+          } else {
+            val prevLine: Option[(Int, ST)] = bodyStatements.lastOption
+            prevLine match {
+              case Some(prev) =>
+                val prevTemplate: ST = prev._2
+                val newTemplate: ST = template.getInstanceOf("NewExpression")
+
+                newTemplate.add("baseType", constructorCall.getAttribute("func"))
+                newTemplate.add("params", constructorCall.getAttribute("params"))
+
+                prevTemplate.remove("rhs")
+                prevTemplate.add("rhs", newTemplate)
+                bodyStatements(bodyStatements.length - 1) = (loc.locationIndex, prevTemplate)
+
+              case None =>
+            }
+          }
+        }
+
+      case ifStatement: IfStatement =>
+        visitIfStatement(imports, bodyStatements, isConstructor, thisParam, locationIter, loc, currentState, ifStatement)
+      /* //-----
+       if(currentState.isElseStatement) {
+         val elseTemplate: ST = template.getInstanceOf("IfStatement")
+         elseTemplate.add("token", "else")
+//          elseTemplate.add("cond", visitBinaryExpression(ifStatement.cond))
+
+         val elseCurrentState = CurrentState(isConstructor = isConstructor, isIfStatement = false, isElseIfStatement = true, isElseStatement = false, Some(ifStatement.targetLocation.location))
+
+         val elseBodyStatements: MList[(Int, ST)] = mlistEmpty
+
+         visitIfBodyLocation(imports, elseBodyStatements, isConstructor, thisParam, locationIter, elseCurrentState, bodyStatements)
+
+         val elseBodyTemplate = template.getInstanceOf("Body")
+         elseBodyStatements.sortBy(_._1).map {
+           st =>
+             elseBodyTemplate.add("statements", st._2)
+         }
+         elseTemplate.add("body", elseBodyTemplate)
+         println ("Else Body Statements are: " + elseBodyStatements)
+         println ("location index after returning from Else: " + loc.locationIndex)
+
+         bodyStatements += ((loc.locationIndex + 1, elseTemplate))
+       }*/
+
+      case _ =>
+        println("Location statement not identified: " + loc.statement.getClass)
+    }
+  }
+
+//  def visitIfStatement(imports: MSet[JawaType], bodyStatements: MList[(Int, ST)], isConstructor: Boolean, thisParam: Option[Param], locationIter: Iterator[Location], loc: Location, currentState: CurrentState, ifStatement: IfStatement): Unit = {
+  def visitIfStatement(imports: MSet[JawaType], bodyStatements: MList[(Int, ST)], isConstructor: Boolean, thisParam: Option[Param], locationIter: LocationIterator, loc: Location, currentState: CurrentState, ifStatement: IfStatement): Unit = {
+    //        val currentState = CurrentState(isConstructor = isConstructor, isIfStatement = true, isElseIfStatement = false, isElseStatement = false, ifStatement.targetLocation.location)
+    //        val currentState = CurrentState(isConstructor = isConstructor, isIfStatement = true, isElseIfStatement = false, isElseStatement = false, Some(ifStatement.targetLocation.location))
+    if (!currentState.isIfStatement && !currentState.isElseIfStatement && !currentState.isElseStatement) {
+      println ("inside Original If Statement")
+      currentState.isIfStatement = true
+      currentState.targetLocation = ifStatement.targetLocation.location
+    } else {
+      println(" Original if check failed. : " + currentState.isIfStatement)
+      println(" Original if check failed. : " + currentState.isElseIfStatement)
+      println(" Original if check failed. : " + currentState.isElseStatement)
+    }
+
+    //        currentState.isIfStatement = true
+    println("If Statement: " + ifStatement.cond) //Binary Expression
+    println("If Statement: " + ifStatement.targetLocation.location)
+    println("location index before visiting if: " + loc.locationIndex)
+
+    val ifTemplate: ST = template.getInstanceOf("IfStatement")
+    if (currentState.isIfStatement) {
+      ifTemplate.add("token", ifStatement.ifToken.text)
+      ifTemplate.add("cond", visitBinaryExpression(ifStatement.cond))
+    } else if (currentState.isElseIfStatement) {
+      ifTemplate.add("token", "else if")
+      ifTemplate.add("cond", visitBinaryExpression(ifStatement.cond))
+    } else {
+      ifTemplate.add("token", "else")
+    }
+
+    val ifBodyStatements: MList[(Int, ST)] = mlistEmpty
+
+    visitIfBodyLocation(imports, ifBodyStatements, isConstructor, thisParam, locationIter, currentState, bodyStatements)
+
+    val ifBodyTemplate = template.getInstanceOf("Body")
+    ifBodyStatements.sortBy(_._1).map {
+      st =>
+        ifBodyTemplate.add("statements", st._2)
+    }
+    ifTemplate.add("body", ifBodyTemplate)
+    println("Body Statements are: " + ifBodyStatements)
+    println("location index after returning from if: " + loc.locationIndex)
+
+    bodyStatements += ((loc.locationIndex, ifTemplate))
+
+    if(currentState.isElseStatement) {
+      println ("this is else statement. calling visitIfStatement again")
+      visitIfStatement(imports, bodyStatements, isConstructor, thisParam, locationIter, loc, currentState, ifStatement)
+    }
+  }
+
+  case class CurrentState(
+                           isConstructor: Boolean,
+                           var isIfStatement: Boolean,
+                           var isElseIfStatement: Boolean,
+                           var isElseStatement: Boolean,
+                                                        var targetLocation: String)
+//                           var targetLocation: Option[String])
+
+  private def visitIfBodyLocation(imports: MSet[JawaType],
+                                  ifBodyStatements: MList[(Int, ST)],
+                                  isConstructor: Boolean,
+                                  thisParam: Option[Param],
+//                                  locationIter: Iterator[Location],
+                                  locationIter: LocationIterator,
+                                  currentState: CurrentState,
+                                  bodyStatements: MList[(Int, ST)]
+                                 ): Any = {
+    val loc: Location = locationIter.next()
+
+    println ("If Body Location Symbol is: " + loc.locationSymbol)
+    println ("If Body Location Statement is: " + loc.statement)
+
+    val statement: Statement = loc.statement
+
+    /*if(loc.locationUri == currentState.targetLocation) {
+      println ("In the target location..No else statement required." )
+      currentState.isIfStatement= false
+      currentState.isElseIfStatement = false
+      currentState.isElseStatement = false
+      return
+    }*/
+
+    println ("Here in If target location: ")
+    statement match {
+      case gs: GotoStatement =>
+        println("This is goto statement within if body. This indicates end of if body")
+        if(currentState.isIfStatement) {
+          println("Beginning else block now.")
+          //todo assign bodyStatements. Start new ifStatement Template with token else. Change current status to else statement.
+          currentState.isIfStatement = false
+          currentState.isElseStatement = true
+          currentState.targetLocation = gs.targetLocation.location
+          println ("new target location is: " + currentState.targetLocation)
+        }
+
+        return
+      case rs: ReturnStatement =>
+        println("This is return statement within if body. This indicates end of if body")
+        visitStatement(imports, ifBodyStatements, isConstructor, thisParam, locationIter, loc, statement, currentState)
+        return
+
+      case _ =>
+        println ("case wild card!!!!")
+//        visitStatement(imports, ifBodyStatements, isConstructor, thisParam, locationIter, loc, statement)
+        visitStatement(imports, ifBodyStatements, isConstructor, thisParam, locationIter, loc, statement, currentState)
+    }
+
+
+    //    visitStatement(imports, ifBodyStatements, isConstructor, thisParam, locationIter, loc, statement)
+    println("current line is : "+ loc.locationUri)
+    println("look ahead line is : "+ locationIter.lookahead().locationUri)
+    println("current target line is : "+ currentState.targetLocation)
+    if(locationIter.lookahead().locationUri == currentState.targetLocation) {
+      println ("In the target location..No else statement required." )
+      currentState.isIfStatement= false
+      currentState.isElseIfStatement = false
+      currentState.isElseStatement = false
+      return
+    }
+
+    if(locationIter.hasNext){
+      visitIfBodyLocation(imports, ifBodyStatements, isConstructor, thisParam, locationIter, currentState, bodyStatements)
+    }
   }
 
   private def visitAssignmentStatement(as: AssignmentStatement, thisParam: Option[Param], imports: MSet[JawaType]): ST = {

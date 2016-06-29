@@ -109,3 +109,13 @@ $left$ $op$ $right$
 InstanceofExpression(var, type) ::= <<
 $var$ instanceof $type$
 >>
+
+IfStatement(token, cond, body) ::= <<
+$token$$if(cond)$(!($cond$))$endif$ {
+  $body$
+}
+>>
+
+BracketVal(val) ::= <<
+($val$)
+>>

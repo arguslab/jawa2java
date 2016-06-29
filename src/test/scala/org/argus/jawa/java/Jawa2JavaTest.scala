@@ -473,6 +473,48 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |}
       |""".stripMargin.trim
 
+  new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/jump/IfJump1.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |
+      |public class IfJump1 {
+      |  public static int main() {
+      |     int int_v1;
+      |     int int_v2;
+      |
+      |    int_v1 = 2130903040;
+      |    int_v2 = 3;
+      |    if(!(int_v2 >= 0)) {
+      |      int_v1 = 0;
+      |    }
+      |    else {
+      |      int_v1 = 1;
+      |    }
+      |    int_v2 = 4;
+      |    return int_v1;
+      |  }
+      |}
+      |""".stripMargin.trim
+
+  new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/jump/IfJump2.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |
+      |public class IfJump2 {
+      |  public static int main() {
+      |     int int_v1;
+      |     int int_v2;
+      |
+      |    int_v1 = 2130903040;
+      |    int_v2 = 3;
+      |    if(!(int_v2 <= 0)) {
+      |      int_v1 = 0;
+      |    }
+      |    return int_v1;
+      |  }
+      |}
+      |""".stripMargin.trim
+
   //  new FgSourceFile(new PlainFile(new File("src/test/resources/array/ArrayAccess1.pilar"))) produceJavaClass
 //    """package com.fgwei;
 //      |
