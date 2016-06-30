@@ -332,7 +332,7 @@ class Jawa2Java(reporter: Reporter) {
                                   locationIter: LocationIterator,
                                   currentState: CurrentState,
                                   bodyStatements: MList[(Int, ST)]
-                                 ): Any = {
+                                 ): Unit = {
     val loc: Location = locationIter.next()
 
     println ("If Body Location Symbol is: " + loc.locationSymbol)
