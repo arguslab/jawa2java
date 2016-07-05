@@ -687,6 +687,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |      else {
       |        String_v2 = "less than 600";
       |      }
+      |      String_v2 = "less than 600";
       |    }
       |    else {
       |      int_v0 = int_v3 + 100;
@@ -697,6 +698,89 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |      else {
       |        String_v2 = "less than 200";
       |      }
+      |      String_v2 = "less than 200";
+      |    }
+      |    int_v3 = int_v3 * 2;
+      |    return int_v3;
+      |  }
+      |}
+      |""".stripMargin.trim
+
+  new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/simple/IfJump_nested_3_with_elseIf.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |import java.lang.String;
+      |
+      |public class IfJump1 {
+      |  public static int main() {
+      |     int int_v5;
+      |     int int_v0;
+      |     int int_v3;
+      |     int int_v4;
+      |     String String_v2;
+      |     int int_v1;
+      |
+      |    int_v5 = 200;
+      |    int_v4 = 100;
+      |    String_v2 = "Hello";
+      |    int_v3 = 50;
+      |    if(int_v3 >= int_v4) {
+      |      if(int_v3 <= int_v4) {
+      |        int_v1 = int_v3 + 500;
+      |        int_v4 = 600;
+      |        if(int_v1 >= int_v4) {
+      |          String_v2 = "greater than 600";
+      |        }
+      |        else {
+      |          String_v2 = "less than 600";
+      |        }
+      |        String_v2 = "less than 600";
+      |        int_v3 = int_v3 + 9;
+      |      }
+      |      else {
+      |        if(int_v3 >= int_v5) {
+      |          int_v1 = int_v3 + 500;
+      |          int_v4 = 600;
+      |          if(int_v1 >= int_v4) {
+      |            String_v2 = "greater than 600";
+      |          }
+      |          else {
+      |            String_v2 = "less than 600";
+      |          }
+      |          String_v2 = "less than 600";
+      |          int_v3 = int_v3 + 9;
+      |        }
+      |        else {
+      |          String_v2 = "equal to 50";
+      |        }
+      |        String_v2 = "equal to 50";
+      |      }
+      |      if(int_v3 >= int_v5) {
+      |        int_v1 = int_v3 + 500;
+      |        int_v4 = 600;
+      |        if(int_v1 >= int_v4) {
+      |          String_v2 = "greater than 600";
+      |        }
+      |        else {
+      |          String_v2 = "less than 600";
+      |        }
+      |        String_v2 = "less than 600";
+      |        int_v3 = int_v3 + 9;
+      |      }
+      |      else {
+      |        String_v2 = "equal to 50";
+      |      }
+      |      String_v2 = "equal to 50";
+      |    }
+      |    else {
+      |      int_v0 = int_v3 + 100;
+      |      if(int_v0 >= int_v5) {
+      |        String_v2 = "greater than 200";
+      |      }
+      |      else {
+      |        String_v2 = "less than 200";
+      |      }
+      |      String_v2 = "less than 200";
       |    }
       |    int_v3 = int_v3 * 2;
       |    return int_v3;

@@ -508,7 +508,7 @@ class Jawa2Java(reporter: Reporter) {
     val loc: Location =  locationIter.next()
 
     println ("Location to visit next: " + loc.locationIndex + " :::: " + loc.locationSymbol.location)
-    if(mainIter.getVisitedCount(loc.locationIndex) > 0) {
+    if(locationIter.getVisitedCount(loc.locationIndex) > 0) {
       println ("VISIT New If Body: this location has already been visited: " + loc.locationIndex)
     } else {
       println("visited locations: " + locationIter.visitedLocations)
