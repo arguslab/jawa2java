@@ -1,0 +1,19 @@
+record `com.fgwei.IfJump1`  @kind class @AccessFlag PUBLIC {
+   }
+    procedure `int` `com.fgwei.IfJump1.main` () @owner ^`com.fgwei.IfJump1` @signature `Lcom/fgwei/IfJump1;.main:()I` @AccessFlag PUBLIC_STATIC {
+       `int` int_v2;
+           `int` int_v1;
+           `int` int_v0;
+
+         #L02b52c.  int_v2:= 5I;
+         #L02b52e.  int_v0:= 4I;
+         #L02b530.  if int_v0 >= int_v2 then goto L02b538;
+         #L02b534.  int_v1:= 15I;
+         #L02b536.  return int_v1;
+         #L02b538.  if int_v0 != int_v2 then goto L02b540;
+         #L02b53c.  int_v1:= 0I;
+         #L02b53e.  goto L02b536;
+         #L02b540.  int_v1:= 1I;
+         #L02b542.  goto L02b536;
+
+   }

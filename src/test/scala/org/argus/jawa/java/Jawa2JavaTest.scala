@@ -484,13 +484,11 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |
       |    int_v1 = 2130903040;
       |    int_v2 = 3;
-      |    if(!(int_v2 >= 0)) {
-      |      int_v1 = 0;
+      |    if(int_v2 >= 0) {
       |    }
       |    else {
-      |      int_v1 = 1;
+      |      int_v1 = 0;
       |    }
-      |    int_v2 = 4;
       |    return int_v1;
       |  }
       |}
@@ -507,13 +505,275 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |
       |    int_v1 = 2130903040;
       |    int_v2 = 3;
-      |    if(!(int_v2 <= 0)) {
+      |    if(int_v2 <= 0) {
+      |    }
+      |    else {
       |      int_v1 = 0;
       |    }
       |    return int_v1;
       |  }
       |}
       |""".stripMargin.trim
+
+
+
+  /*new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/jump/IfJump3.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |
+      |public class IfJump2 {
+      |  public static int main() {
+      |    int a = 4;
+      |        int b;
+      |        if(a < 5) {
+      |            b = -1;
+      |        } else if(a == 5){
+      |            b = 0;
+      |        } else {
+      |            b = 1;
+      |        }
+      |
+      |        String str1 = "Hello";
+      |        String str2 = "World";
+      |        String str3 = str1 + str2;
+      |
+      |        return b;
+      |  }
+      |}
+      |""".stripMargin.trim
+
+  new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/jump/IfJump5.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |
+      |public class IfJump2 {
+      |  public static int main() {
+      |    int a = 4;
+      |        int b;
+      |        if(a < 5) {
+      |            b = -1;
+      |        } else if(a == 5){
+      |            b = 0;
+      |        } else {
+      |            b = 1;
+      |        }
+      |
+      |        String str1 = "Hello";
+      |        String str2 = "World";
+      |        String str3 = str1 + str2;
+      |
+      |        if (str3.equals("test")) {
+      |            str1 = "Hello Again";
+      |        } else if (str3.equals("test1")) {
+      |            str1 = "Hello Again1";
+      |        } else {
+      |            str1 = str2;
+      |        }
+      |
+      |        return b;
+      |  }
+      |}
+      |""".stripMargin.trim
+
+  new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/jump/IfJump_with_for_loop.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |
+      |public class IfJump2 {
+      |  public static int main() {
+      |    int a = 4;
+      |        int b;
+      |        if(a < 5) {
+      |            b = -1;
+      |        } else if(a == 5){
+      |            b = 0;
+      |        } else {
+      |            b = 1;
+      |        }
+      |
+      |        String str1 = "Hello";
+      |        String str2 = "World";
+      |        String str3 = str1 + str2;
+      |
+      |        if (str3.equals("test")) {
+      |            str1 = "Hello Again";
+      |        } else if (str3.equals("test1")) {
+      |            str1 = "Hello Again1";
+      |        } else {
+      |            str1 = str2;
+      |        }
+      |
+      |        int sum = 0;
+      |        for(int i = 0; i < 100; i++) {
+      |            sum = sum + i;
+      |        }
+      |
+      |        return b;
+      |  }
+      |}
+      |""".stripMargin.trim
+
+  new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/jump/IfJump_nested.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |
+      |public class IfJump2 {
+      |  public static int main() {
+      |    String str1 = "Hello";
+      |
+      |        int sum = 50;
+      |
+      |        if(sum < 100 ) {
+      |            int c = sum + 100;
+      |            if (c < 200) {
+      |                str1 = "less than 200";
+      |            } else {
+      |                str1 = "greater than 200";
+      |            }
+      |        }
+      |
+      |        return sum;
+      |  }
+      |}
+      |""".stripMargin.trim*/
+
+  /*new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/simple/IfJump_nested_2.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |
+      |public class IfJump2 {
+      |  public static int main() {
+      |     String str1 = "Hello";
+      |
+      |        int sum = 50;
+      |
+      |        if(sum < 100 ) {
+      |            int c = sum + 100;
+      |            if (c < 200) {
+      |                str1 = "less than 200";
+      |            } else {
+      |                str1 = "greater than 200";
+      |            }
+      |        }
+      |
+      |        sum = sum * 2;
+      |        return sum;
+      |  }
+      |}
+      |""".stripMargin.trim*/
+
+  new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/simple/IfJump_nested_3_with_else.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |import java.lang.String;
+      |
+      |public class IfJump1 {
+      |  public static int main() {
+      |     int int_v0;
+      |     int int_v3;
+      |     int int_v4;
+      |     String String_v2;
+      |     int int_v1;
+      |
+      |    String_v2 = "Hello";
+      |    int_v3 = 50;
+      |    int_v4 = 100;
+      |    if(int_v3 >= int_v4) {
+      |      int_v1 = int_v3 + 500;
+      |      int_v4 = 600;
+      |      if(int_v1 >= int_v4) {
+      |        String_v2 = "greater than 600";
+      |      }
+      |      else {
+      |        String_v2 = "less than 600";
+      |      }
+      |    }
+      |    else {
+      |      int_v0 = int_v3 + 100;
+      |      int_v4 = 200;
+      |      if(int_v0 >= int_v4) {
+      |        String_v2 = "greater than 200";
+      |      }
+      |      else {
+      |        String_v2 = "less than 200";
+      |      }
+      |    }
+      |    int_v3 = int_v3 * 2;
+      |    return int_v3;
+      |  }
+      |}
+      |""".stripMargin.trim
+
+  /*new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/jump/IfJump_nested_3_with_else_2.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |
+      |public class IfJump2 {
+      |  public static int main() {
+      |       String str1 = "Hello";
+      |
+      |        int sum = 50;
+      |
+      |        if(sum < 100 ) {
+      |            int c = sum + 100;
+      |            if (c < 200) {
+      |                str1 = "less than 200";
+      |            } else {
+      |                str1 = "greater than 200";
+      |            }
+      |        } else {
+      |            int d = sum + 500;
+      |            if (d < 600) {
+      |                str1 = "less than 600";
+      |            } else {
+      |                str1 = "greater than 600";
+      |            }
+      |            sum = sum + 9;
+      |        }
+      |
+      |        sum = sum * 2;
+      |        return sum;
+      |  }
+      |}
+      |""".stripMargin.trim*/
+
+ /* new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/simple/IfJump_with_for_loop.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |
+      |public class IfJump2 {
+      |  public static int main() {
+      |    int a = 4;
+      |        int b;
+      |        if(a < 5) {
+      |            b = -1;
+      |        } else if(a == 5){
+      |            b = 0;
+      |        } else {
+      |            b = 1;
+      |        }
+      |
+      |        String str1 = "Hello";
+      |        String str2 = "World";
+      |        String str3 = str1 + str2;
+      |
+      |        if (str3.equals("test")) {
+      |            str1 = "Hello Again";
+      |        } else if (str3.equals("test1")) {
+      |            str1 = "Hello Again1";
+      |        } else {
+      |            str1 = str2;
+      |        }
+      |
+      |        int sum = 0;
+      |        for(int i = 0; i < 100; i++) {
+      |            sum = sum + i;
+      |        }
+      |
+      |        return b;
+      |  }
+      |}
+      |""".stripMargin.trim*/
 
   //  new FgSourceFile(new PlainFile(new File("src/test/resources/array/ArrayAccess1.pilar"))) produceJavaClass
 //    """package com.fgwei;

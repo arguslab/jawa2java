@@ -1,0 +1,68 @@
+record `com.fgwei.IfJump1`  @kind class @AccessFlag PUBLIC {
+   }
+    procedure `int` `com.fgwei.IfJump1.main` () @owner ^`com.fgwei.IfJump1` @signature `Lcom/fgwei/IfJump1;.main:()I` @AccessFlag PUBLIC_STATIC {
+          `java.lang.String` String_v3;
+          `int` int_v5;
+          `java.lang.String` String_v4;
+          `int` int_v0;
+          `java.lang.StringBuilder` StringBuilder_temp;
+          `java.lang.StringBuilder` StringBuilder_v5;
+          `java.lang.String` String_v2;
+          `int` int_v1;
+          `java.lang.String` String_temp;
+
+         #L02b540.  int_v5:= 5I;
+         #L02b542.  int_v0:= 4I;
+
+         #L02b544.  if int_v0 >= int_v5 then goto L02b576;
+         #L02b548.  int_v1:= 15I;
+         #L02b54a.  String_v2:= "Hello" @kind object;
+         #L02b54e.  String_v3:= "World" @kind object;
+         #L02b552.  StringBuilder_v5:= new `java.lang.StringBuilder`;
+         #L02b556.  call `java.lang.StringBuilder.<init>`(StringBuilder_v5) @signature `Ljava/lang/StringBuilder;.<init>:()V` @classDescriptor ^`java.lang.StringBuilder` @kind direct;
+         #L02b55c.  call StringBuilder_temp:=  `java.lang.StringBuilder.append`(StringBuilder_v5, String_v2) @signature `Ljava/lang/StringBuilder;.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;` @classDescriptor ^`java.lang.StringBuilder` @kind virtual;
+         #L02b562.  StringBuilder_v5:= StringBuilder_temp  @kind object;
+         #L02b564.  call StringBuilder_temp:=  `java.lang.StringBuilder.append`(StringBuilder_v5, String_v3) @signature `Ljava/lang/StringBuilder;.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;` @classDescriptor ^`java.lang.StringBuilder` @kind virtual;
+         #L02b56a.  StringBuilder_v5:= StringBuilder_temp  @kind object;
+         #L02b56c.  call String_temp:=  `java.lang.StringBuilder.toString`(StringBuilder_v5) @signature `Ljava/lang/StringBuilder;.toString:()Ljava/lang/String;` @classDescriptor ^`java.lang.StringBuilder` @kind virtual;
+         #L02b572.  String_v4:= String_temp  @kind object;
+         #L02b574.  return int_v1;
+         #L02b576.  if int_v0 != int_v5 then goto L02b57e;
+         #L02b57a.  int_v1:= 0I;
+         #L02b57c.  goto L02b54a;
+         #L02b57e.  int_v1:= 1I;
+         #L02b580.  goto L02b54a;
+
+   }
+   ------------
+   #L02b544.  if int_v0 >= int_v5 then goto L02b576;
+   #L02b576.  if int_v0 != int_v5 then goto L02b57e;
+   #L02b57a.  int_v1:= 0I;
+   #L02b57c.  goto L02b54a;
+
+   #L02b548.  int_v1:= 15I;
+
+   ~~~~~~~~~
+      #L02b576.  if int_v0 != int_v5 then goto L02b57e;
+      #L02b57e.  int_v1:= 1I;
+      #L02b580.  goto L02b54a;
+
+      #L02b57a.  int_v1:= 0I;
+      #L02b57c.  goto L02b54a;
+
+
+
+      ----------
+
+      if(v0 >= v5) {
+         if(v0 != v5) {
+            v1 = 1
+         }
+         else {
+            v1 = 0
+         }
+      } else {
+        v1 = 15;        // -1 = 15???
+      }
+----------------------------
+

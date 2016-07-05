@@ -11,3 +11,4 @@ record `com.fgwei.IfJump2`  @kind class @AccessFlag PUBLIC {
 #L026eb0.   return int_v1;
 
    }
+

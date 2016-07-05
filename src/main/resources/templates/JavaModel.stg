@@ -111,7 +111,8 @@ $var$ instanceof $type$
 >>
 
 IfStatement(token, cond, body) ::= <<
-$token$$if(cond)$(!($cond$))$endif$ {
+$! $token$$if(cond)$(!($cond$))$endif$ { !$
+$token$$if(cond)$($cond$)$endif$ {
   $body$
 }
 >>

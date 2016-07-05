@@ -1,0 +1,59 @@
+record `com.fgwei.IfJump1`  @kind class @AccessFlag PUBLIC {
+   }
+    procedure `int` `com.fgwei.IfJump1.main` () @owner ^`com.fgwei.IfJump1` @signature `Lcom/fgwei/IfJump1;.main:()I` @AccessFlag PUBLIC_STATIC {
+       `java.lang.String` String_v3;
+           `int` int_v5;
+           `boolean` boolean_temp;
+           `java.lang.String` String_v4;
+           `int` int_v0;
+           `boolean` boolean_v5;
+           `java.lang.String` String_v5;
+           `java.lang.StringBuilder` StringBuilder_temp;
+           `java.lang.StringBuilder` StringBuilder_v5;
+           `java.lang.String` String_v2;
+           `int` int_v1;
+           `java.lang.String` String_temp;
+
+         #L02b56c.  int_v5:= 5I;
+         #L02b56e.  int_v0:= 4I;
+            #L02b570.  if int_v0 >= int_v5 then goto L02b5b6;
+            #L02b574.  int_v1:= 15I;
+
+         #L02b576.  String_v2:= "Hello" @kind object;
+         #L02b57a.  String_v3:= "World" @kind object;
+         #L02b57e.  StringBuilder_v5:= new `java.lang.StringBuilder`;
+         #L02b582.  call `java.lang.StringBuilder.<init>`(StringBuilder_v5) @signature `Ljava/lang/StringBuilder;.<init>:()V` @classDescriptor ^`java.lang.StringBuilder` @kind direct;
+         #L02b588.  call StringBuilder_temp:=  `java.lang.StringBuilder.append`(StringBuilder_v5, String_v2) @signature `Ljava/lang/StringBuilder;.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;` @classDescriptor ^`java.lang.StringBuilder` @kind virtual;
+         #L02b58e.  StringBuilder_v5:= StringBuilder_temp  @kind object;
+
+         #L02b590.  call StringBuilder_temp:=  `java.lang.StringBuilder.append`(StringBuilder_v5, String_v3) @signature `Ljava/lang/StringBuilder;.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;` @classDescriptor ^`java.lang.StringBuilder` @kind virtual;
+         #L02b596.  StringBuilder_v5:= StringBuilder_temp  @kind object;
+         #L02b598.  call String_temp:=  `java.lang.StringBuilder.toString`(StringBuilder_v5) @signature `Ljava/lang/StringBuilder;.toString:()Ljava/lang/String;` @classDescriptor ^`java.lang.StringBuilder` @kind virtual;
+         #L02b59e.  String_v4:= String_temp  @kind object;
+
+         #L02b5a0.  String_v5:= "test" @kind object;
+         #L02b5a4.  call boolean_temp:=  `java.lang.String.equals`(String_v4, String_v5) @signature `Ljava/lang/String;.equals:(Ljava/lang/Object;)Z` @classDescriptor ^`java.lang.String` @kind virtual;
+         #L02b5aa.  boolean_v5:= boolean_temp;
+
+                #L02b5ac.  if boolean_v5 == 0 then goto L02b5c2;
+                #L02b5b0.  String_v2:= "Hello Again" @kind object;
+         #L02b5b4.  return int_v1;
+
+            #L02b5b6.  if int_v0 != int_v5 then goto L02b5be;
+            #L02b5ba.  int_v1:= 0I;
+            #L02b5bc.  goto L02b576;
+
+            #L02b5be.  int_v1:= 1I;
+            #L02b5c0.  goto L02b576;
+
+                #L02b5c2.  String_v5:= "test1" @kind object;
+                #L02b5c6.  call boolean_temp:=  `java.lang.String.equals`(String_v4, String_v5) @signature `Ljava/lang/String;.equals:(Ljava/lang/Object;)Z` @classDescriptor ^`java.lang.String` @kind virtual;
+                #L02b5cc.  boolean_v5:= boolean_temp;
+                #L02b5ce.  if boolean_v5 == 0 then goto L02b5d8;
+                #L02b5d2.  String_v2:= "Hello Again1" @kind object;
+                #L02b5d6.  goto L02b5b4;
+
+                #L02b5d8.  String_v2:= String_v3  @kind object;
+                #L02b5da.  goto L02b5b4;
+
+   }

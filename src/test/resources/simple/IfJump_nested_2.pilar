@@ -1,0 +1,25 @@
+record `com.fgwei.IfJump1`  @kind class @AccessFlag PUBLIC {
+   }
+    procedure `int` `com.fgwei.IfJump1.main` () @owner ^`com.fgwei.IfJump1` @signature `Lcom/fgwei/IfJump1;.main:()I` @AccessFlag PUBLIC_STATIC {
+        `int` int_v2;
+           `int` int_v0;
+           `int` int_v3;
+           `java.lang.String` String_v1;
+
+         #L02b540.  String_v1:= "Hello" @kind object;
+         #L02b544.  int_v2:= 50I;
+         #L02b548.  int_v3:= 100I;
+
+            #L02b54c.  if int_v2 >= int_v3 then goto L02b560;
+            #L02b550.  int_v0:= int_v2 + 100;
+            #L02b554.  int_v3:= 200I;
+                #L02b558.  if int_v0 >= int_v3 then goto L02b566;
+                #L02b55c.  String_v1:= "less than 200" @kind object;
+
+            #L02b560.  int_v2:= int_v2 * 2;
+            #L02b564.  return int_v2;
+
+                #L02b566.  String_v1:= "greater than 200" @kind object;
+                #L02b56a.  goto L02b560;
+
+   }
