@@ -516,152 +516,6 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |""".stripMargin.trim
 
 
-
-  /*new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/jump/IfJump3.pilar"))) produceJavaClass
-    """package com.fgwei;
-      |
-      |
-      |public class IfJump2 {
-      |  public static int main() {
-      |    int a = 4;
-      |        int b;
-      |        if(a < 5) {
-      |            b = -1;
-      |        } else if(a == 5){
-      |            b = 0;
-      |        } else {
-      |            b = 1;
-      |        }
-      |
-      |        String str1 = "Hello";
-      |        String str2 = "World";
-      |        String str3 = str1 + str2;
-      |
-      |        return b;
-      |  }
-      |}
-      |""".stripMargin.trim
-
-  new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/jump/IfJump5.pilar"))) produceJavaClass
-    """package com.fgwei;
-      |
-      |
-      |public class IfJump2 {
-      |  public static int main() {
-      |    int a = 4;
-      |        int b;
-      |        if(a < 5) {
-      |            b = -1;
-      |        } else if(a == 5){
-      |            b = 0;
-      |        } else {
-      |            b = 1;
-      |        }
-      |
-      |        String str1 = "Hello";
-      |        String str2 = "World";
-      |        String str3 = str1 + str2;
-      |
-      |        if (str3.equals("test")) {
-      |            str1 = "Hello Again";
-      |        } else if (str3.equals("test1")) {
-      |            str1 = "Hello Again1";
-      |        } else {
-      |            str1 = str2;
-      |        }
-      |
-      |        return b;
-      |  }
-      |}
-      |""".stripMargin.trim
-
-  new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/jump/IfJump_with_for_loop.pilar"))) produceJavaClass
-    """package com.fgwei;
-      |
-      |
-      |public class IfJump2 {
-      |  public static int main() {
-      |    int a = 4;
-      |        int b;
-      |        if(a < 5) {
-      |            b = -1;
-      |        } else if(a == 5){
-      |            b = 0;
-      |        } else {
-      |            b = 1;
-      |        }
-      |
-      |        String str1 = "Hello";
-      |        String str2 = "World";
-      |        String str3 = str1 + str2;
-      |
-      |        if (str3.equals("test")) {
-      |            str1 = "Hello Again";
-      |        } else if (str3.equals("test1")) {
-      |            str1 = "Hello Again1";
-      |        } else {
-      |            str1 = str2;
-      |        }
-      |
-      |        int sum = 0;
-      |        for(int i = 0; i < 100; i++) {
-      |            sum = sum + i;
-      |        }
-      |
-      |        return b;
-      |  }
-      |}
-      |""".stripMargin.trim
-
-  new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/jump/IfJump_nested.pilar"))) produceJavaClass
-    """package com.fgwei;
-      |
-      |
-      |public class IfJump2 {
-      |  public static int main() {
-      |    String str1 = "Hello";
-      |
-      |        int sum = 50;
-      |
-      |        if(sum < 100 ) {
-      |            int c = sum + 100;
-      |            if (c < 200) {
-      |                str1 = "less than 200";
-      |            } else {
-      |                str1 = "greater than 200";
-      |            }
-      |        }
-      |
-      |        return sum;
-      |  }
-      |}
-      |""".stripMargin.trim*/
-
-  /*new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/simple/IfJump_nested_2.pilar"))) produceJavaClass
-    """package com.fgwei;
-      |
-      |
-      |public class IfJump2 {
-      |  public static int main() {
-      |     String str1 = "Hello";
-      |
-      |        int sum = 50;
-      |
-      |        if(sum < 100 ) {
-      |            int c = sum + 100;
-      |            if (c < 200) {
-      |                str1 = "less than 200";
-      |            } else {
-      |                str1 = "greater than 200";
-      |            }
-      |        }
-      |
-      |        sum = sum * 2;
-      |        return sum;
-      |  }
-      |}
-      |""".stripMargin.trim*/
-
   new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/simple/IfJump_nested_3_with_else.pilar"))) produceJavaClass
     """package com.fgwei;
       |
@@ -687,7 +541,6 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |      else {
       |        String_v2 = "less than 600";
       |      }
-      |      String_v2 = "less than 600";
       |    }
       |    else {
       |      int_v0 = int_v3 + 100;
@@ -698,7 +551,6 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |      else {
       |        String_v2 = "less than 200";
       |      }
-      |      String_v2 = "less than 200";
       |    }
       |    int_v3 = int_v3 * 2;
       |    return int_v3;
@@ -734,7 +586,6 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |        else {
       |          String_v2 = "less than 600";
       |        }
-      |        String_v2 = "less than 600";
       |        int_v3 = int_v3 + 9;
       |      }
       |      else {
@@ -747,30 +598,12 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |          else {
       |            String_v2 = "less than 600";
       |          }
-      |          String_v2 = "less than 600";
       |          int_v3 = int_v3 + 9;
       |        }
       |        else {
       |          String_v2 = "equal to 50";
       |        }
-      |        String_v2 = "equal to 50";
       |      }
-      |      if(int_v3 >= int_v5) {
-      |        int_v1 = int_v3 + 500;
-      |        int_v4 = 600;
-      |        if(int_v1 >= int_v4) {
-      |          String_v2 = "greater than 600";
-      |        }
-      |        else {
-      |          String_v2 = "less than 600";
-      |        }
-      |        String_v2 = "less than 600";
-      |        int_v3 = int_v3 + 9;
-      |      }
-      |      else {
-      |        String_v2 = "equal to 50";
-      |      }
-      |      String_v2 = "equal to 50";
       |    }
       |    else {
       |      int_v0 = int_v3 + 100;
@@ -780,7 +613,6 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |      else {
       |        String_v2 = "less than 200";
       |      }
-      |      String_v2 = "less than 200";
       |    }
       |    int_v3 = int_v3 * 2;
       |    return int_v3;
@@ -788,88 +620,6 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |}
       |""".stripMargin.trim
 
-  /*new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/jump/IfJump_nested_3_with_else_2.pilar"))) produceJavaClass
-    """package com.fgwei;
-      |
-      |
-      |public class IfJump2 {
-      |  public static int main() {
-      |       String str1 = "Hello";
-      |
-      |        int sum = 50;
-      |
-      |        if(sum < 100 ) {
-      |            int c = sum + 100;
-      |            if (c < 200) {
-      |                str1 = "less than 200";
-      |            } else {
-      |                str1 = "greater than 200";
-      |            }
-      |        } else {
-      |            int d = sum + 500;
-      |            if (d < 600) {
-      |                str1 = "less than 600";
-      |            } else {
-      |                str1 = "greater than 600";
-      |            }
-      |            sum = sum + 9;
-      |        }
-      |
-      |        sum = sum * 2;
-      |        return sum;
-      |  }
-      |}
-      |""".stripMargin.trim*/
-
- /* new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/simple/IfJump_with_for_loop.pilar"))) produceJavaClass
-    """package com.fgwei;
-      |
-      |
-      |public class IfJump2 {
-      |  public static int main() {
-      |    int a = 4;
-      |        int b;
-      |        if(a < 5) {
-      |            b = -1;
-      |        } else if(a == 5){
-      |            b = 0;
-      |        } else {
-      |            b = 1;
-      |        }
-      |
-      |        String str1 = "Hello";
-      |        String str2 = "World";
-      |        String str3 = str1 + str2;
-      |
-      |        if (str3.equals("test")) {
-      |            str1 = "Hello Again";
-      |        } else if (str3.equals("test1")) {
-      |            str1 = "Hello Again1";
-      |        } else {
-      |            str1 = str2;
-      |        }
-      |
-      |        int sum = 0;
-      |        for(int i = 0; i < 100; i++) {
-      |            sum = sum + i;
-      |        }
-      |
-      |        return b;
-      |  }
-      |}
-      |""".stripMargin.trim*/
-
-  //  new FgSourceFile(new PlainFile(new File("src/test/resources/array/ArrayAccess1.pilar"))) produceJavaClass
-//    """package com.fgwei;
-//      |
-//      |
-//      |public class RecordDecl {
-//      |  public static int main() {
-//      |    int_v2:= 2130903040I ;
-//      |
-//      |  }
-//      |}
-//    """.stripMargin.trim
 
   class TestFile(s: FgSourceFile) {
 
@@ -913,8 +663,8 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       println ( "Differences2: \n||~" + (expectedLines.mkString("") diff translatedLines.mkString("")) + "~||" )
 
       //      translatedLines.mkString("") == expectedLines.mkString("")
-      println ("translated: " + translatedLines.toList)
-      println ("expected  : " + expectedLines.toList)
+      println ("translated: " + translatedLines)
+      println ("expected  : " + expectedLines)
       translatedLines == expectedLines
     }
   }

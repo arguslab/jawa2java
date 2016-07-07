@@ -1,0 +1,39 @@
+record `com.fgwei.IfJump1`  @kind class @AccessFlag PUBLIC {
+   }
+    procedure `int` `com.fgwei.IfJump1.main` () @owner ^`com.fgwei.IfJump1` @signature `Lcom/fgwei/IfJump1;.main:()I` @AccessFlag PUBLIC_STATIC {
+      `int` int_v5;
+         `int` int_v0;
+         `int` int_v3;
+         `int` int_v4;
+         `java.lang.String` String_v2;
+         `int` int_v1;
+
+       #L02b550.  int_v5:= 200I;
+       #L02b554.  int_v4:= 100I;
+       #L02b558.  String_v2:= "Hello" @kind object;
+       #L02b55c.  int_v3:= 50I;
+       #L02b560.  if int_v3 >= int_v4 then goto L02b57c;
+       #L02b564.  int_v0:= int_v3 + 100;
+       #L02b568.  if int_v0 >= int_v5 then goto L02b576;
+       #L02b56c.  String_v2:= "less than 200" @kind object;
+       #L02b570.  int_v3:= int_v3 * 2;
+       #L02b574.  return int_v3;
+
+
+       #L02b576.  String_v2:= "greater than 200" @kind object;
+       #L02b57a.  goto L02b570;
+       #L02b57c.  if int_v3 <= int_v4 then goto L02b58a;
+       #L02b580.  if int_v3 >= int_v5 then goto L02b58a;
+       #L02b584.  String_v2:= "equal to 50" @kind object;
+       #L02b588.  goto L02b570;
+       #L02b58a.  int_v1:= int_v3 + 500;
+       #L02b58e.  int_v4:= 600I;
+       #L02b592.  if int_v1 >= int_v4 then goto L02b5a0;
+       #L02b596.  String_v2:= "less than 600" @kind object;
+       #L02b59a.  int_v3:= int_v3 + 9;
+       #L02b59e.  goto L02b570;
+       #L02b5a0.  String_v2:= "greater than 600" @kind object;
+       #L02b5a4.  goto L02b59a;
+
+   }
+

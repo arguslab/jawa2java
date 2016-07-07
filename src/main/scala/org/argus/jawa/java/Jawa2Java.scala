@@ -35,6 +35,9 @@ class Jawa2Java(reporter: Reporter) {
     }
     var pos = 0
     val visitedLocations: MMap[Int, Int] = mmapEmpty
+    val targetLocations: MMap[Int, Int] = mmapEmpty
+    val nonReusableLocations: MList[Int] = mlistEmpty
+
     def next(): Location = {
       val current: Location = locations(pos)
       pos += 1
@@ -51,6 +54,14 @@ class Jawa2Java(reporter: Reporter) {
 
     def visitLocation(locationIndex: Int): Unit = {
       visitedLocations(locationIndex) = visitedLocations.getOrElse(locationIndex, 0) + 1
+    }
+
+    def addTargetLocation(locationIndex: Int): Unit = {
+      targetLocations(locationIndex) = targetLocations.getOrElse(locationIndex, 0) + 1
+    }
+
+    def addNonResuableLocation(locationIndex: Int): Unit = {
+      nonReusableLocations += locationIndex
     }
 
     def getVisitedCount(locationIndex: Int): Int = {
@@ -77,7 +88,19 @@ class Jawa2Java(reporter: Reporter) {
                            var isElseIfStatement: Boolean,
                            var isElseStatement: Boolean,
                            var targetLocation: String,
-                           var locationOffset: Int = 0)
+                           var locationOffset: Int = 0) {
+    val visitedLocations: MMap[Int, Int] = mmapEmpty
+
+    var nextLocation: Location = _
+
+    def visitLocation(locationIndex: Int): Unit = {
+      visitedLocations(locationIndex) = visitedLocations.getOrElse(locationIndex, 0) + 1
+    }
+
+    def getVisitedCount(locationIndex: Int): Int = {
+      visitedLocations.getOrElse(locationIndex, 0)
+    }
+  }
 
   def translate(source: Either[String, SourceFile]): IMap[JawaType, String] = {
     JawaParser.parse[CompilationUnit](source, resolveBody = true, reporter) match {
@@ -178,8 +201,8 @@ class Jawa2Java(reporter: Reporter) {
     val isConstructor: Boolean = md.isConstructor
 
     if(isConstructor) {
-      println ("is Constructor Declaration: " + md.signature.getClassName)
-      println ("is Constructor Declaration: " + md.accessModifier)
+//      println ("is Constructor Declaration: " + md.signature.getClassName)
+//      println ("is Constructor Declaration: " + md.accessModifier)
       methodTemplate.add("accessFlag", AccessFlag.toString(AccessFlag.getAccessFlags(md.accessModifier)).replace("constructor", "").trim)
       methodTemplate.add("methodName", md.signature.classTyp.simpleName)
     } else {
@@ -221,15 +244,15 @@ class Jawa2Java(reporter: Reporter) {
         bodyTemplate.add("statements", st._2)
     }
     methodTemplate.add("body", bodyTemplate)
-    println ("Body Statements are: " + bodyStatements)
+//    println ("Body Statements are: " + bodyStatements)
 
     methodTemplate
   }
 
   private def visitLocation(imports: MSet[JawaType], bodyStatements: MList[(Int, ST)], isConstructor: Boolean, thisParam: Option[Param], locationIter: LocationIterator, currentState: CurrentState): Unit = {
     val loc: Location = locationIter.next()
-    println ("Location Symbol is: " + loc.locationSymbol)
-    println ("Location Statement is: " + loc.statement)
+//    println ("Location Symbol is: " + loc.locationSymbol)
+//    println ("Location Statement is: " + loc.statement)
 
     val statement: Statement = loc.statement
     visitStatement(imports, bodyStatements, isConstructor, thisParam, locationIter, loc, statement, currentState, locationIter)
@@ -250,11 +273,23 @@ class Jawa2Java(reporter: Reporter) {
                              currentState: CurrentState,
                              mainIter: LocationIterator): Any = {
     println ("current location is : " + loc.locationIndex + " :: " + loc.locationSymbol.location)
-    if(locationIter.getVisitedCount(loc.locationIndex) > 0) {
-      println ("this location has already been visited: " + loc.locationIndex)
+//    if(locationIter.getVisitedCount(loc.locationIndex) > 0) {
+    if(currentState.getVisitedCount(loc.locationIndex) > 0) {
+//    if(mainIter.getVisitedCount(loc.locationIndex) > 0) {
+      println ("this location has already been visited: " + loc.locationIndex + " :: " + loc.locationUri)
       return
     } else {
-      println ("visited locations: " + locationIter.visitedLocations)
+//      println ("visited locations: " + locationIter.visitedLocations)
+    }
+
+    val prevEntry = bodyStatements.find(b => b._1 == loc.locationIndex)
+
+//    println("prev Entry is : " + prevEntry)
+    prevEntry match {
+      case Some(e) =>
+        bodyStatements += e
+        return
+      case None =>
     }
 
     statement match {
@@ -265,8 +300,14 @@ class Jawa2Java(reporter: Reporter) {
         rs.varOpt match {
           case Some(v) =>
             val returnTemplate = template.getInstanceOf("ReturnStatement")
-            println("Return Statement is: " + v.varName)
+//            println("Return Statement is: " + v.varName)
             returnTemplate.add("varName", v.varName)
+
+            if(!currentState.isIfStatement && !currentState.isElseIfStatement && !currentState.isElseStatement) {
+              println ("This is the end of the program. No need to parse others. Setting iterator to end" )
+//              mainIter.setPos(mainIter.locations.length)
+              locationIter.setPos(locationIter.locations.length - 1)
+            }
 
             bodyStatements += ((loc.locationIndex, returnTemplate))
           case None =>
@@ -276,12 +317,12 @@ class Jawa2Java(reporter: Reporter) {
         if (!(cs.methodNameSymbol.methodName equals "<init>")) {
           bodyStatements += ((loc.locationIndex, visitCallStatement(cs, imports)))
         } else {
-          println(" THis is Constructor : " + cs.args)
+//          println(" THis is Constructor : " + cs.args)
 
           val constructorCall: ST = visitConstructorCall(cs, imports)
 
           if (cs.isSuper && isConstructor) {
-            println("This is a super Constructor!!!")
+//            println("This is a super Constructor!!!")
             constructorCall.remove("func")
             constructorCall.add("func", "super")
             bodyStatements += ((loc.locationIndex, constructorCall))
@@ -313,13 +354,24 @@ class Jawa2Java(reporter: Reporter) {
         val elseLocationIter = LocationIterator(Right(elseBodyLocations))
         visitIfStatement(imports, bodyStatements, isConstructor, thisParam, elseLocationIter, loc, currentState, ifStatement, mainIter, "else")
 
+        elseBodyLocations.foreach(l => mainIter.addNonResuableLocation(l.locationIndex))
+
+//        println ("If Called from : " + loc.locationIndex + " :: " + loc.locationUri)
+//        println ("If Called from : " + loc.locationIndex + " :: " + loc.locationUri)
+//        println ("Resetting pos after if: " +  " new: " + (elseBodyLocations.last.locationIndex + 1 )+ " :: " + elseBodyLocations.last.locationUri)
+        if(elseBodyLocations.nonEmpty) {
+//          println ("Resetting to end of else from main visit.")
+          mainIter.setPos(elseBodyLocations.last.locationIndex + 1)
+          currentState.nextLocation = elseBodyLocations.last
+        }
 
       case _ =>
-        println("Location statement not identified: " + loc.statement.getClass)
+//        println("Location statement not identified: " + loc.statement.getClass)
     }
     //    locationIter.visitLocation(loc.locationIndex)
     //Changed this to mainIter.
     mainIter.visitLocation(loc.locationIndex)
+    currentState.visitLocation(loc.locationIndex)
   }
 
   def prepareIfBodyStatements(imports: MSet[JawaType],
@@ -337,9 +389,9 @@ class Jawa2Java(reporter: Reporter) {
     // Set location iterator to the target location of If Jump. This iterator will now be used to follow the If statements.
     locationIter.setPos(currentLocation)
 
-    println ("Flag check before Retreive function check: " + currentState.isIfStatement + ": " + currentState.isElseStatement + " : " + currentState.isElseIfStatement)
-    println ("Iterator check before Retreive function check: " + locationIter.locations.getClass)
-    println ("Retreive function check: " + locationIter.retrieveLocation(loc.locationIndex))
+//    println ("Flag check before Retreive function check: " + currentState.isIfStatement + ": " + currentState.isElseStatement + " : " + currentState.isElseIfStatement)
+//    println ("Iterator check before Retreive function check: " + locationIter.locations.getClass)
+//    println ("Retreive function check: " + locationIter.retrieveLocation(loc.locationIndex))
     retrieveIfBodyLocations(ifBodyLocations, elseBodyLocations, loc.locationIndex, ifStatement.targetLocation.locationIndex, locationIter)
 
     // Mark all ifBodyLocations visited.
@@ -347,13 +399,20 @@ class Jawa2Java(reporter: Reporter) {
     //    ifBodyLocations.foreach(l => locationIter.visitLocation(l.locationIndex))
 
     //Debug
-    println ("IF BODY LOcations")
+//    println ("IF BODY LOcations")
     ifBodyLocations.foreach(l => println(l.locationUri))
-    println ("ELSE  BODY LOcations")
+//    println ("ELSE  BODY LOcations")
     elseBodyLocations.foreach(l => println(l.locationUri))
 
     // Reset the location iterator
     locationIter.setPos(originalLocation + 1)
+    /*if(elseBodyLocations.nonEmpty) {
+      println ("Resetting to end of else from prepareif body" + (elseBodyLocations.last.locationIndex + 1))
+      println ("Resetting to end of else from prepareif body" + (originalLocation + 1))
+      locationIter.setPos(elseBodyLocations.last.locationIndex + 1)
+    } else {
+      locationIter.setPos(originalLocation + 1)
+    }*/
     (ifBodyLocations, elseBodyLocations)
   }
 
@@ -370,22 +429,24 @@ class Jawa2Java(reporter: Reporter) {
                               startLocation: Int,
                               originalTargetLocation: Int,
                               locationIter: LocationIterator): Unit = {
-    println ( "Retrieving next location in IFBodyLocation: " + locationIter.locations.getClass)
+//    println ( "Retrieving next location in IFBodyLocation: " + locationIter.locations.getClass)
     val loc = locationIter.next()
 
     loc.statement match {
       case gs: GotoStatement =>
         val gotoLocation = gs.targetLocation.locationIndex
+        locationIter.addTargetLocation(gotoLocation)
+
         // This is a forward jump case. Add the location and follow the jump statement.
         if(gotoLocation > loc.locationIndex) {
-          println ("In IF: adding location: " + loc.locationUri)
+//          println ("In IF: adding location: " + loc.locationUri)
           addLocation(loc, ifBodyLocations )
           retrieveIfBodyLocations(ifBodyLocations, elseBodyLocations, startLocation, originalTargetLocation, locationIter)
         }
         // Backward jump, but after the initial If location
         // Add the location and all locations from initial If statement (@startLocation) to the current goto target location(@gotoLocation)
         else if(gotoLocation < loc.locationIndex && gotoLocation > startLocation) {
-          println ("In ELSE IF 1: adding location: " + loc.locationIndex + " > " + startLocation + "&&" + loc.locationIndex +" < " + gotoLocation )
+//          println ("In ELSE IF 1: adding location: " + loc.locationIndex + " > " + startLocation + "&&" + loc.locationIndex +" < " + gotoLocation )
           val addLocations = locationIter.locations.filter (l => l.locationIndex > startLocation && l.locationIndex < gotoLocation )
           addLocations.foreach(l =>println(l.locationUri + " :: " + l.locationIndex))
           elseBodyLocations ++= addLocations
@@ -393,7 +454,7 @@ class Jawa2Java(reporter: Reporter) {
         // Backward jump, but jumps even before the initial If location
         // Add the location and all locations from initial If location(@startLocation) to the initial target location (originalTargetLocation)
         else if (gotoLocation < startLocation) {
-          println ("In ELSE IF 1: adding location: " )
+//          println ("In ELSE IF 1: adding location: " )
           val addLocations = locationIter.locations.filter (l => l.locationIndex > startLocation && l.locationIndex < originalTargetLocation )
           addLocations.foreach(l =>println(l.locationUri))
 
@@ -401,7 +462,7 @@ class Jawa2Java(reporter: Reporter) {
         }
 
       case rs: ReturnStatement =>
-        println ("case Return Statement in retrieveIfBodyLocations. Indicates end of method. ")
+//        println ("case Return Statement in retrieveIfBodyLocations. Indicates end of method. ")
         val addLocations = locationIter.locations.filter (l => l.locationIndex > startLocation && l.locationIndex < originalTargetLocation )
         val locationLimit: Option[Location] = addLocations find (al => al.statement.isInstanceOf[GotoStatement])
 
@@ -409,17 +470,17 @@ class Jawa2Java(reporter: Reporter) {
         locationLimit match {
           case Some(limit) =>
             addLocation(loc, ifBodyLocations)
-            println ("Before Filtering:"+ ifBodyLocations.size)
+//            println ("Before Filtering:"+ ifBodyLocations.size)
 
             val locationsToRemove = ifBodyLocations filter (l=> l.locationIndex > limit.statement.asInstanceOf[GotoStatement].targetLocation.locationIndex)
-            println ("After Filtering: " + ifBodyLocations.size)
-            println ("After Filtering: " + locationsToRemove)
+//            println ("After Filtering: " + ifBodyLocations.size)
+//            println ("After Filtering: " + locationsToRemove)
             for (r <- locationsToRemove) {
               ifBodyLocations.remove(ifBodyLocations.indexOf(r))
             }
 
           case None =>
-            println ("None in Return Statement in If. This Indicates that there is only else part in this if statement?? include the return statement outside if")
+//            println ("None in Return Statement in If. This Indicates that there is only else part in this if statement?? include the return statement outside if")
         }
         addLocations.foreach(l =>println("Adding: " + l.locationUri))
         elseBodyLocations ++= addLocations
@@ -430,7 +491,7 @@ class Jawa2Java(reporter: Reporter) {
     }
 
     def addLocation(l: Location, loc: MList[Location]): Unit = {
-      println("Adding location: " + l.locationUri + " :: " + l.locationIndex)
+//      println("Adding location: " + l.locationUri + " :: " + l.locationIndex)
       loc += l
     }
   }
@@ -446,34 +507,37 @@ class Jawa2Java(reporter: Reporter) {
                        mainIter: LocationIterator,
                        key: String): Unit = {
 //    if (!currentState.isIfStatement && !currentState.isElseIfStatement && !currentState.isElseStatement) {
+    val forPrint: Location = loc
     if (key == "if") {
-      println ("inside Original If Statement")
+      println ("inside Original If Statement: " + loc.locationIndex + " :: " + loc.locationUri)
       currentState.isIfStatement = true
       currentState.targetLocation = ifStatement.targetLocation.location
+    } else {
+      println ("inside Else Statement: " + loc.locationIndex + " :: " + loc.locationUri)
     }
 
-    println("If Statement: " + ifStatement.cond) //Binary Expression
-    println("If Statement: " + ifStatement.targetLocation.location)
-    println("location index before visiting if: " + loc.locationIndex)
+//    println("If Statement: " + ifStatement.cond) //Binary Expression
+//    println("If Statement: " + ifStatement.targetLocation.location)
+//    println("location index before visiting if: " + loc.locationIndex)
 
     val ifTemplate: ST = template.getInstanceOf("IfStatement")
 //    if (currentState.isIfStatement) {
     if (key == "if") {
-      println ("THis isIfStatement: " + locationIter.locations)
-      println ("THis isIfStatement: " + locationIter.locations.size)
-      println ("THis isIfStatement: " + locationIter.pos)
+//      println ("THis isIfStatement: " + locationIter.locations)
+//      println ("THis isIfStatement: " + locationIter.locations.size)
+//      println ("THis isIfStatement: " + locationIter.pos)
       ifTemplate.add("token", ifStatement.ifToken.text)
       ifTemplate.add("cond", visitBinaryExpression(ifStatement.cond))
     } else {
-      println ("THis isElseStatement: " + locationIter.locations)
-      println ("THis isElseStatement: " + locationIter.locations.size)
-      println ("THis isElseStatement: " + locationIter.pos)
+//      println ("THis isElseStatement: " + locationIter.locations)
+//      println ("THis isElseStatement: " + locationIter.locations.size)
+//      println ("THis isElseStatement: " + locationIter.pos)
       ifTemplate.add("token", "else")
     }
 
     val ifBodyStatements: MList[(Int, ST)] = mlistEmpty
-    println ("SECOND CALL : " + locationIter.locations.getClass)
-    println ("SECOND CALL : " + locationIter.locations.size)
+//    println ("SECOND CALL : " + locationIter.locations.getClass)
+//    println ("SECOND CALL : " + locationIter.locations.size)
 
     if(locationIter.hasNext){
       visitNewIfBodyLocation(imports, ifBodyStatements, isConstructor, thisParam, locationIter, currentState, bodyStatements, mainIter)
@@ -485,10 +549,11 @@ class Jawa2Java(reporter: Reporter) {
         ifBodyTemplate.add("statements", st._2)
     }
     ifTemplate.add("body", ifBodyTemplate)
-    println("Body Statements are: " + ifBodyStatements)
-    println("location index after returning from if: " + loc.locationIndex)
-    println("IFBODY IS : " + ifTemplate.render())
+//    println("Body Statements are: " + ifBodyStatements)
+//    println("location index after returning from if: " + loc.locationIndex)
+//    println("IFBODY IS : " + ifTemplate.render())
 
+    println("End of Visit If Statement." + + forPrint.locationIndex + " :: " + forPrint.locationUri)
     bodyStatements += ((loc.locationIndex + currentState.locationOffset, ifTemplate))
   }
 
@@ -501,37 +566,37 @@ class Jawa2Java(reporter: Reporter) {
                                      bodyStatements: MList[(Int, ST)],
                                      mainIter: LocationIterator
                                     ): Unit = {
-    println("location Iter : " + locationIter.locations.getClass)
-    println("location Iter : " + locationIter.locations.size)
-    println("location Iter : " + locationIter.pos)
-    println("location Iter : " + locationIter.visitedLocations)
+//    println("location Iter : " + locationIter.locations.getClass)
+//    println("location Iter : " + locationIter.locations.size)
+//    println("location Iter : " + locationIter.pos)
+//    println("location Iter : " + locationIter.visitedLocations)
     val loc: Location =  locationIter.next()
 
-    println ("Location to visit next: " + loc.locationIndex + " :::: " + loc.locationSymbol.location)
-    if(locationIter.getVisitedCount(loc.locationIndex) > 0) {
+//    println ("Location to visit next: " + loc.locationIndex + " :::: " + loc.locationSymbol.location)
+//    println ("target locations: : " + mainIter.targetLocations)
+//    if(locationIter.getVisitedCount(loc.locationIndex) > 0) {
+//    if(locationIter.getVisitedCount(loc.locationIndex) > 0) {
+    if(currentState.getVisitedCount(loc.locationIndex) > 0) {
       println ("VISIT New If Body: this location has already been visited: " + loc.locationIndex)
+      println ("%%%%%%%\n\n%%%%%%%%%")
     } else {
-      println("visited locations: " + locationIter.visitedLocations)
-
-
-      println("If Body Location Symbol is: " + loc.locationSymbol)
-      println("If Body Location Statement is: " + loc.statement)
-
+      println("in else")
       val statement: Statement = loc.statement
 
-      println("Here in If target location: ")
+//      println("Here in If target location: ")
       statement match {
         case gs: GotoStatement =>
-          println("This is goto statement within if body. This indicates end of if body")
+          mainIter.addTargetLocation(gs.targetLocation.locationIndex)
+//          println("This is goto statement within if body. This indicates end of if body")
           if (currentState.isIfStatement) {
-            println("Beginning else block now.")
+//            println("Beginning else block now.")
             //todo assign bodyStatements. Start new ifStatement Template with token else. Change current status to else statement.
             currentState.isIfStatement = false
             currentState.isElseStatement = true
             currentState.targetLocation = gs.targetLocation.location
-            println("new target location is: " + currentState.targetLocation)
+//            println("new target location is: " + currentState.targetLocation)
           } else if (currentState.isElseStatement) {
-            println("This is else statement. Resetting all If flags.")
+//            println("This is else statement. Resetting all If flags.")
             currentState.isIfStatement = false
             currentState.isElseIfStatement = false
             currentState.isElseStatement = false
@@ -539,37 +604,47 @@ class Jawa2Java(reporter: Reporter) {
           return
 
         case rs: ReturnStatement =>
-          println("This is return statement within if body. This indicates end of if body")
+//          println("This is return statement within if body. This indicates end of if body")
           visitStatement(imports, ifBodyStatements, isConstructor, thisParam, locationIter, loc, statement, currentState, mainIter)
           return
 
         case is: IfStatement =>
-          println("This is Inner nestede if....." + mainIter.locations.getClass)
-          println("This is Inner nestede if....." + mainIter.locations.size)
-          println("This is Inner nestede if....." + mainIter.pos)
-          println("This is Inner nestede if....." + locationIter.locations.getClass)
-          println("This is Inner nestede if....." + locationIter.locations.size)
-          println("This is Inner nestede if....." + locationIter.pos + " \n\n\n\n\n\n\n")
+//          println("This is Inner nestede if....." + mainIter.locations.getClass)
+//          println("This is Inner nestede if....." + mainIter.locations.size)
+//          println("This is Inner nestede if....." + mainIter.pos)
+//          println("This is Inner nestede if....." + locationIter.locations.getClass)
+//          println("This is Inner nestede if....." + locationIter.locations.size)
+//          println("This is Inner nestede if....." + locationIter.pos + " \n\n\n\n\n\n\n")
           val originalLocation = loc.locationIndex
 
+          // Resetting this location as all If Body statements are marked visited before it is visited.
+          // Check if this is still required as marking visited has been moved.
           mainIter.resetVisitedLocation(originalLocation)
           val newCurrentState = CurrentState(isConstructor = isConstructor, isIfStatement = false, isElseIfStatement = false, isElseStatement = false, null)
 
           visitStatement(imports, ifBodyStatements, isConstructor, thisParam, mainIter, loc, statement, newCurrentState, mainIter)
           // This will change the ifBodyLocation iterator(@locationIter) => need to reset it?
 
-          println("RETURNED FROM NESTED IF::: ")
-
-          println("RETURNED FROM NESTED IF....." + mainIter.locations.getClass)
-          println("RETURNED FROM NESTED IF....." + mainIter.locations.size)
-          println("RETURNED FROM NESTED IF....." + mainIter.pos)
-          println("RETURNED FROM NESTED IF....." + locationIter.locations.getClass)
-          println("RETURNED FROM NESTED IF....." + locationIter.locations.size)
-          println("RETURNED FROM NESTED IF....." + locationIter.pos + " \n\n\n\n\n\n\n")
+          currentState.visitedLocations ++= newCurrentState.visitedLocations
+          currentState.visitedLocations.foreach(l => println("parent visited: " + l._1))
+          newCurrentState.visitedLocations.foreach(l => println("new visited: " + l._1))
+//          println("RETURNED FROM NESTED IF::: ")
+//
+//          println("RETURNED FROM NESTED IF....." + mainIter.locations.getClass)
+//          println("RETURNED FROM NESTED IF....." + mainIter.locations.size)
+//          println("RETURNED FROM NESTED IF....." + mainIter.pos)
+//          println("RETURNED FROM NESTED IF....." + locationIter.locations.getClass)
+//          println("RETURNED FROM NESTED IF....." + locationIter.locations.size)
+//          println("RETURNED FROM NESTED IF....." + locationIter.pos + " \n\n\n\n\n\n\n")
+          //todo where to set this position??
           locationIter.setPos(originalLocation + 1)
+          locationIter.locations.foreach(l => println("if iterator locations: " + l.locationIndex+ " :: " + l.locationUri))
+          println("new Index pointed to: " + newCurrentState.nextLocation.locationIndex + " :: " + newCurrentState.nextLocation.locationUri)
+          println("size of location iter: " + locationIter.locations.size )
+//          locationIter.setPos(locationIter.locations.indexOf(newCurrentState.nextLocation) + 1)
 
         case _ =>
-          println("case wild card!!!!")
+//          println("case wild card!!!!")
           visitStatement(imports, ifBodyStatements, isConstructor, thisParam, locationIter, loc, statement, currentState, mainIter)
       }
     }
@@ -578,7 +653,7 @@ class Jawa2Java(reporter: Reporter) {
       //      visitNewIfBodyLocation(imports, ifBodyStatements, isConstructor, thisParam, locationIter, currentState, bodyStatements)
       visitNewIfBodyLocation(imports, ifBodyStatements, isConstructor, thisParam, locationIter, currentState, bodyStatements, mainIter)
     } else {
-      println ("End of Statements in If Body..No else statement required?? Reset all flags..." )
+//      println ("End of Statements in If Body..No else statement required?? Reset all flags..." )
       currentState.isIfStatement= false
       currentState.isElseIfStatement = false
       currentState.isElseStatement = false
@@ -618,7 +693,7 @@ class Jawa2Java(reporter: Reporter) {
         visitNameExpression(ne, imports)
 
       case newExp: NewExpression =>
-        println ("in new rhs expressions" + newExp.typ.simpleName)
+//        println ("in new rhs expressions" + newExp.typ.simpleName)
         val newTemplate: ST = template.getInstanceOf("NewExpression")
         if (newExp.dimentions > 0) {
           newTemplate.add("baseType", newExp.typ.simpleName.replace("[]", ""))
@@ -627,7 +702,7 @@ class Jawa2Java(reporter: Reporter) {
               v =>
                 val arrayTemplate = template.getInstanceOf("ArrayAccess")
                 arrayTemplate.add("arrayLength", v)
-                println ("INside ")
+//                println ("INside ")
                 arrayTemplate
             }
           }.toArray
@@ -661,8 +736,8 @@ class Jawa2Java(reporter: Reporter) {
         visitInstanceofExpression(insof, imports)
 
       case _ =>
-        println ("In RHS :" + rhs.getClass)
-        println ("In RHS :" + rhs.getFields)
+//        println ("In RHS :" + rhs.getClass)
+//        println ("In RHS :" + rhs.getFields)
         throw new Jawa2JavaTranslateException("No matching RHS expression on line: " + rhs.pos.line + ":" + rhs.pos.column )
     }
   }
@@ -670,14 +745,14 @@ class Jawa2Java(reporter: Reporter) {
   private def visitNameExpression(ne: NameExpression, imports: MSet[JawaType]): ST = {
     ne.varSymbol match {
       case Left(varSymbol) =>
-        println ("in name expression Not Static: " + ne.name)
+//        println ("in name expression Not Static: " + ne.name)
 
         val nameTemplate = template.getInstanceOf("NameExpression")
         nameTemplate.add("name", ne.name)
         nameTemplate
 
       case Right(fieldNameSymbol) =>
-        println ("in name expression Static: " + ne.name)
+//        println ("in name expression Static: " + ne.name)
 
         val staticTemplate = template.getInstanceOf("StaticNameExpression")
         staticTemplate.add("baseTyp", fieldNameSymbol.baseType.simpleName)
@@ -705,7 +780,7 @@ class Jawa2Java(reporter: Reporter) {
           case x if x.endsWith("D") => le.getString + "D"
           case _ => litToken
         }
-        println ("inside numerical literal Floating point")
+//        println ("inside numerical literal Floating point")
         numTemplate.add("nm", leVal)
         numTemplate
 
@@ -716,7 +791,7 @@ class Jawa2Java(reporter: Reporter) {
           case x if x.endsWith("L") => le.getString + "L"
           case _ => litToken
         }
-        println ("inside numerical literal Integer.")
+//        println ("inside numerical literal Integer.")
         numTemplate.add("nm", leVal)
         numTemplate
 
@@ -737,14 +812,14 @@ class Jawa2Java(reporter: Reporter) {
     }
     accessTemplate.add("baseTyp", baseType)
     accessTemplate.add("name", ae.fieldName)
-    println ("Access Expression : " + ae)
-    println ("Access Expression Base : " + ae.varSymbol.id)
-    println ("Access Expression Field Name: " + ae.fieldName)
+//    println ("Access Expression : " + ae)
+//    println ("Access Expression Base : " + ae.varSymbol.id)
+//    println ("Access Expression Field Name: " + ae.fieldName)
     accessTemplate
   }
 
   private def visitIndexingExpression(ie: IndexingExpression): ST = {
-    println ("IN indexing expression" + ie.base)
+//    println ("IN indexing expression" + ie.base)
     val indexingTemplate = template.getInstanceOf("IndexingExpression")
     indexingTemplate.add("name", ie.base)
     val indices: Array[Any] = ie.indices.map {
@@ -753,12 +828,12 @@ class Jawa2Java(reporter: Reporter) {
           case Left(varSymbol) =>
             val arrayTemplate = template.getInstanceOf("ArrayAccess")
             arrayTemplate.add("arrayLength", varSymbol.varName)
-            println ("Indexing suffix  "+ varSymbol.varName)
+//            println ("Indexing suffix  "+ varSymbol.varName)
             arrayTemplate
           case Right(lit) =>
             val arrayTemplate = template.getInstanceOf("ArrayAccess")
             arrayTemplate.add("arrayLength", lit.text)
-            println ("Indexing suffix  "+ lit.text)
+//            println ("Indexing suffix  "+ lit.text)
             arrayTemplate
         }
     }.toArray
@@ -789,8 +864,8 @@ class Jawa2Java(reporter: Reporter) {
   }
 
   private def visitInstanceofExpression(insof: InstanceofExpression, imports: MSet[JawaType]): ST = {
-    println ("This is instance of expression: ")
-    println ("This is instance of expression: " + insof.typExp.typ.simpleName + " instance " + insof.varSymbol.varName)
+//    println ("This is instance of expression: ")
+//    println ("This is instance of expression: " + insof.typExp.typ.simpleName + " instance " + insof.varSymbol.varName)
 
     val insofTemplate = template.getInstanceOf("InstanceofExpression")
     insofTemplate.add("var", insof.varSymbol.varName)
@@ -802,9 +877,9 @@ class Jawa2Java(reporter: Reporter) {
 
   private def visitCmpExpression(cmp: CmpExpression): ST = {
     val cmpTemplate: ST = template.getInstanceOf("BinaryExpression")
-    println("In Cmp Expression var1: " + cmp.var1Symbol.varName)
-    println("In Cmp Expression: " + cmp.cmp.text)
-    println("In Cmp Expression var2: " + cmp.var2Symbol.varName)
+//    println("In Cmp Expression var1: " + cmp.var1Symbol.varName)
+//    println("In Cmp Expression: " + cmp.cmp.text)
+//    println("In Cmp Expression var2: " + cmp.var2Symbol.varName)
     val op: String = cmp.cmp.text match {
       case "fcmpl" | "fcmpg" | "dcmpl" | "dcmpg" | "lcmp" => "<"
       case _ => throw new Jawa2JavaTranslateException("Unidentified cmp expression." + cmp.pos.line + ":" + cmp.pos.column )
@@ -823,8 +898,8 @@ class Jawa2Java(reporter: Reporter) {
     callTemplate.add("params", paramsTemplate.add("params", cc.args.toArray))
     addImport(baseType, imports)
 
-    println ("Visit Constructor Call function name: " + baseType.simpleName)
-    println ("Visit Constructor Call args: " + cc.args)
+//    println ("Visit Constructor Call function name: " + baseType.simpleName)
+//    println ("Visit Constructor Call args: " + cc.args)
 
     callTemplate
   }
