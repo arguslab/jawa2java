@@ -917,8 +917,20 @@ class Jawa2Java(reporter: Reporter) {
       staticTemplate.add("name", cs.methodNameSymbol.methodName)
       callTemplate.add("func", staticTemplate)
     } else {
-      callTemplate.add("func", cs.methodNameSymbol.methodName)
+      cs.recvOpt match {
+        case Some(s) =>
+          val staticTemplate = template.getInstanceOf("StaticNameExpression")
+          staticTemplate.add("baseTyp", s)
+          staticTemplate.add("name", cs.methodNameSymbol.methodName)
+          callTemplate.add("func", staticTemplate)
+        case None =>
+          callTemplate.add("func", cs.methodNameSymbol.methodName)
+      }
     }
+
+    println("Call Statement: " +cs.args)
+    println("Call Statement: " +cs.recvOpt)
+    cs.argVars.foreach(v => println(v.varName))
 
     callTemplate.add("params", paramsTemplate.add("params", cs.args.toArray))
     addImport(baseType, imports)

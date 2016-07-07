@@ -1,6 +1,6 @@
-record `com.fgwei.IfJump1`  @kind class @AccessFlag PUBLIC {
+record `com.fgwei.IfJump5`  @kind class @AccessFlag PUBLIC {
    }
-    procedure `int` `com.fgwei.IfJump1.main` () @owner ^`com.fgwei.IfJump1` @signature `Lcom/fgwei/IfJump1;.main:()I` @AccessFlag PUBLIC_STATIC {
+    procedure `int` `com.fgwei.IfJump5.main` () @owner ^`com.fgwei.IfJump5` @signature `Lcom/fgwei/IfJump5;.main:()I` @AccessFlag PUBLIC_STATIC {
        `java.lang.String` String_v3;
            `int` int_v5;
            `boolean` boolean_temp;
