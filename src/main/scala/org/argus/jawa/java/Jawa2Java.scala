@@ -857,7 +857,18 @@ class Jawa2Java(reporter: Reporter) {
     binaryTemplate.add("op", be.op.text)
     val right: String = be.right match {
       case Left(varSym) => varSym.varName
-      case Right(lit) => lit.text
+      case Right(lit) =>
+
+        //todo Find better handler for boolean
+        if(be.left.varName.contains("boolean")) {
+          if(lit.text == "0") {
+            "false"
+          } else {
+            "true"
+          }
+        } else {
+          lit.text
+        }
     }
     binaryTemplate.add("right", right)
     binaryTemplate
