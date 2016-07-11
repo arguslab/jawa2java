@@ -24,13 +24,13 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
   implicit def file2TestFile(s: FgSourceFile): TestFile =
     new TestFile(s)
 
-/*  new FgSourceFile(new PlainFile(new File("src/test/resources/simple/RecordDecl.pilar"))) produceJavaClass
-  """package com.fgwei;
-    |
-    |
-    |public class RecordDecl {
-    |}
-  """.stripMargin.trim*/
+  /*  new FgSourceFile(new PlainFile(new File("src/test/resources/simple/RecordDecl.pilar"))) produceJavaClass
+    """package com.fgwei;
+      |
+      |
+      |public class RecordDecl {
+      |}
+    """.stripMargin.trim*/
 
   new FgSourceFile(new PlainFile(new File("src/test/resources/simple/RecordDecl.pilar"))) produceJavaClass
     """package com.fgwei;
@@ -165,65 +165,65 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     """.stripMargin.trim
 
   new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/array/ArrayAccess3.pilar"))) produceJavaClass
-  """package com.fgwei;
-    |
-    |import java.lang.String;
-    |
-    |public class ArrayAccess3 {
-    |  public static String main() {
-    |     int int_v1;
-    |     String[] String_arr1_v1;
-    |     int int_v2;
-    |     int int_v3;
-    |     String String_v3;
-    |     String String_v4;
-    |     int int_v5;
-    |
-    |    int_v5 = 2;
-    |    int_v2 = 0;
-    |    int_v1 = 2130903040;
-    |    int_v1 = 3;
-    |    String_arr1_v1 = new String[int_v1];
-    |    int_v3 = 0;
-    |    String_v4 = "element 1 is tainted:";
-    |    String_arr1_v1[int_v3] = String_v4;
-    |    int_v3 = 1;
-    |    String_v4 = "phone";
-    |    String_arr1_v1[int_v3] = String_v4;
-    |    String_v4 = "neutral text";
-    |    String_arr1_v1[int_v5] = String_v4;
-    |    String_v3 = String_arr1_v1[int_v5];
-    |    return String_v3;
-    |  }
-    |}
-  """.stripMargin.trim
+    """package com.fgwei;
+      |
+      |import java.lang.String;
+      |
+      |public class ArrayAccess3 {
+      |  public static String main() {
+      |     int int_v1;
+      |     String[] String_arr1_v1;
+      |     int int_v2;
+      |     int int_v3;
+      |     String String_v3;
+      |     String String_v4;
+      |     int int_v5;
+      |
+      |    int_v5 = 2;
+      |    int_v2 = 0;
+      |    int_v1 = 2130903040;
+      |    int_v1 = 3;
+      |    String_arr1_v1 = new String[int_v1];
+      |    int_v3 = 0;
+      |    String_v4 = "element 1 is tainted:";
+      |    String_arr1_v1[int_v3] = String_v4;
+      |    int_v3 = 1;
+      |    String_v4 = "phone";
+      |    String_arr1_v1[int_v3] = String_v4;
+      |    String_v4 = "neutral text";
+      |    String_arr1_v1[int_v5] = String_v4;
+      |    String_v3 = String_arr1_v1[int_v5];
+      |    return String_v3;
+      |  }
+      |}
+    """.stripMargin.trim
 
   new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/array/ArrayCopy.pilar"))) produceJavaClass
-  """package com.fgwei;
-    |
-    |import java.lang.String;
-    |import java.lang.System;
-    |
-    |public class ArrayCopy {
-    |  public static String main() {
-    |     String[] String_arr1_v0;
-    |     String[] String_arr1_v1;
-    |     String String_v4;
-    |     int int_v5;
-    |     int int_v6;
-    |
-    |    int_v6 = 1;
-    |    int_v5 = 0;
-    |    String_v4 = "phone";
-    |    String_arr1_v0 = new String[int_v6];
-    |    String_arr1_v0[int_v5] = String_v4;
-    |    String_arr1_v1 = new String[int_v6];
-    |    System.arraycopy(String_arr1_v0, int_v5, String_arr1_v1, int_v5, int_v6);
-    |    String_v4 = String_arr1_v1[int_v5];
-    |    return String_v4;
-    |  }
-    |}
-  """.stripMargin.trim
+    """package com.fgwei;
+      |
+      |import java.lang.String;
+      |import java.lang.System;
+      |
+      |public class ArrayCopy {
+      |  public static String main() {
+      |     String[] String_arr1_v0;
+      |     String[] String_arr1_v1;
+      |     String String_v4;
+      |     int int_v5;
+      |     int int_v6;
+      |
+      |    int_v6 = 1;
+      |    int_v5 = 0;
+      |    String_v4 = "phone";
+      |    String_arr1_v0 = new String[int_v6];
+      |    String_arr1_v0[int_v5] = String_v4;
+      |    String_arr1_v1 = new String[int_v6];
+      |    System.arraycopy(String_arr1_v0, int_v5, String_arr1_v1, int_v5, int_v6);
+      |    String_v4 = String_arr1_v1[int_v5];
+      |    return String_v4;
+      |  }
+      |}
+    """.stripMargin.trim
 
   new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/simple/RecodDecl4_call_with_assignment.pilar"))) produceJavaClass
     """package com.fgwei;
@@ -254,92 +254,92 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     """.stripMargin.trim
 
   new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/doublelong/DoubleLong1.pilar"))) produceJavaClass
-  """package com.fgwei;
-    |
-    |import java.lang.Math;
-    |
-    |public class DoubleLong1 {
-    |  public static float main() {
-    |     double double_temp;
-    |     int int_v0;
-    |     float float_v0;
-    |     double double_v0;
-    |     double double_v2;
-    |     float float_v3;
-    |     float float_v5;
-    |
-    |    int_v0 = 1056964608;
-    |    float_v5 = 1111111111.00F;
-    |    float_v3 = float_v5 - int_v0;
-    |    double_v0 = (double) float_v5;
-    |    double_v2 = 0.471239D;
-    |    double_v0 = double_v0 * double_v2;
-    |    float_v5 = (float) double_v0;
-    |    double_v0 = (double) float_v5;
-    |    double_temp = Math.sin(double_v0);
-    |    double_v0 = double_temp;
-    |    float_v0 = (float) double_v0;
-    |    return float_v0;
-    |  }
-    |}
-  """.stripMargin.trim
+    """package com.fgwei;
+      |
+      |import java.lang.Math;
+      |
+      |public class DoubleLong1 {
+      |  public static float main() {
+      |     double double_temp;
+      |     int int_v0;
+      |     float float_v0;
+      |     double double_v0;
+      |     double double_v2;
+      |     float float_v3;
+      |     float float_v5;
+      |
+      |    int_v0 = 1056964608;
+      |    float_v5 = 1111111111.00F;
+      |    float_v3 = float_v5 - int_v0;
+      |    double_v0 = (double) float_v5;
+      |    double_v2 = 0.471239D;
+      |    double_v0 = double_v0 * double_v2;
+      |    float_v5 = (float) double_v0;
+      |    double_v0 = (double) float_v5;
+      |    double_temp = Math.sin(double_v0);
+      |    double_v0 = double_temp;
+      |    float_v0 = (float) double_v0;
+      |    return float_v0;
+      |  }
+      |}
+    """.stripMargin.trim
 
   new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/simple/RecordDecl5_constructor.pilar"))) produceJavaClass
-  """package com.fgwei;
-    |
-    |import java.lang.Object;
-    |import java.lang.String;
-    |
-    |public class FieldAccess1 {
-    |  private int i1;
-    |  private  FieldAccess1(String str1) {
-    |     String String_v0;
-    |     int int_v1;
-    |
-    |    super();
-    |    String_v0 = str1;
-    |    int_v1 = 0;
-    |  }
-    |
-    |  private  FieldAccess1(String str1, String str2) {
-    |     String String_v0;
-    |     int int_v1;
-    |
-    |    String_v0 = str1;
-    |    int_v1 = 0;
-    |    super(String_v0);
-    |  }
-    |
-    |  private int getTaint() {
-    |     int int_v3;
-    |
-    |    int_v3 = this.i1;
-    |    return int_v3;
-    |  }
-    |
-    |  private void setTaint(int int_v3) {
-    |
-    |    this.i1 = int_v3;
-    |  }
-    |
-    |  public static int main() {
-    |     int int_temp;
-    |     int int_v0;
-    |     FieldAccess1 FieldAccess1_v1;
-    |     FieldAccess1 FieldAccess1_v2;
-    |     int int_v2;
-    |     String s1;
-    |
-    |    s1 = "ConstructorString";
-    |    FieldAccess1_v1 = new FieldAccess1(s1);
-    |    FieldAccess1_v2 = new FieldAccess1(s1, s1);
-    |    int_v0 = 1;
-    |    FieldAccess1_v1.setTaint(int_v0);
-    |    int_temp = FieldAccess1_v1.getTaint();
-    |    int_v2 = int_temp;
-    |    return int_v2;
-    |  }
-    |}""".stripMargin.trim
+    """package com.fgwei;
+      |
+      |import java.lang.Object;
+      |import java.lang.String;
+      |
+      |public class FieldAccess1 {
+      |  private int i1;
+      |  private  FieldAccess1(String str1) {
+      |     String String_v0;
+      |     int int_v1;
+      |
+      |    super();
+      |    String_v0 = str1;
+      |    int_v1 = 0;
+      |  }
+      |
+      |  private  FieldAccess1(String str1, String str2) {
+      |     String String_v0;
+      |     int int_v1;
+      |
+      |    String_v0 = str1;
+      |    int_v1 = 0;
+      |    super(String_v0);
+      |  }
+      |
+      |  private int getTaint() {
+      |     int int_v3;
+      |
+      |    int_v3 = this.i1;
+      |    return int_v3;
+      |  }
+      |
+      |  private void setTaint(int int_v3) {
+      |
+      |    this.i1 = int_v3;
+      |  }
+      |
+      |  public static int main() {
+      |     int int_temp;
+      |     int int_v0;
+      |     FieldAccess1 FieldAccess1_v1;
+      |     FieldAccess1 FieldAccess1_v2;
+      |     int int_v2;
+      |     String s1;
+      |
+      |    s1 = "ConstructorString";
+      |    FieldAccess1_v1 = new FieldAccess1(s1);
+      |    FieldAccess1_v2 = new FieldAccess1(s1, s1);
+      |    int_v0 = 1;
+      |    FieldAccess1_v1.setTaint(int_v0);
+      |    int_temp = FieldAccess1_v1.getTaint();
+      |    int_v2 = int_temp;
+      |    return int_v2;
+      |  }
+      |}""".stripMargin.trim
 
   new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/field/FieldAccess1.pilar"))) produceJavaClass
     """package com.fgwei;
@@ -833,6 +833,38 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
 
 
 
+  new FgSourceFile(new PlainFile(new File("src/test/resources/simple/ifelseifelse.pilar"))) produceJavaClass
+    """  private int testPilar() {
+      |        String str1 = "Hello";
+      |
+      |        int sum = 50;
+      |
+      |        if(sum < 100 ) {
+      |            str1 = "less than 100";
+      |
+      |        } else if (sum < 200){
+      |            str1 = "less than 200";
+      |        } else {
+      |            str1 = "greater than 200";
+      |        }
+      |
+      |        sum = sum * 2;
+      |        return sum;
+      |    }
+      |""".stripMargin.trim
+
+  /*
+  private int getSum() {
+        int sum = 0;
+        for (int i = 0; i < 50 ; i++) {
+            sum = sum + i;
+        }
+        return sum;
+    }
+   */
+  new FgSourceFile(new PlainFile(new File("src/test/resources/loops/forLoop1.pilar"))) produceJavaClass
+    """TESt""".stripMargin.trim
+
   /*new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/jump/IfJump_nested_3_with_else_2.pilar"))) produceJavaClass
     """package com.fgwei;
       |
@@ -866,55 +898,55 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |}
       |""".stripMargin.trim*/
 
- /* new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/simple/IfJump_with_for_loop.pilar"))) produceJavaClass
-    """package com.fgwei;
-      |
-      |
-      |public class IfJump2 {
-      |  public static int main() {
-      |    int a = 4;
-      |        int b;
-      |        if(a < 5) {
-      |            b = -1;
-      |        } else if(a == 5){
-      |            b = 0;
-      |        } else {
-      |            b = 1;
-      |        }
-      |
-      |        String str1 = "Hello";
-      |        String str2 = "World";
-      |        String str3 = str1 + str2;
-      |
-      |        if (str3.equals("test")) {
-      |            str1 = "Hello Again";
-      |        } else if (str3.equals("test1")) {
-      |            str1 = "Hello Again1";
-      |        } else {
-      |            str1 = str2;
-      |        }
-      |
-      |        int sum = 0;
-      |        for(int i = 0; i < 100; i++) {
-      |            sum = sum + i;
-      |        }
-      |
-      |        return b;
-      |  }
-      |}
-      |""".stripMargin.trim*/
+  /* new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/simple/IfJump_with_for_loop.pilar"))) produceJavaClass
+     """package com.fgwei;
+       |
+       |
+       |public class IfJump2 {
+       |  public static int main() {
+       |    int a = 4;
+       |        int b;
+       |        if(a < 5) {
+       |            b = -1;
+       |        } else if(a == 5){
+       |            b = 0;
+       |        } else {
+       |            b = 1;
+       |        }
+       |
+       |        String str1 = "Hello";
+       |        String str2 = "World";
+       |        String str3 = str1 + str2;
+       |
+       |        if (str3.equals("test")) {
+       |            str1 = "Hello Again";
+       |        } else if (str3.equals("test1")) {
+       |            str1 = "Hello Again1";
+       |        } else {
+       |            str1 = str2;
+       |        }
+       |
+       |        int sum = 0;
+       |        for(int i = 0; i < 100; i++) {
+       |            sum = sum + i;
+       |        }
+       |
+       |        return b;
+       |  }
+       |}
+       |""".stripMargin.trim*/
 
   //  new FgSourceFile(new PlainFile(new File("src/test/resources/array/ArrayAccess1.pilar"))) produceJavaClass
-//    """package com.fgwei;
-//      |
-//      |
-//      |public class RecordDecl {
-//      |  public static int main() {
-//      |    int_v2:= 2130903040I ;
-//      |
-//      |  }
-//      |}
-//    """.stripMargin.trim
+  //    """package com.fgwei;
+  //      |
+  //      |
+  //      |public class RecordDecl {
+  //      |  public static int main() {
+  //      |    int_v2:= 2130903040I ;
+  //      |
+  //      |  }
+  //      |}
+  //    """.stripMargin.trim
 
   class TestFile(s: FgSourceFile) {
 
@@ -930,8 +962,8 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
         //        require(javaClass == expectedClassStr)
 
         /* Using String diff -> sorting in arrays causing test failures. */
-//        val requireCheck: Boolean = javaClass.diff(expectedClassStr) == "" && expectedClassStr.diff(javaClass) == ""
-//        require(requireCheck)
+        //        val requireCheck: Boolean = javaClass.diff(expectedClassStr) == "" && expectedClassStr.diff(javaClass) == ""
+        //        require(requireCheck)
         require(compare(javaClass, expectedClassStr))
       }
     }

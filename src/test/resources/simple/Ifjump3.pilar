@@ -34,35 +34,4 @@ record `com.fgwei.IfJump1`  @kind class @AccessFlag PUBLIC {
          #L02b580.  goto L02b54a;
 
    }
-   ------------
-   #L02b544.  if int_v0 >= int_v5 then goto L02b576;
-   #L02b576.  if int_v0 != int_v5 then goto L02b57e;
-   #L02b57a.  int_v1:= 0I;
-   #L02b57c.  goto L02b54a;
-
-   #L02b548.  int_v1:= 15I;
-
-   ~~~~~~~~~
-      #L02b576.  if int_v0 != int_v5 then goto L02b57e;
-      #L02b57e.  int_v1:= 1I;
-      #L02b580.  goto L02b54a;
-
-      #L02b57a.  int_v1:= 0I;
-      #L02b57c.  goto L02b54a;
-
-
-
-      ----------
-
-      if(v0 >= v5) {
-         if(v0 != v5) {
-            v1 = 1
-         }
-         else {
-            v1 = 0
-         }
-      } else {
-        v1 = 15;        // -1 = 15???
-      }
-----------------------------
 

@@ -1,0 +1,113 @@
+record `com.fgwei.ForLoop1`  @kind class @AccessFlag PUBLIC {
+   }
+    procedure `int` `com.fgwei.ForLoop1.main` () @owner ^`com.fgwei.ForLoop1` @signature `Lcom/fgwei/ForLoop1;.main:()I` @AccessFlag PUBLIC_STATIC {
+    `int` int_v2;
+    `int` int_v1;
+    `int` int_v0;
+
+  #L02b558.  int_v1:= 0I;
+  #L02b55a.  int_v0:= 0I;
+  #L02b55c.  int_v2:= 50I;
+  #L02b560.  if int_v0 >= int_v2 then goto L02b56c;
+  #L02b564.  int_v1:= int_v1 + int_v0  @kind int;
+  #L02b566.  int_v0:= int_v0 + 1;
+  #L02b56a.  goto L02b55c;
+  #L02b56c.  return int_v1;
+
+   }
+   
+   
+    procedure `int` `com.fgwei.ForLoop1.whileLoop` (`com.fgwei.ForLoop1` ForLoop1 @kind `this`) @owner ^`com.fgwei.ForLoop1` @signature `Lcom/fgwei/ForLoop1;.whileLoop:()I` @AccessFlag PRIVATE {
+       `int` int_v2;
+       `int` int_v1;
+       `int` int_v0;
+         
+       #L02b554.  int_v1:= 0I;
+       #L02b556.  int_v0:= 0I;
+       #L02b558.  int_v2:= 50I;
+       #L02b55c.  if int_v0 >= int_v2 then goto L02b568;
+       #L02b560.  int_v1:= int_v1 + int_v0  @kind int;
+       #L02b562.  int_v0:= int_v0 + 1;
+       #L02b566.  goto L02b558;
+       #L02b568.  return int_v1;
+
+   }
+
+   procedure `int` `com.fgwei.ForLoop1.whileLoop2` (`com.fgwei.ForLoop1` ForLoop1 @kind `this`) @owner ^`com.fgwei.ForLoop1` @signature `Lcom/fgwei/ForLoop1;.whileLoop2:()I` @AccessFlag PRIVATE {
+        `int` int_v2;
+        `int` int_v1;
+        `int` int_v0;
+
+        #L02b5c4.  int_v1:= 0I;
+        #L02b5c6.  int_v0:= 0I;
+        #L02b5c8.  int_v2:= 50I;
+        #L02b5cc.  if int_v0 >= int_v2 then goto L02b5d8;
+        #L02b5d0.  int_v1:= int_v1 + int_v0  @kind int;
+        #L02b5d2.  int_v0:= int_v0 + 1;
+        #L02b5d6.  goto L02b5c8;
+        #L02b5d8.  int_v1:= int_v1 * 2;
+        #L02b5dc.  return int_v1;
+
+   }
+
+    // infinite loop
+   /*procedure `int` `com.fgwei.ForLoop1.whileLoopConditional` (`com.fgwei.ForLoop1` ForLoop1 @kind `this`) @owner ^`com.fgwei.ForLoop1` @signature `Lcom/fgwei/ForLoop1;.whileLoopConditional:()I` @AccessFlag PRIVATE {
+        `int` int_v2;
+           `int` int_v1;
+           `int` int_v0;
+
+         #L02b5e8.  int_v1:= 0I;
+         #L02b5ea.  int_v0:= 0I;
+         #L02b5ec.  int_v2:= 50I;
+         #L02b5f0.  if int_v0 >= int_v2 then goto L02b608;
+         #L02b5f4.  int_v1:= int_v1 + int_v0  @kind int;
+         #L02b5f6.  int_v0:= int_v0 + 1;
+         #L02b5fa.  int_v2:= 20I;
+         #L02b5fe.  if int_v1 <= int_v2 then goto L02b5ec;
+         #L02b602.  int_v1:= int_v1 * 2;
+         #L02b606.  goto L02b5ec;
+         #L02b608.  int_v1:= int_v1 * 2;
+         #L02b60c.  return int_v1;
+
+   } */
+
+   procedure `int` `com.fgwei.ForLoop1.whileLoopConditional1` (`com.fgwei.ForLoop1` ForLoop1 @kind `this`) @owner ^`com.fgwei.ForLoop1` @signature `Lcom/fgwei/ForLoop1;.whileLoopConditional1:()I` @AccessFlag PRIVATE {
+        `int` int_v2;
+           `int` int_v1;
+           `int` int_v0;
+
+         #L02b62c.  int_v1:= 0I;
+         #L02b62e.  int_v0:= 0I;
+         #L02b630.  int_v2:= 50I;
+         #L02b634.  if int_v0 >= int_v2 then goto L02b652;
+         #L02b638.  int_v1:= int_v1 + int_v0  @kind int;
+         #L02b63a.  int_v0:= int_v0 + 1;
+         #L02b63e.  int_v2:= 20I;
+         #L02b642.  if int_v1 <= int_v2 then goto L02b64c;
+         #L02b646.  int_v1:= int_v1 * 2;
+         #L02b64a.  goto L02b630;
+         #L02b64c.  int_v1:= int_v1 / 2;
+         #L02b650.  goto L02b630;
+         #L02b652.  int_v1:= int_v1 * 2;
+         #L02b656.  return int_v1;
+
+   }
+
+
+    // infinite loop
+  // procedure `int` `com.fgwei.ForLoop1.doWhileLoop` (`com.fgwei.ForLoop1` ForLoop1 @kind `this`) @owner ^`com.fgwei.ForLoop1` @signature `Lcom/fgwei/ForLoop1;.doWhileLoop:()I` @AccessFlag PRIVATE {
+  //      `int` int_v2;
+  //      `int` int_v1;
+  //      `int` int_v0;
+
+  //      #L02b578.  int_v1:= 0I;
+  //      #L02b57a.  int_v0:= 0I;
+  //      #L02b57c.  int_v1:= int_v0 + 0;
+  //      #L02b580.  int_v2:= 50I;
+  //      #L02b584.  if int_v0 < int_v2 then goto L02b57c;
+  //      #L02b588.  return int_v1;
+
+  // }
+   
+    
+
