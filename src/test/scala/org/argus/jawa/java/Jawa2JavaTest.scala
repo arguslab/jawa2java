@@ -832,38 +832,295 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |""".stripMargin.trim
 
 
+/*
+   private int testPilar() {
+        String str1 = "Hello";
 
+        int sum = 50;
+
+        if(sum < 100 ) {
+            str1 = "less than 100";
+
+        } else if (sum < 200){
+            str1 = "less than 200";
+        } else {
+            str1 = "greater than 200";
+        }
+
+        sum = sum * 2;
+        return sum;
+    }*/
   new FgSourceFile(new PlainFile(new File("src/test/resources/simple/ifelseifelse.pilar"))) produceJavaClass
-    """  private int testPilar() {
-      |        String str1 = "Hello";
+    """package com.fgwei;
       |
-      |        int sum = 50;
+      |import java.lang.String;
       |
-      |        if(sum < 100 ) {
-      |            str1 = "less than 100";
+      |public class IfJump1 {
+      |  public static int main() {
+      |     String String_v0;
+      |     int int_v2;
+      |     int int_v1;
       |
-      |        } else if (sum < 200){
-      |            str1 = "less than 200";
-      |        } else {
-      |            str1 = "greater than 200";
-      |        }
-      |
-      |        sum = sum * 2;
-      |        return sum;
+      |    String_v0 = "Hello";
+      |    int_v1 = 50;
+      |    int_v2 = 100;
+      |    if(int_v1 >= int_v2) {
+      |      int_v2 = 200;
+      |      if(int_v1 >= int_v2) {
+      |        String_v0 = "greater than 200";
+      |      }
+      |      else {
+      |        String_v0 = "less than 200";
+      |      }
       |    }
-      |""".stripMargin.trim
+      |    else {
+      |      String_v0 = "less than 100";
+      |    }
+      |    int_v1 = int_v1 * 2;
+      |    return int_v1;
+      |  }
+      |}""".stripMargin.trim
 
   /*
-  private int getSum() {
+ public class HelloWorld{
+
+     public static void main(String []args){
+
+        System.out.println("getSum: " + getSum());
+        System.out.println("getSumWhile: " + getSumWhile());
+        System.out.println("getSumX2: " + getSumX2());
+        System.out.println("getSumConditional: " + getSumConditional());
+        System.out.println("getSumConditional1: " + getSumConditional1());
+        System.out.println("nestedWhile: " + nestedWhile());
+        System.out.println("forConditional: " + forConditional());
+        System.out.println("doWhileSum: " + doWhileSum());
+
+     }
+
+    private static  int getSum() {
         int sum = 0;
         for (int i = 0; i < 50 ; i++) {
             sum = sum + i;
         }
         return sum;
     }
-   */
+    private  static int getSumWhile() {
+        int sum = 0;
+        int i = 0;
+        while(i < 50){
+            sum = sum + i;
+            i = i + 1;
+        }
+        return sum;
+    }
+
+    private static  int getSumX2() {
+        int sum = 0;
+        int i = 0;
+        while(i < 50){
+            sum = sum + i;
+            i = i + 1;
+        }
+        sum = sum * 2;
+        return sum;
+    }
+
+    private  static int getSumConditional() {
+        int sum = 0;
+        int i = 0;
+        while(i < 50){
+            sum = sum + i;
+            i = i + 1;
+            if(sum > 20) {
+                sum = sum * 2;
+            }
+        }
+        sum = sum * 2;
+        return sum;
+    }
+
+    private  static int getSumConditional1() {
+        int sum = 0;
+        int i = 0;
+        while(i < 50){
+            sum = sum + i;
+            i = i + 1;
+            if(sum > 20) {
+                sum = sum * 2;
+            }else {
+                sum = sum / 2;
+            }
+        }
+        sum = sum * 2;
+        return sum;
+    }
+
+    private static  int nestedWhile() {
+        int sum = 0;
+        int i = 0;
+        while(i < 50){
+            sum = sum + i;
+            int j = 0;
+            while ( j < i) {
+                sum = sum + j;
+                j++;
+            }
+
+            i = i + 1;
+
+        }
+        sum = sum * 2;
+        return sum;
+    }
+
+    private  static int forConditional() {
+        int sum = 0;
+        for (int i = 0; i < 50 ; i++) {
+            sum = sum + i;
+            if(sum > 20) {
+                sum = sum * 2;
+            } else {
+                sum = sum / 2;
+            }
+        }
+        sum = sum * 2;
+        return sum;
+    }
+
+    private static  int doWhileSum() {
+        int sum = 0;
+        int i = 0;
+        do {
+            sum = sum + i;
+            i ++;
+        } while(i < 50);
+
+        return sum;
+    }
+
+    private static int nestedWhileConditional() {
+        int sum = 0;
+        int i = 0;
+        while(i < 50){
+            sum = sum + i;
+            int j = 0;
+            while ( j < i) {
+                sum = sum + j;
+                if(sum >1000){
+                    sum = sum - 5;
+                }else {
+                    sum = sum + 1;
+                }
+                j++;
+            }
+            i = i + 1;
+        }
+        sum = sum * 2;
+        return sum;
+    }
+}
+*/
   new FgSourceFile(new PlainFile(new File("src/test/resources/loops/forLoop1.pilar"))) produceJavaClass
-    """TESt""".stripMargin.trim
+    """package com.fgwei;
+      |
+      |
+      |public class ForLoop1 {
+      |  public static int main() {
+      |     int int_v2;
+      |     int int_v1;
+      |     int int_v0;
+      |
+      |    int_v1 = 0;
+      |    int_v0 = 0;
+      |    int_v2 = 50;
+      |    while(!(int_v0 >= int_v2)) {
+      |      int_v1 = int_v1 + int_v0;
+      |      int_v0 = int_v0 + 1;
+      |      int_v2 = 50;
+      |    }
+      |    return int_v1;
+      |  }
+      |
+      |  private int whileLoop() {
+      |     int int_v2;
+      |     int int_v1;
+      |     int int_v0;
+      |
+      |    int_v1 = 0;
+      |    int_v0 = 0;
+      |    int_v2 = 50;
+      |    while(!(int_v0 >= int_v2)) {
+      |      int_v1 = int_v1 + int_v0;
+      |      int_v0 = int_v0 + 1;
+      |      int_v2 = 50;
+      |    }
+      |    return int_v1;
+      |  }
+      |
+      |  private int whileLoop2() {
+      |     int int_v2;
+      |     int int_v1;
+      |     int int_v0;
+      |
+      |    int_v1 = 0;
+      |    int_v0 = 0;
+      |    int_v2 = 50;
+      |    while(!(int_v0 >= int_v2)) {
+      |      int_v1 = int_v1 + int_v0;
+      |      int_v0 = int_v0 + 1;
+      |      int_v2 = 50;
+      |    }
+      |    int_v1 = int_v1 * 2;
+      |    return int_v1;
+      |  }
+      |
+      |  private int whileLoopConditional1() {
+      |     int int_v2;
+      |     int int_v1;
+      |     int int_v0;
+      |
+      |    int_v1 = 0;
+      |    int_v0 = 0;
+      |    int_v2 = 50;
+      |    while(!(int_v0 >= int_v2)) {
+      |      int_v1 = int_v1 + int_v0;
+      |      int_v0 = int_v0 + 1;
+      |      int_v2 = 20;
+      |      if(int_v1 <= int_v2) {
+      |        int_v1 = int_v1 / 2;
+      |      }
+      |      else {
+      |        int_v1 = int_v1 * 2;
+      |      }
+      |      int_v2 = 50;
+      |    }
+      |    int_v1 = int_v1 * 2;
+      |    return int_v1;
+      |  }
+      |
+      |  private int nestedWhile() {
+      |     int int_v2;
+      |     int int_v0;
+      |     int int_v3;
+      |     int int_v1;
+      |
+      |    int_v2 = 0;
+      |    int_v0 = 0;
+      |    int_v3 = 50;
+      |    while(!(int_v0 >= int_v3)) {
+      |      int_v2 = int_v2 + int_v0;
+      |      int_v1 = 0;
+      |      while(!(int_v1 >= int_v0)) {
+      |        int_v2 = int_v2 + int_v1;
+      |        int_v1 = int_v1 + 1;
+      |      }
+      |      int_v0 = int_v0 + 1;
+      |      int_v3 = 50;
+      |    }
+      |    int_v2 = int_v2 * 2;
+      |    return int_v2;
+      |  }
+      |}""".stripMargin.trim
 
   /*new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/jump/IfJump_nested_3_with_else_2.pilar"))) produceJavaClass
     """package com.fgwei;
