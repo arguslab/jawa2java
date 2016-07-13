@@ -82,7 +82,8 @@ class Jawa2Java(reporter: Reporter) {
                            var isElseStatement: Boolean,
                            var isLoop: Boolean = false,
                            var targetLocation: String,
-                           var locationOffset: Int = 0) {
+                           var locationOffset: Int = 0,
+                           parentState: Option[CurrentState] = None) {
     val visitedLocations: MMap[Int, Int] = mmapEmpty
 
     var nextLocation: Location = _
@@ -98,7 +99,16 @@ class Jawa2Java(reporter: Reporter) {
     def resetVisitedLocation(locationIndex: Int): Unit = {
       visitedLocations(locationIndex) = 0
     }
+
+//    var loopState: LoopState = _
+    var loopState: AdditionalState = _
   }
+
+  trait AdditionalState
+
+  //  case class LoopState(ifLocation: Location, loopBackLocation: Location)
+  case class LoopState(ifLocation: Int) extends AdditionalState
+  case class IfState(ifLocation: Int) extends AdditionalState
 
   def translate(source: Either[String, SourceFile]): IMap[JawaType, String] = {
     JawaParser.parse[CompilationUnit](source, resolveBody = true, reporter) match {
@@ -198,6 +208,7 @@ class Jawa2Java(reporter: Reporter) {
     val bodyStatements: MList[(Int, ST)] = mlistEmpty
     val isConstructor: Boolean = md.isConstructor
 
+    println("CURRENT METHOD IS: " + md.name)
     if(isConstructor) {
       //      println ("is Constructor Declaration: " + md.signature.getClassName)
       //      println ("is Constructor Declaration: " + md.accessModifier)
@@ -371,13 +382,25 @@ class Jawa2Java(reporter: Reporter) {
     val originalLocation = loc.locationIndex
     val currentLocation = ifStatement.targetLocation.locationIndex
 
-    // Set location iterator to the target location of If Jump. This iterator will now be used to follow the If statements.
-    locationIter.setPos(currentLocation)
+    if(currentLocation < originalLocation) {
+      println("IF WITH BACKWARD JUMP. HANDLE LATER!!!")
 
-    retrieveIfBodyLocations(ifBodyLocations, elseBodyLocations, loc.locationIndex, ifStatement.targetLocation.locationIndex, locationIter, currentState)
+      // If Backward jump, first get the elseBodyStatements.
+      // Set location iter to next location after current if statement. The mainIter is pointing to the previous if Statement.
+      locationIter.setPos(originalLocation + 1)
+      retrieveBackwardIfElseBodyLocations(elseBodyLocations, loc.locationIndex, ifStatement.targetLocation.locationIndex, locationIter, currentState)
 
+    } else {
+
+      // Set location iterator to the target location of If Jump. This iterator will now be used to follow the If statements.
+      locationIter.setPos(currentLocation)
+
+      retrieveIfBodyLocations(ifBodyLocations, elseBodyLocations, loc.locationIndex, ifStatement.targetLocation.locationIndex, locationIter, currentState)
+    }
     //Debug
+    println("If body Locations")
     ifBodyLocations.foreach(l => println(l.locationUri))
+    println("Else body Locations")
     elseBodyLocations.foreach(l => println(l.locationUri))
 
     /*println("if body size: " + ifBodyLocations.size)
@@ -392,6 +415,69 @@ class Jawa2Java(reporter: Reporter) {
     locationIter.setPos(originalLocation + 1)
 
     (ifBodyLocations, elseBodyLocations)
+  }
+
+  def retrieveBackwardIfElseBodyLocations(elseBodyLocations: MList[Location],
+                                          startLocation: Int,
+                                          originalTargetLocation: Int,
+                                          locationIter: LocationIterator,
+                                          currentState: CurrentState): Unit = {
+    val loc = locationIter.next()
+    println("In retrieve backward if else body locations: " + loc.locationUri + " :: " + loc.locationIndex)
+
+    loc.statement match {
+      case gs: GotoStatement =>
+        val gotoLocation = gs.targetLocation.locationIndex
+
+        currentState.parentState match {
+          case Some(p) =>
+            p.loopState match {
+              case ls: LoopState =>
+                if(gotoLocation > ls.ifLocation ){
+                  println("Calling identify loop from NESTED within a LOOP backward if block.")
+                  callIdentifyLoop(gs)
+                } else {
+//                  println("Adding location only from NESTED within a LOOP backward if block. ")
+//                  addLocation(loc, elseBodyLocations )
+                }
+
+              case is: IfState =>
+                println ("IFSTATE while retrieving Backward If Else Body Location. Implement Later!!!!")
+
+              case _ => println("SHOULD NOT BE HERE!!!")
+            }
+            /*if(p.isLoop && gotoLocation > p.loopState.asInstanceOf[LoopState].ifLocation ){
+              callIdentifyLoop(gs)
+            } else {
+              addLocation(loc, elseBodyLocations )
+            }*/
+          case None =>
+            println("No Parent Case... Need to check for do...while loops.")
+            addLocation(loc, elseBodyLocations )
+            if(locationIter.hasNext) {
+              retrieveBackwardIfElseBodyLocations(elseBodyLocations, startLocation, originalTargetLocation, locationIter, currentState)
+            }
+        }
+
+      case _ =>
+        addLocation(loc, elseBodyLocations )
+        if(locationIter.hasNext) {
+          retrieveBackwardIfElseBodyLocations(elseBodyLocations, startLocation, originalTargetLocation, locationIter, currentState)
+        }
+    }
+
+    def addLocation(l: Location, loc: MList[Location]): Unit = {
+      println("Adding location in Retrieve Backward If else Body Location..." + l.locationIndex + "  ::  " + l.locationUri)
+      loc += l
+    }
+
+    def callIdentifyLoop(gs: GotoStatement): Unit = {
+      println ("This Could be a loop. Check if it is a loop")
+      val currentLocation = locationIter.pos
+      locationIter.setPos(gs.targetLocation.locationIndex)
+      identifyLoop(startLocation, locationIter, currentState, elseBodyLocations)
+      locationIter.setPos(currentLocation)
+    }
   }
 
   /**
@@ -464,15 +550,15 @@ class Jawa2Java(reporter: Reporter) {
 
     //    if(elseBodyLocations.nonEmpty && ifBodyLocations.isEmpty) {
     if(elseBodyLocations.nonEmpty ) {
-      println("Checking else body for loop.")
+      println("Checking else body for loop for if Statement at.: " + startLocation)
       elseBodyLocations.last.statement match {
         case gs: GotoStatement =>
-          if(gs.targetLocation.locationIndex <= startLocation) {
-            val currentLocation = locationIter.pos
-            locationIter.setPos(gs.targetLocation.locationIndex)
-            identifyLoop(startLocation, locationIter, currentState, elseBodyLocations)
-            locationIter.setPos(currentLocation)
-          }
+          //          if(gs.targetLocation.locationIndex <= startLocation) {
+          val currentLocation = locationIter.pos
+          locationIter.setPos(gs.targetLocation.locationIndex)
+          identifyLoop(startLocation, locationIter, currentState, elseBodyLocations)
+          locationIter.setPos(currentLocation)
+        //          }
         case _ => println("This is not a loop")
       }
     }
@@ -482,6 +568,9 @@ class Jawa2Java(reporter: Reporter) {
     }
   }
 
+  /** Follow the goto to check if the original IfStatement
+    * OR if the parent is a loop, then see if parents if can be reached or not. If it can be reached, then it is a loop.
+    */
   def identifyLoop (startLocation: Int,
                     locationIter: LocationIterator,
                     currentState: CurrentState,
@@ -492,7 +581,15 @@ class Jawa2Java(reporter: Reporter) {
 
     println("Identifying loop...")
     loc.statement match {
-      case gs: GotoStatement => println ("Not a loop : Goto")
+      case gs: GotoStatement =>
+//        println ("Not a loop : Goto")
+        println("Checking Goto Statement. If it is not a backward jump, this is not a loop??? =>>> This is used in the Else Body evaluation Case. This evaluates the final goto statement.")
+        if(gs.targetLocation.locationIndex < loc.locationIndex) {
+          locationIter.setPos(gs.targetLocation.locationIndex)
+          if(locationIter.hasNext) {
+            identifyLoop(startLocation, locationIter, currentState, elseBodyLocations, locationsToAdd)
+          }
+        }
       case rs: ReturnStatement => println ("Not a loop : Return")
 
       case is: IfStatement =>
@@ -500,10 +597,41 @@ class Jawa2Java(reporter: Reporter) {
         if(loc.locationIndex == startLocation){
           println ("This is a loop")
           currentState.isLoop = true
+
+          //Setup Loop State:
+          currentState.loopState = LoopState(startLocation)
+
           elseBodyLocations ++= locationsToAdd
           println("adding to elsebody" + loc.locationIndex + " :: " + loc.locationUri)
           elseBodyLocations.foreach(l => println(l.locationIndex + " :: " + l.locationUri))
-
+        } else if (currentState.parentState.isDefined) {
+          println("identify loop ifStatement else part.")
+          //          locationIter.setPos(is.targetLocation.locationIndex)
+          //          identifyLoop(startLocation, locationIter, currentState, elseBodyLocations, locationsToAdd)
+          currentState.parentState match {
+            case Some(p) =>
+              if(p.isLoop && p.loopState.asInstanceOf[LoopState].ifLocation == startLocation){
+                println ("This is a loop within a loop")
+                currentState.isLoop = true
+                elseBodyLocations ++= locationsToAdd
+                println("adding to elsebody" + loc.locationIndex + " :: " + loc.locationUri)
+                elseBodyLocations.foreach(l => println(l.locationIndex + " :: " + l.locationUri))
+              }
+            case None =>
+              if(is.targetLocation.locationIndex < startLocation) {
+                locationIter.setPos(is.targetLocation.locationIndex)
+                if(locationIter.hasNext) {
+                  identifyLoop(startLocation, locationIter, currentState, elseBodyLocations, locationsToAdd)
+                }
+              }
+          }
+        } else {
+          if(is.targetLocation.locationIndex < startLocation) {
+            locationIter.setPos(is.targetLocation.locationIndex)
+            if(locationIter.hasNext) {
+              identifyLoop(startLocation, locationIter, currentState, elseBodyLocations, locationsToAdd)
+            }
+          }
         }
 
       case _ =>
@@ -561,6 +689,10 @@ class Jawa2Java(reporter: Reporter) {
         loopBodyTemplate.add("statements", st._2)
     }
     loopTemplate.add("body", loopBodyTemplate)
+
+
+    //Resetting
+    currentState.isLoop = false
 
     println("End of Visit LOOP Statement." + + forPrint.locationIndex + " :: " + forPrint.locationUri + "\n\n\n\n\n\n\n\n\n\n\n")
     bodyStatements += ((loc.locationIndex + currentState.locationOffset, loopTemplate))
@@ -661,7 +793,7 @@ class Jawa2Java(reporter: Reporter) {
           // Check if this is still required as marking visited has been moved.
 
           //          mainIter.resetVisitedLocation(originalLocation)     //Reset removed as all location checks done in current state and not in the main iterator.
-          val newCurrentState = CurrentState(isConstructor = isConstructor, isIfStatement = false, isElseIfStatement = false, isElseStatement = false, targetLocation = null)
+          val newCurrentState = CurrentState(isConstructor = isConstructor, isIfStatement = false, isElseIfStatement = false, isElseStatement = false, targetLocation = null, parentState = Some(currentState))
 
           visitStatement(imports, ifBodyStatements, isConstructor, thisParam, mainIter, loc, statement, newCurrentState, mainIter)
           // This will change the ifBodyLocation iterator(@locationIter) => need to reset it?
@@ -673,8 +805,8 @@ class Jawa2Java(reporter: Reporter) {
           //todo where to set this position??
           locationIter.setPos(originalLocation + 1)
           locationIter.locations.foreach(l => println("if iterator locations: " + l.locationIndex+ " :: " + l.locationUri))
-          println("new Index pointed to: " + newCurrentState.nextLocation.locationIndex + " :: " + newCurrentState.nextLocation.locationUri)
-          println("size of location iter: " + locationIter.locations.size )
+        //          println("new Index pointed to: " + newCurrentState.nextLocation.locationIndex + " :: " + newCurrentState.nextLocation.locationUri)
+        //          println("size of location iter: " + locationIter.locations.size )
         //          locationIter.setPos(locationIter.locations.indexOf(newCurrentState.nextLocation) + 1)
 
         case _ =>

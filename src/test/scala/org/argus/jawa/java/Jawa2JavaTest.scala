@@ -1018,6 +1018,21 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
         sum = sum * 2;
         return sum;
     }
+
+    private static int nestedWhile2() {
+        int sum = 0;
+        int i = 0;
+        while(i < 50){
+            sum = sum + i;
+            i = i + 1;
+            int j = 0;
+            while ( j < i) {
+                sum = sum + j;
+                j++;
+            }
+        }
+        return sum;
+    }
 }
 */
   new FgSourceFile(new PlainFile(new File("src/test/resources/loops/forLoop1.pilar"))) produceJavaClass
@@ -1074,6 +1089,51 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |    return int_v1;
       |  }
       |
+      |  private int whileLoopConditional() {
+      |     int int_v2;
+      |     int int_v1;
+      |     int int_v0;
+      |
+      |    int_v1 = 0;
+      |    int_v0 = 0;
+      |    int_v2 = 50;
+      |    while(!(int_v0 >= int_v2)) {
+      |      int_v1 = int_v1 + int_v0;
+      |      int_v0 = int_v0 + 1;
+      |      int_v2 = 20;
+      |      if(int_v1 <= int_v2) {
+      |      }
+      |      else {
+      |        int_v1 = int_v1 * 2;
+      |      }
+      |      int_v2 = 50;
+      |    }
+      |    int_v1 = int_v1 * 2;
+      |    return int_v1;
+      |  }
+      |
+      |  private int nestedWhile2() {
+      |     int int_v2;
+      |     int int_v0;
+      |     int int_v3;
+      |     int int_v1;
+      |
+      |    int_v2 = 0;
+      |    int_v0 = 0;
+      |    int_v3 = 50;
+      |    while(!(int_v0 >= int_v3)) {
+      |      int_v2 = int_v2 + int_v0;
+      |      int_v0 = int_v0 + 1;
+      |      int_v1 = 0;
+      |      while(!(int_v1 >= int_v0)) {
+      |        int_v2 = int_v2 + int_v1;
+      |        int_v1 = int_v1 + 1;
+      |      }
+      |      int_v3 = 50;
+      |    }
+      |    return int_v2;
+      |  }
+      |
       |  private int whileLoopConditional1() {
       |     int int_v2;
       |     int int_v1;
@@ -1112,6 +1172,36 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |      int_v1 = 0;
       |      while(!(int_v1 >= int_v0)) {
       |        int_v2 = int_v2 + int_v1;
+      |        int_v1 = int_v1 + 1;
+      |      }
+      |      int_v0 = int_v0 + 1;
+      |      int_v3 = 50;
+      |    }
+      |    int_v2 = int_v2 * 2;
+      |    return int_v2;
+      |  }
+      |
+      |  private int nestedWhileConditional() {
+      |     int int_v2;
+      |     int int_v0;
+      |     int int_v3;
+      |     int int_v1;
+      |
+      |    int_v2 = 0;
+      |    int_v0 = 0;
+      |    int_v3 = 50;
+      |    while(!(int_v0 >= int_v3)) {
+      |      int_v2 = int_v2 + int_v0;
+      |      int_v1 = 0;
+      |      while(!(int_v1 >= int_v0)) {
+      |        int_v2 = int_v2 + int_v1;
+      |        int_v3 = 1000;
+      |        if(int_v2 <= int_v3) {
+      |          int_v2 = int_v2 + 1;
+      |        }
+      |        else {
+      |          int_v2 = int_v2 + 251;
+      |        }
       |        int_v1 = int_v1 + 1;
       |      }
       |      int_v0 = int_v0 + 1;
@@ -1221,6 +1311,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
         /* Using String diff -> sorting in arrays causing test failures. */
         //        val requireCheck: Boolean = javaClass.diff(expectedClassStr) == "" && expectedClassStr.diff(javaClass) == ""
         //        require(requireCheck)
+        println("Source File is: " + s.file.canonicalPath)
         require(compare(javaClass, expectedClassStr))
       }
     }
