@@ -355,69 +355,40 @@ class Jawa2Java(reporter: Reporter) {
 
         val (ifBodyLocations: MList[Location], elseBodyLocations: MList[Location]) = prepareIfBodyStatements(imports, bodyStatements, isConstructor, thisParam, mainIter, loc, ifCurrentState, ifStatement)
 
-//        currentState.visitedLocations ++= ifCurrentState.visitedLocations
-     /*   ifCurrentState.parentState match {
-          case Some(p) => p.visitedLocations ++= ifCurrentState.visitedLocations
-          case None => print("This if has no parent. THIS SHOULD NEVER HAPPEN.")
-        }*/
-        //          currentState.visitedLocations.foreach(l => println("parent visited: " + l._1))
-        //          newCurrentState.visitedLocations.foreach(l => println("new visited: " + l._1))
+        //Resetting addToParent locations to allow code reuse.
         ifCurrentState.parentState match {
           case Some(p) =>
             println("HEREREREREEEEEEEEE")
             p.addToParent.foreach{
               l =>
                 println("RESETTING ADD TO PARENT: " + l.locationIndex + "  ::  " + l.locationUri)
-
                 p.resetVisitedLocation(l.locationIndex)
             }
-          case None => print("This if has no parent. THIS SHOULD NEVER HAPPEN.")
+          case None =>
+            throw new Jawa2JavaTranslateException("No Parent Block Found for this If Block. Location: " + loc.locationIndex + " :: " + loc.locationUri)
         }
-//        if(currentState.isLoop) {
+
         if(ifCurrentState.isLoop) {
           val elseLocationIter = LocationIterator(Right(elseBodyLocations))
-
-//          visitLoopStatement(imports, bodyStatements, isConstructor, thisParam, elseLocationIter, loc, currentState, ifStatement, mainIter, "loop")
           visitLoopStatement(imports, bodyStatements, isConstructor, thisParam, elseLocationIter, loc, ifCurrentState, ifStatement, mainIter, "loop")
         } else {
           val ifLocationIter = LocationIterator(Right(ifBodyLocations))
-//          visitIfStatement(imports, bodyStatements, isConstructor, thisParam, ifLocationIter, loc, currentState, ifStatement, mainIter, "if")
           visitIfStatement(imports, bodyStatements, isConstructor, thisParam, ifLocationIter, loc, ifCurrentState, ifStatement, mainIter, "if")
 
           val elseLocationIter = LocationIterator(Right(elseBodyLocations))
-          //Resetting visited locations in if block to allow code reuse.
-//          ifCurrentState.visitedLocations.foreach(l=> ifCurrentState.resetVisitedLocation(l._1))
-
-//          ifCurrentState.addToParent.foreach{
-          /*currentState.addToParent.foreach{
-            l=>
-            println("RESETTING ADD TO PARENT: " + l.locationIndex + "  ::  " + l.locationUri)
-//            ifCurrentState.resetVisitedLocation(l.locationIndex)
-            currentState.resetVisitedLocation(l.locationIndex)
-          }*/
-          /*ifCurrentState.parentState match {
-            case Some(p) =>
-              println("HEREREREREEEEEEEEE")
-              p.addToParent.foreach{
-                l =>
-                  println("RESETTING ADD TO PARENT: " + l.locationIndex + "  ::  " + l.locationUri)
-
-                  p.resetVisitedLocation(l.locationIndex)
-              }
-            case None => print("This if has no parent. THIS SHOULD NEVER HAPPEN.")
-          }*/
-
-//          visitIfStatement(imports, bodyStatements, isConstructor, thisParam, elseLocationIter, loc, currentState, ifStatement, mainIter, "else")
           visitIfStatement(imports, bodyStatements, isConstructor, thisParam, elseLocationIter, loc, ifCurrentState, ifStatement, mainIter, "else")
         }
 
         ifCurrentState.parentState match {
           case Some(p) => p.visitedLocations ++= ifCurrentState.visitedLocations
-          case None => print("This if has no parent. THIS SHOULD NEVER HAPPEN.")
+          case None =>
+            throw new Jawa2JavaTranslateException("No Parent Block Found for this If Block. Location: " + loc.locationIndex + " :: " + loc.locationUri)
         }
 
+        //todo pick one
         if(elseBodyLocations.nonEmpty) {
-          mainIter.setPos(elseBodyLocations.last.locationIndex + 1)
+//          mainIter.setPos(elseBodyLocations.last.locationIndex + 1)
+          locationIter.setPos(elseBodyLocations.last.locationIndex + 1)
           currentState.nextLocation = elseBodyLocations.last
         }
 
@@ -604,16 +575,6 @@ class Jawa2Java(reporter: Reporter) {
       elseBodyLocations.foreach(l => println("ELSE BODY locations are: " + l.locationUri + " :: " + l.locationIndex))
       ifBodyLocations.foreach(l => println("IF BODY locations are: " + l.locationUri + " :: " + l.locationIndex))
       //last statement may not be a goto. Find the last goto.
-      /*elseBodyLocations.last.statement match {
-        case gs: GotoStatement =>
-          //          if(gs.targetLocation.locationIndex <= startLocation) {
-          val currentLocation = locationIter.pos
-          locationIter.setPos(gs.targetLocation.locationIndex)
-          identifyLoop(startLocation, locationIter, currentState, elseBodyLocations)
-          locationIter.setPos(currentLocation)
-        //          }
-        case _ => println("This is not a loop")
-      }*/
 
       val lastGoto = elseBodyLocations.lastIndexWhere(l => l.statement.isInstanceOf[GotoStatement])
       if (lastGoto != -1) {
@@ -621,29 +582,19 @@ class Jawa2Java(reporter: Reporter) {
         val gotoLocation: Location =  elseBodyLocations(lastGoto)
         val gs: GotoStatement = gotoLocation.statement.asInstanceOf[GotoStatement]
         println("Goto is at: " + gotoLocation.locationUri + " :: " + gotoLocation.locationIndex)
-//        elseBodyLocations.foreach(l=> println("Before filter: " + l.locationUri + " :: " + l.locationIndex))
-//        elseBodyLocations.filterNot(l => l.locationIndex > gotoLocation.locationIndex  )    //Does not work
+
         val locationsToRemove = elseBodyLocations filter (l=> l.locationIndex > gotoLocation.locationIndex)
         for (r <- locationsToRemove) {
           elseBodyLocations.remove(elseBodyLocations.indexOf(r))
         }
-//        elseBodyLocations.foreach(l=> println("After filter: " + l.locationUri + " :: " + l.locationIndex))
 
-        /*locationsToRemove.foreach{
-          l =>
-//            if(!locationIter.locations.contains(l)){
-              currentState.addToParent += l
-//            }
-        }*/
         println("ADDING TO PARENT>>>>")
-//        currentState.addToParent.foreach(l=> println("adding to parent: " + l.locationUri + " :: " + l.locationIndex))
 
         val currentLocation = locationIter.pos
         locationIter.setPos(gs.targetLocation.locationIndex)
         identifyLoop(startLocation, locationIter, currentState, elseBodyLocations)
 
-        //todo need to add removed statements to the parent block.
-
+        //need to add removed statements to the parent block.
         currentState.parentState match {
           case Some(p) =>
             if(currentState.isLoop) {
@@ -931,22 +882,7 @@ class Jawa2Java(reporter: Reporter) {
         case is: IfStatement =>
           val originalLocation = loc.locationIndex
 
-          // Resetting this location as all If Body statements are marked visited before it is visited.
-          // Check if this is still required as marking visited has been moved.
-
-          //          mainIter.resetVisitedLocation(originalLocation)     //Reset removed as all location checks done in current state and not in the main iterator.
-//          val newCurrentState = CurrentState(isConstructor = isConstructor, isIfStatement = false, isElseIfStatement = false, isElseStatement = false, targetLocation = null, parentState = Some(currentState))
-
-          //Testing newCurrentState in the main visitStatementBlock.
-//          visitStatement(imports, ifBodyStatements, isConstructor, thisParam, mainIter, loc, statement, newCurrentState, mainIter)
           visitStatement(imports, ifBodyStatements, isConstructor, thisParam, mainIter, loc, statement, currentState, mainIter)
-          // This will change the ifBodyLocation iterator(@locationIter) => need to reset it?
-
-/*          currentState.visitedLocations ++= newCurrentState.visitedLocations
-          currentState.visitedLocations.foreach(l => println("parent visited: " + l._1))
-          newCurrentState.visitedLocations.foreach(l => println("new visited: " + l._1))*/
-
-//          currentState.addToParent ++= newCurrentState.addToParent
 
           //todo where to set this position??
           locationIter.setPos(originalLocation + 1)
