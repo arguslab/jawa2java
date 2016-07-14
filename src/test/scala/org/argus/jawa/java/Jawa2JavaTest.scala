@@ -1210,6 +1210,62 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |    int_v2 = int_v2 * 2;
       |    return int_v2;
       |  }
+      |
+      |   private int nestedWhileConditional1() {
+      |     int int_v2;
+      |     int int_v0;
+      |     int int_v3;
+      |     int int_v4;
+      |     int int_v1;
+      |
+      |    int_v4 = 1000;
+      |    int_v2 = 0;
+      |    int_v0 = 0;
+      |    int_v3 = 50;
+      |    while(!(int_v0 >= int_v3)) {
+      |      int_v2 = int_v2 + int_v0;
+      |      int_v1 = 0;
+      |      while(!(int_v1 >= int_v0)) {
+      |        int_v2 = int_v2 + int_v1;
+      |        if(int_v2 <= int_v4) {
+      |          int_v2 = int_v2 + 1;
+      |          int_v1 = int_v1 + 1;
+      |        }
+      |        else {
+      |          int_v2 = int_v2 + 251;
+      |          while(!(int_v2 <= int_v4)) {
+      |            int_v2 = int_v2 / 2;
+      |          }
+      |          int_v1 = int_v1 + 1;
+      |        }
+      |      }
+      |      int_v0 = int_v0 + 1;
+      |      int_v3 = 50;
+      |    }
+      |    int_v2 = int_v2 * 2;
+      |    return int_v2;
+      |  }
+      |
+      |  private int nestedWhileConditional2() {
+      |     int int_v2;
+      |     int int_v1;
+      |     int int_v0;
+      |
+      |    int_v2 = 1000;
+      |    int_v1 = 10001;
+      |    int_v0 = 0;
+      |    if(int_v1 <= int_v2) {
+      |      int_v1 = int_v1 + 1;
+      |    }
+      |    else {
+      |      int_v1 = int_v1 + 251;
+      |      while(!(int_v1 <= int_v2)) {
+      |        int_v1 = int_v1 / 2;
+      |      }
+      |    }
+      |    int_v1 = int_v1 * 2;
+      |    return int_v1;
+      |  }
       |}""".stripMargin.trim
 
   /*new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/jump/IfJump_nested_3_with_else_2.pilar"))) produceJavaClass
