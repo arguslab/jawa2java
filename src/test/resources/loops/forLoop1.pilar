@@ -227,6 +227,93 @@ record `com.fgwei.ForLoop1`  @kind class @AccessFlag PUBLIC {
             #L02ba78.  return int_v1;
    }
 
+   procedure `int` `com.fgwei.ForLoop1.nestedWhileConditional3` (`com.fgwei.ForLoop1` ForLoop1 @kind `this`) @owner ^`com.fgwei.ForLoop1` @signature `Lcom/fgwei/ForLoop1;.nestedWhileConditional3:()I` @AccessFlag PRIVATE {
+            `int` int_v5;                                                                         //   int int_v5;
+               `int` int_v2;                                                                      //   int int_v2;
+               `int` int_v0;                                                                      //   int int_v0;
+               `int` int_v3;                                                                      //   int int_v3;
+               `int` int_v4;                                                                      //   int int_v4;
+               `int` int_v1;                                                                      //   int int_v1;
+                                                                                                  //  int_v5 = 1500;
+             #L02ba9c.  int_v5:= 1500I;                                                           //  int_v4 = 1000;
+             #L02baa0.  int_v4:= 1000I;                                                           //  int_v2 = 0;
+             #L02baa4.  int_v2:= 0I;                                                              //  int_v0 = 0;
+             #L02baa6.  int_v0:= 0I;                                                              //  int_v3 = 50;
+             #L02baa8.  int_v3:= 50I;                                                             //  while(!(int_v0 >= int_v3)) {
+//while loop
+             #L02baac.  if int_v0 >= int_v3 then goto L02bb08;                                    //    int_v2 = int_v2 + int_v0;
+             #L02bab0.  int_v2:= int_v2 + int_v0  @kind int;                                      //    int_v1 = 0;
+             #L02bab2.  int_v1:= 0I;                                                              //    while(!(int_v1 >= int_v0)) {
+    //while loop
+             #L02bab4.  if int_v1 >= int_v0 then goto L02bb02;                                    //      int_v2 = int_v2 + int_v1;
+             #L02bab8.  int_v2:= int_v2 + int_v1  @kind int;                                      //      if(int_v2 <= int_v4) {
+
+        //If Statement
+             #L02baba.  if int_v2 <= int_v4 then goto L02bad6;                                    //        int_v2 = int_v2 + 1;
+                                                                                                  //        while(!(int_v2 <= int_v4)) {
+             #L02babe.  int_v2:= int_v2 + 251;                                                    //          int_v3 = 1200;
+//~~~~~~      //While loop
+             #L02bac2.  if int_v2 <= int_v4 then goto L02bafc;                                    //          if(int_v2 >= int_v3) {
+                //If Statement
+                #L02bac6.  if int_v2 >= int_v5 then goto L02bad0;                                    //            if(int_v2 >= int_v5) {
+                #L02baca.  int_v2:= int_v2 / 2;                                                      //              int_v2 = int_v2 / 5;
+                #L02bace.  goto L02bac2;                                                             //            }
+                #L02bad0.  int_v2:= int_v2 / 3;                                                      //            else {
+                #L02bad4.  goto L02bac2;                                                             //              int_v2 = int_v2 / 3;
+
+        //Else part
+             #L02bad6.  int_v2:= int_v2 + 1;                                                      //            }
+            //while loop
+             #L02bada.  if int_v2 <= int_v4 then goto L02bafc;                                    //          }
+             #L02bade.  int_v3:= 1200I;                                                           //          else {
+                                                                                                  //            int_v2 = int_v2 / 2;
+             //Start of if elseif else part
+             #L02bae2.  if int_v2 >= int_v3 then goto L02baec;                                    //          }
+             #L02bae6.  int_v2:= int_v2 / 2;                                                      //        }
+             #L02baea.  goto L02bada;                                                             //        int_v1 = int_v1 + 1;
+
+                //else if part
+             #L02baec.  if int_v2 >= int_v5 then goto L02baf6;                                    //      }
+             #L02baf0.  int_v2:= int_v2 / 3;                                                      //      else {
+             #L02baf4.  goto L02bada;                                                             //        int_v2 = int_v2 + 251;
+
+                //else part
+             #L02baf6.  int_v2:= int_v2 / 5;                                                      //        if(int_v2 <= int_v4) {
+             #L02bafa.  goto L02bada;                                                             //          int_v1 = int_v1 + 1;
+//~~~~~~~
+             #L02bafc.  int_v1:= int_v1 + 1;                                                      //        }
+             #L02bb00.  goto L02bab4;                                                             //        else {
+
+             #L02bb02.  int_v0:= int_v0 + 1;                                                      //          if(int_v2 >= int_v5) {
+             #L02bb06.  goto L02baa8;                                                             //            int_v2 = int_v2 / 3;
+             #L02bb08.  int_v2:= int_v2 * 2;                                                      //          }
+             #L02bb0c.  return int_v2;                                                            //          else {
+                                                                                                  //            int_v2 = int_v2 / 2;
+   }                                                                                              //          }
+                                                                                                  //          int_v2 = int_v2 + 1;
+                                                                                                  //          while(!(int_v2 <= int_v4)) {
+                                                                                                  //            int_v3 = 1200;
+                                                                                                  //            if(int_v2 >= int_v3) {
+                                                                                                  //              if(int_v2 >= int_v5) {
+                                                                                                  //                int_v2 = int_v2 / 5;
+                                                                                                  //              }
+                                                                                                  //              else {
+                                                                                                  //                int_v2 = int_v2 / 3;
+                                                                                                  //              }
+                                                                                                  //            }
+                                                                                                  //            else {
+                                                                                                  //              int_v2 = int_v2 / 2;
+                                                                                                  //            }
+                                                                                                  //          }
+                                                                                                  //          int_v1 = int_v1 + 1;
+                                                                                                  //        }
+                                                                                                  //      }
+                                                                                                  //    }
+                                                                                                  //    int_v0 = int_v0 + 1;
+                                                                                                  //    int_v3 = 50;
+                                                                                                  //  }
+                                                                                                  //  int_v2 = int_v2 * 2;
+                                                                                                  //  return int_v2;
 
     // infinite loop//
    /* procedure `int` `com.fgwei.ForLoop1.doWhileLoop` (`com.fgwei.ForLoop1` ForLoop1 @kind `this`) @owner ^`com.fgwei.ForLoop1` @signature `Lcom/fgwei/ForLoop1;.doWhileLoop:()I` @AccessFlag PRIVATE {
