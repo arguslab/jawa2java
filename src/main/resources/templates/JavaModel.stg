@@ -126,3 +126,12 @@ while(!($cond$)) {
   $body$
 }
 >>
+
+DoLoop(do) ::= <<
+do {
+$do$
+>>
+
+DoWhile(while) ::= <<
+} while($while$);
+>>

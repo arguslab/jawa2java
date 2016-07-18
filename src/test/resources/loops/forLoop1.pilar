@@ -316,17 +316,17 @@ record `com.fgwei.ForLoop1`  @kind class @AccessFlag PUBLIC {
                                                                                                   //  return int_v2;
 
     // infinite loop//
-   /* procedure `int` `com.fgwei.ForLoop1.doWhileLoop` (`com.fgwei.ForLoop1` ForLoop1 @kind `this`) @owner ^`com.fgwei.ForLoop1` @signature `Lcom/fgwei/ForLoop1;.doWhileLoop:()I` @AccessFlag PRIVATE {
-           `int` int_v2;
-           `int` int_v1;
-           `int` int_v0;
-
-         #L02b5ac.  int_v1:= 0I;
-         #L02b5ae.  int_v0:= 0I;
-         #L02b5b0.  int_v1:= int_v1 + int_v0  @kind int;
-         #L02b5b2.  int_v0:= int_v0 + 1;
-         #L02b5b6.  int_v2:= 50I;
-         #L02b5ba.  if int_v0 < int_v2 then goto L02b5b0;
-         #L02b5be.  return int_v1;
-
-   }*/
+    procedure `int` `com.fgwei.ForLoop1.doWhileLoop` (`com.fgwei.ForLoop1` ForLoop1 @kind `this`) @owner ^`com.fgwei.ForLoop1` @signature `Lcom/fgwei/ForLoop1;.doWhileLoop:()I` @AccessFlag PRIVATE {
+           `int` int_v2;                                                                  //     int int_v2;
+           `int` int_v1;                                                                  //     int int_v1;
+           `int` int_v0;                                                                  //     int int_v0;
+                                                                                          //    int_v1 = 0;
+         #L02b5ac.  int_v1:= 0I;                                                          //    int_v0 = 0;
+         #L02b5ae.  int_v0:= 0I;                                                          //    do {
+         #L02b5b0.  int_v1:= int_v1 + int_v0  @kind int;                                  //    int_v1 = int_v1 + int_v0;
+         #L02b5b2.  int_v0:= int_v0 + 1;                                                  //    int_v0 = int_v0 + 1;
+         #L02b5b6.  int_v2:= 50I;                                                         //    int_v2 = 50;
+         #L02b5ba.  if int_v0 < int_v2 then goto L02b5b0;                                 //    } while(int_v0 < int_v2);
+         #L02b5be.  return int_v1;                                                        //    return int_v1;
+                                                                                          //  }
+   }

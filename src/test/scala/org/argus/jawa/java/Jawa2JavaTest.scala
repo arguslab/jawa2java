@@ -1033,6 +1033,17 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
         }
         return sum;
     }
+
+     private static int doWhileSum() {
+        int sum = 0;
+        int i = 0;
+        do {
+            sum = sum + i;
+            i ++;
+        } while(i < 50);
+
+        return sum;
+    }
 }
 */
   new FgSourceFile(new PlainFile(new File("src/test/resources/loops/forLoop1.pilar"))) produceJavaClass
@@ -1321,6 +1332,21 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |    }
       |    int_v2 = int_v2 * 2;
       |    return int_v2;
+      |  }
+      |
+      |  private int doWhileLoop() {
+      |     int int_v2;
+      |     int int_v1;
+      |     int int_v0;
+      |
+      |    int_v1 = 0;
+      |    int_v0 = 0;
+      |    do {
+      |    int_v1 = int_v1 + int_v0;
+      |    int_v0 = int_v0 + 1;
+      |    int_v2 = 50;
+      |    } while(int_v0 < int_v2);
+      |    return int_v1;
       |  }
       |}""".stripMargin.trim
 
