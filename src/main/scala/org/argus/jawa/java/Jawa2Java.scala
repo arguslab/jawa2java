@@ -389,8 +389,6 @@ class Jawa2Java(reporter: Reporter) {
           println("VISITING DO WHILE LOOP")
           elseBodyLocations.foreach(l=> println(l.locationIndex + " :: " + l.locationUri))
 //          val first = bodyStatements.find(b=> b._1 == elseBodyLocations.head.locationIndex)
-          val bs = bodyStatements
-
           bodyStatements.find(b=> b._1 == elseBodyLocations.head.locationIndex) match {
             case Some(b) =>
               val doTemplate = template.getInstanceOf("DoLoop")
@@ -426,7 +424,7 @@ class Jawa2Java(reporter: Reporter) {
         }
 
         //todo pick one
-        //july `8 : adding condition for do...while loop
+        //july 18 : adding condition for do...while loop
         if(elseBodyLocations.nonEmpty) {
           if(!ifCurrentState.isDoWhile) {
             //          mainIter.setPos(elseBodyLocations.last.locationIndex + 1)
@@ -801,6 +799,7 @@ class Jawa2Java(reporter: Reporter) {
           println("identify loop ifStatement else part.")
           currentState.parentState match {
             case Some(p) =>
+              //todo CHECK THIS LOGIC
 //              if(is.targetLocation.locationIndex < startLocation || locationIter.locations.exists(l => l.locationIndex == is.targetLocation.locationIndex)) {
               if(is.targetLocation.locationIndex > loc.locationIndex && locationIter.locations.exists(l => l.locationIndex == is.targetLocation.locationIndex)) {
                 locationIter.setPos(is.targetLocation.locationIndex)
@@ -812,6 +811,8 @@ class Jawa2Java(reporter: Reporter) {
               }
           }
         } else {
+          //todo Check This Logic.
+          //          if(is.targetLocation.locationIndex < startLocation) {
           if(is.targetLocation.locationIndex > loc.locationIndex) {
             locationIter.setPos(is.targetLocation.locationIndex)
           }
