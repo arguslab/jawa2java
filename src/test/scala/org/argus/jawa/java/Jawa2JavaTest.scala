@@ -32,7 +32,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |}
     """.stripMargin.trim*/
 
- /* new FgSourceFile(new PlainFile(new File("src/test/resources/simple/RecordDecl.pilar"))) produceJavaClass
+  new FgSourceFile(new PlainFile(new File("src/test/resources/simple/RecordDecl.pilar"))) produceJavaClass
     """package com.fgwei;
       |
       |
@@ -879,7 +879,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |    int_v1 = int_v1 * 2;
       |    return int_v1;
       |  }
-      |}""".stripMargin.trim*/
+      |}""".stripMargin.trim
 
   /*
  public class HelloWorld{
@@ -1278,7 +1278,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |    return int_v1;
       |  }
       |
-      |    private int nestedWhileConditional3() {
+      |   private int nestedWhileConditional3() {
       |     int int_v5;
       |     int int_v2;
       |     int int_v0;
