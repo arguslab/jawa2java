@@ -132,6 +132,7 @@ do {
 $do$
 >>
 
-DoWhile(while) ::= <<
+DoWhile(body, while) ::= <<
+$body$
 } while($while$);
 >>

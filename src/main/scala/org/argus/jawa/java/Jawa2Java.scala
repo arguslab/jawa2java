@@ -49,7 +49,7 @@ class Jawa2Java(reporter: Reporter) {
     }
 
     def hasNext: Boolean = {
-      pos < locations.length
+      pos >= 0 && pos < locations.length
     }
 
     /*def lookahead(): Location = {
@@ -59,6 +59,13 @@ class Jawa2Java(reporter: Reporter) {
     def setPos(locationIndex: Int): Unit = {
       pos = locations.indexWhere(l=> l.locationIndex == locationIndex)
     }
+
+    /*def setPos(locationIndex: Int): Unit = {
+      val newPos = locations.indexWhere(l=> l.locationIndex == locationIndex)
+      if(newPos != -1 ) {
+        pos = newPos
+      }
+    }*/
 
     /*def retrieveLocation(locationIndex: Int): Option[Location] = {
       val loc = locations.find(l => l.locationIndex == locationIndex)
@@ -382,16 +389,23 @@ class Jawa2Java(reporter: Reporter) {
           println("VISITING DO WHILE LOOP")
           elseBodyLocations.foreach(l=> println(l.locationIndex + " :: " + l.locationUri))
 //          val first = bodyStatements.find(b=> b._1 == elseBodyLocations.head.locationIndex)
+          val bs = bodyStatements
+
           bodyStatements.find(b=> b._1 == elseBodyLocations.head.locationIndex) match {
             case Some(b) =>
               val doTemplate = template.getInstanceOf("DoLoop")
               doTemplate.add("do", b._2)
+
+              println("Location For Do While Template: " + bodyStatements.indexOf(b))
               bodyStatements(bodyStatements.indexOf(b)) = (b._1, doTemplate)
             case None =>
           }
 
           val doWhileTemplate = template.getInstanceOf("DoWhile")
           doWhileTemplate.add("while", visitBinaryExpression(ifStatement.cond))
+
+          println("end of do while:  " + locationIter.pos)
+          println("end of do while:  " + loc.locationIndex)
 
           bodyStatements += ((loc.locationIndex, doWhileTemplate))
 //          visitLoopStatement(imports, bodyStatements, isConstructor, thisParam, elseLocationIter, loc, ifCurrentState, ifStatement, mainIter, "loop")
@@ -412,10 +426,16 @@ class Jawa2Java(reporter: Reporter) {
         }
 
         //todo pick one
+        //july `8 : adding condition for do...while loop
         if(elseBodyLocations.nonEmpty) {
-          //          mainIter.setPos(elseBodyLocations.last.locationIndex + 1)
-          locationIter.setPos(elseBodyLocations.last.locationIndex + 1)
-          currentState.nextLocation = elseBodyLocations.last
+          if(!ifCurrentState.isDoWhile) {
+            //          mainIter.setPos(elseBodyLocations.last.locationIndex + 1)
+            locationIter.setPos(elseBodyLocations.last.locationIndex + 1)
+
+            println("END OF Visit Statement end of do while:  " + locationIter.pos)
+            println("END OF Visit Statement end of do while:  " + loc.locationIndex)
+            currentState.nextLocation = elseBodyLocations.last
+          }
         }
 
       case _ =>
@@ -493,7 +513,7 @@ class Jawa2Java(reporter: Reporter) {
     elseBodyLocations.foreach(l=> println("DOWHILE: " + l.locationIndex + " :: " + l.locationUri))
     locationIter.setPos(elseBodyLocations.head.locationIndex)
 
-    identifyLoop(startLocation, locationIter, currentState, elseBodyLocations)
+    identifyDoLoop(startLocation, locationIter, currentState, elseBodyLocations)
 //    identifyDoLoop(startLocation, locationIter, currentState, elseBodyLocations)
 
     println("Finished checking for do while")
@@ -781,9 +801,10 @@ class Jawa2Java(reporter: Reporter) {
           println("identify loop ifStatement else part.")
           currentState.parentState match {
             case Some(p) =>
-              if(is.targetLocation.locationIndex < startLocation || locationIter.locations.exists(l => l.locationIndex == is.targetLocation.locationIndex)) {
+//              if(is.targetLocation.locationIndex < startLocation || locationIter.locations.exists(l => l.locationIndex == is.targetLocation.locationIndex)) {
+              if(is.targetLocation.locationIndex > loc.locationIndex && locationIter.locations.exists(l => l.locationIndex == is.targetLocation.locationIndex)) {
                 locationIter.setPos(is.targetLocation.locationIndex)
-                println("INSIDE PARENT")
+                println("INSIDE PARENT!!!!!" + is.targetLocation.locationIndex + " :: " + loc.locationIndex )
               }
             case None =>
               if(is.targetLocation.locationIndex < startLocation) {
@@ -791,9 +812,9 @@ class Jawa2Java(reporter: Reporter) {
               }
           }
         } else {
-//          if(is.targetLocation.locationIndex < startLocation) {
+          if(is.targetLocation.locationIndex > loc.locationIndex) {
             locationIter.setPos(is.targetLocation.locationIndex)
-//          }
+          }
         }
 
       case _ =>
@@ -811,7 +832,7 @@ class Jawa2Java(reporter: Reporter) {
 
     //Moved This outside so that this happens everytime now that we are checking if body from top to bottom.
     if(locationIter.hasNext) {
-      identifyLoop(startLocation, locationIter, currentState, elseBodyLocations, locationsToAdd)
+      identifyDoLoop(startLocation, locationIter, currentState, elseBodyLocations, locationsToAdd)
     }
 
   }
@@ -1110,12 +1131,16 @@ class Jawa2Java(reporter: Reporter) {
 
         case is: IfStatement =>
           val originalLocation = loc.locationIndex
+//          val originalLocation = locationIter.pos
 
           visitStatement(imports, ifBodyStatements, isConstructor, thisParam, mainIter, loc, statement, currentState, mainIter)
 
           //todo where to set this position??
           locationIter.setPos(originalLocation + 1)
+//          locationIter.setPos(originalLocation)
           locationIter.locations.foreach(l => println("if iterator locations: " + l.locationIndex+ " :: " + l.locationUri))
+          println("POS is: " + locationIter.pos)
+          println("POS is: " + locationIter.pos)
         //          println("new Index pointed to: " + newCurrentState.nextLocation.locationIndex + " :: " + newCurrentState.nextLocation.locationUri)
         //          println("size of location iter: " + locationIter.locations.size )
         //          locationIter.setPos(locationIter.locations.indexOf(newCurrentState.nextLocation) + 1)
