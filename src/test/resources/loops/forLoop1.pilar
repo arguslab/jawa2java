@@ -333,7 +333,7 @@ record `com.fgwei.ForLoop1`  @kind class @AccessFlag PUBLIC {
                                                                                           //  }
    }
 
-/*
+
    procedure `int` `com.fgwei.ForLoop1.doWhileNested` (`com.fgwei.ForLoop1` ForLoop1 @kind `this`) @owner ^`com.fgwei.ForLoop1` @signature `Lcom/fgwei/ForLoop1;.doWhileNested:()I` @AccessFlag PRIVATE {
          `int` int_v2;
             `int` int_v1;
@@ -372,6 +372,7 @@ record `com.fgwei.ForLoop1`  @kind class @AccessFlag PUBLIC {
            #L02b898.  goto L02b87e;                                                        //
    }
 
+
    procedure `int` `com.fgwei.ForLoop1.doWhileNested2` (`com.fgwei.ForLoop1` ForLoop1 @kind `this`) @owner ^`com.fgwei.ForLoop1` @signature `Lcom/fgwei/ForLoop1;.doWhileNested2:()I` @AccessFlag PRIVATE {
            `int` int_v2;                                                                  //
               `int` int_v1;                                                               //
@@ -404,5 +405,5 @@ record `com.fgwei.ForLoop1`  @kind class @AccessFlag PUBLIC {
                 #L02b8dc.  int_v1:= int_v1 + 1;                                               //
             #L02b8e0.  goto L02b8c6;                                                      //
    }
-   */
+
 

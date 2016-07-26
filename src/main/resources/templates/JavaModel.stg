@@ -134,6 +134,6 @@ $do$
 
 DoWhile(body, while) ::= <<
 do {
-$body$
+  $body$
 } while($while$);
 >>

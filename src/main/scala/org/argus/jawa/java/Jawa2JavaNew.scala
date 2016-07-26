@@ -16,9 +16,10 @@ import org.argus.jawa.core.io.SourceFile
 import org.argus.jawa.core.{AccessFlag, JawaType, Reporter}
 import org.sireum.util._
 import org.stringtemplate.v4.{ST, STGroupFile}
-import scala.util.control.Breaks._
 
+import scala.util.control.Breaks._
 import scala.collection.mutable
+import scala.runtime.Nothing$
 
 
 /**
@@ -53,12 +54,44 @@ class Jawa2JavaNew(reporter: Reporter) {
           }
           else if (ifCurrentState.isDoWhile) {
             println("This is a do while loop block.")
-            val doWhileTask = DoWhileTask(loc, elseBodyLocations, mainTask, currentTask)
-            //            doWhileTask.endOfBlock = ifCurrentState.endOfLoop
-            doWhileTask.endOfBlock = loc.locationIndex + 1
-            println("THE END OF Do... WHILE BLOCK at: "+ loc.locationIndex + " :: " + loc.locationUri+ " is ::::" + doWhileTask.endOfBlock)
+            val startOfLoop: Int = ifStatement.targetLocation.locationIndex
+            var parentParadox: Boolean = false
+            // validation for do...while loops.
+            // Current Task is the parent for this task.
+            currentTask match {
+              case wt: WhileTask =>
+                println("PARENT OF DO... WHILE Is DO WHILE.")
+                //If goto target of do...while is before its parent, the parent is within the do...while loop.
+                if(wt.startOfLoop > startOfLoop) {
+                  println("Removing locations from parent of Do... while")
+                  wt.isDoWhile = true
+                  //Clean the parent iterator
+                  wt.locationIterator.locations = wt.locationIterator.locations filter (l=> l.locationIndex < startOfLoop)
+                }
+              case dwt: DoWhileTask =>
+                println("PARENT OF DO... WHILE Is DO WHILE.")
+              case it: IfTask=>
+                println("PARENT OF DO...WHILE is IF Task")
+                //If goto target of do...while is before its parent, the parent is within the do...while loop.
+                if(it.location.locationIndex > startOfLoop) {
+                  println("Removing locations from parent of Do... while")
+                  parentParadox = true
+                  it.isDoWhile = true
+                  //Clean the parent iterator
+                  it.locationIterator.locations = it.locationIterator.locations filter (l=> l.locationIndex < startOfLoop)
+                }
+              case _ =>
+            }
 
-            doWhileTask
+            if (!parentParadox) {
+              val doWhileTask = DoWhileTask(loc, elseBodyLocations, mainTask, currentTask)
+              doWhileTask.endOfBlock = loc.locationIndex + 1
+              println("THE END OF Do... WHILE BLOCK at: "+ loc.locationIndex + " :: " + loc.locationUri+ " is ::::" + doWhileTask.endOfBlock)
+              doWhileTask
+            } else {
+              println("RETURNING NONE TASK")
+              NoneTask()
+            }
           }
           else {
             val ifElseTask = IfElseTask(loc, ifBodyLocations, elseBodyLocations, mainTask, currentTask)
@@ -133,6 +166,7 @@ class Jawa2JavaNew(reporter: Reporter) {
         elseBodyLocations ++= elseBody
       } else {
         locationIter.setPos(startLocation +1 )
+        println("RETRIEVING BACKWARD IFELSE BODY LOCATIONS!!!")
         retrieveBackwardIfElseBodyLocations(elseBodyLocations, startLocation, originalTargetLocation, locationIter, currentState)
       }
     }
@@ -183,6 +217,72 @@ class Jawa2JavaNew(reporter: Reporter) {
             retrieveBackwardIfElseBodyLocations(elseBodyLocations, startLocation, originalTargetLocation, locationIter, currentState)
           }
       }
+
+      /* if(elseBodyLocations.nonEmpty ) {
+         println("Checking else body for loop for if Statement at.: " + startLocation)
+         //last statement may not be a goto. Find the last goto.
+
+         val lastGoto = elseBodyLocations.lastIndexWhere(l => l.statement.isInstanceOf[GotoStatement])
+         if (lastGoto != -1) {
+           val gotoLocation: Location =  elseBodyLocations(lastGoto)
+           val gs: GotoStatement = gotoLocation.statement.asInstanceOf[GotoStatement]
+           val locationsToRemove = elseBodyLocations filter (l=> l.locationIndex > gotoLocation.locationIndex)
+
+           for (r <- locationsToRemove) {
+             elseBodyLocations.remove(elseBodyLocations.indexOf(r))
+           }
+
+           //          val currentLocation = locationIter.pos  // This is incremented automatically hence points to the next location, which might or might not exist
+           val currentLocation = loc.locationIndex
+           //Setting position to start of the else body for identifying the loop.
+           locationIter.setPos(elseBodyLocations.head.locationIndex)
+           identifyLoop(startLocation, locationIter, currentState, elseBodyLocations)
+           if(!currentState.isLoop) {
+             currentState.additionalState = IfState(startLocation)
+           }
+
+           //need to add removed statements to the parent block.
+           currentState.parentTask match {
+             case Some(p) =>
+               if(currentState.isLoop) {
+                 ifBodyLocations.foreach{
+                   l =>
+                     println("ADDING IF BODY IN LOOP TO PARENT>>>" + l.locationIndex + " :: " + l.locationUri)
+                     p  match {
+                       case wt: WhileTask =>
+                         println("PARENT IS: WHILE :" + wt.location.locationIndex + " :: " + wt.location.locationUri + "::::"  + l.locationIndex + " :: " + l.locationUri)
+                         wt.locationIterator.addLocation(l)
+
+                       case dwt: DoWhileTask =>
+                         println("PARENT IS: DO ... WHILE :" + dwt.location.locationIndex + " :: " + dwt.location.locationUri+ "::::"  + l.locationIndex + " :: " + l.locationUri)
+                         dwt.locationIterator.addLocation(l)
+
+                       case it: IfTask =>
+                         println("PARENT IS: IF :" + it.location.locationIndex + " :: " + it.location.locationUri + "IS ELSE : " + it.isElse+ "::::"  + l.locationIndex + " :: " + l.locationUri)
+                         it.locationIterator.addLocation(l)
+
+                       case _ => println("PARENT IS : " + p.getClass() + "!!!"+ "::::"  + l.locationIndex + " :: " + l.locationUri)
+                     }
+                 }
+               }
+               p match {
+                 case wt: WhileTask =>
+                   locationsToRemove.foreach{
+                     l =>
+                       println("ADDING Removed IN LOOP TO PARENT>>>" + l.locationIndex + " :: " + l.locationUri)
+                       wt.locationIterator.addLocation(l)
+                   }
+                 case _ => println("PARENT IS NOT A WHILE LOOP !!!")
+               }
+
+             case None =>
+           }
+
+           locationIter.setPos(currentLocation)
+         } else {
+           println("This is not a loop as else block has no goto statement.")
+         }
+       }*/
 
       def addLocation(l: Location, loc: MList[Location]): Unit = {
         loc += l
@@ -254,6 +354,32 @@ class Jawa2JavaNew(reporter: Reporter) {
           retrieveIfBodyLocations(ifBodyLocations, elseBodyLocations, startLocation, originalTargetLocation, locationIter, currentState)
       }
 
+      //todo Check this logic: If no jump statement found in the if body location and parent is a do...while loop, this jump location is the initialisation part of do...while loop
+      if(ifBodyLocations.nonEmpty) {
+        val locationLimit: Option[Location] = ifBodyLocations find (al => al.statement.isInstanceOf[GotoStatement] || al.statement.isInstanceOf[IfStatement])
+        locationLimit match {
+          case Some(limit) =>
+          case None =>
+            println(startLocation + "NO GOTO / IF STATEMENT IN IF BODY BLOCK")
+            currentState.parentTask match {
+              case Some(p) =>
+                p match {
+                  case dwt: DoWhileTask =>
+                    if(dwt.locationIterator.locations.containsSlice(ifBodyLocations)) {
+                      println("parent do...while loop contains all the ifbodyLocations.")
+                      val locationsToRemove = ifBodyLocations
+                      for (r <- locationsToRemove) {
+                        ifBodyLocations.remove(ifBodyLocations.indexOf(r))
+                      }
+                    }
+                  case _ => println("PARENT IS NOT A DO..WHILE LOOP !!!")
+                }
+
+              case None =>
+            }
+        }
+      }
+
       if(elseBodyLocations.nonEmpty ) {
         println("Checking else body for loop for if Statement at.: " + startLocation)
         //last statement may not be a goto. Find the last goto.
@@ -268,8 +394,8 @@ class Jawa2JavaNew(reporter: Reporter) {
             elseBodyLocations.remove(elseBodyLocations.indexOf(r))
           }
 
-//          val currentLocation = locationIter.pos  // This is incremented automatically hence points to the next location, which might or might not exist
-          val currentLocation = loc.locationIndex
+          val currentLocation = locationIter.pos
+          //          val currentLocation = loc.locationIndex
           //Setting position to start of the else body for identifying the loop.
           locationIter.setPos(elseBodyLocations.head.locationIndex)
           identifyLoop(startLocation, locationIter, currentState, elseBodyLocations)
@@ -317,6 +443,27 @@ class Jawa2JavaNew(reporter: Reporter) {
           locationIter.setPos(currentLocation)
         } else {
           println("This is not a loop as else block has no goto statement.")
+        }
+
+        currentState.parentTask match {
+          case Some(p) =>
+            p match {
+              case dwt: DoWhileTask =>
+
+                if(ifBodyLocations.contains(dwt.location)) {
+                  val locationsToRemove = ifBodyLocations filter (l=> l.locationIndex >= dwt.location.locationIndex)
+
+                  for (r <- locationsToRemove) {
+                    ifBodyLocations.remove(ifBodyLocations.indexOf(r))
+                  }
+
+                  locationsToRemove.foreach (l => println("Removing Location due to DO.. WHILE : " +  + l.locationIndex + " :: " + l.locationUri))
+
+                }
+              case _ => println("PARENT IS NOT A DO..WHILE LOOP !!!")
+            }
+
+          case None =>
         }
       }
 
@@ -620,6 +767,12 @@ class Jawa2JavaNew(reporter: Reporter) {
     }
   }
 
+  case class NoneTask() extends Task {
+    def resolve(bodyStatements: MList[(Int, ST)]): Unit = {
+      println("This is a None Task.")
+    }
+  }
+
   case class IfElseTask(location: Location,
                         ifBodyLocations: MList[Location],
                         elseBodyLocations: MList[Location],
@@ -750,6 +903,7 @@ class Jawa2JavaNew(reporter: Reporter) {
                        parentTask: BlockTask) extends BlockTask with TaskHelper {
     val locationIterator: LocationIterator = LocationIterator(Right(loopBodyLocations))
     val ifStatement: IfStatement = location.statement.asInstanceOf[IfStatement]
+    val startOfLoop: Int = location.locationIndex
 
     val level = parentTask.level + 1
 
@@ -815,8 +969,27 @@ class Jawa2JavaNew(reporter: Reporter) {
                          parentTask: BlockTask) extends BlockTask with TaskHelper {
     val level = parentTask.level + 1
     val ifStatement: IfStatement = location.statement.asInstanceOf[IfStatement]
+    val startOfLoop: Int = ifStatement.targetLocation.locationIndex
     val locationIterator: LocationIterator = LocationIterator(Right(loopBodyLocations))
 
+    /*
+        def identifyTasks(): Unit = {
+          parentTask match {
+            case wt: WhileTask =>
+              //If goto target of do...while is before its parent, the parent is within the do...while loop.
+              if(wt.startOfLoop > startOfLoop) {
+                wt.isDoWhile = true
+                //Clean the parent iterator
+                wt.locationIterator.locations = List.empty
+              }
+            case dwt: DoWhileTask =>
+            case it: IfTask=>
+            case _ =>
+          }
+        }
+    */
+
+    //      def identifyDoWhileTasks(): Unit = {
     def identifyTasks(): Unit = {
       println("Identifying Do While Block Tasks")
 
@@ -857,7 +1030,7 @@ class Jawa2JavaNew(reporter: Reporter) {
 
       taskMap.toSeq.sortBy(_._1) foreach {
         case (loc, task) =>
-          if(getVisitedCount(loc) == 0) {
+          if(getVisitedCount(loc) == 0 && loc <= endOfBlock && !task.isDoWhile) {
             task.resolve(loopBodyStatements)
             visitLocation(loc)
           }
@@ -900,8 +1073,15 @@ class Jawa2JavaNew(reporter: Reporter) {
 
     def setPos(locationIndex: Int): Unit = {
       pos = locations.indexWhere(l=> l.locationIndex == locationIndex)
+      // pos is incremented automatically hence points to the next location, which might or might not exist. Handle for end of iterator.
+      // throw exception when the desired location is not the end of iterator and still not found
       if(pos == -1) {
-        throw new Jawa2JavaTranslateException("Error Setting location. Target Location " + locationIndex +" not found within iterator." )
+        val maxLocation: Int = locations.maxBy( l=> l.locationIndex).locationIndex + 1
+        if(maxLocation == locationIndex) {
+          pos = maxLocation
+        } else {
+          throw new Jawa2JavaTranslateException("Error Setting location. Target Location " + locationIndex +" not found within iterator." )
+        }
       }
     }
 
