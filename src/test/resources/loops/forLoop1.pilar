@@ -374,36 +374,95 @@ record `com.fgwei.ForLoop1`  @kind class @AccessFlag PUBLIC {
 
 
    procedure `int` `com.fgwei.ForLoop1.doWhileNested2` (`com.fgwei.ForLoop1` ForLoop1 @kind `this`) @owner ^`com.fgwei.ForLoop1` @signature `Lcom/fgwei/ForLoop1;.doWhileNested2:()I` @AccessFlag PRIVATE {
-           `int` int_v2;                                                                  //
-              `int` int_v1;                                                               //
-              `int` int_v0;                                                               //
-                                                                                          //
-                #L02b8ac.  int_v1:= 0I;                                                       //
-                #L02b8ae.  int_v0:= 0I;                                                       //
-                #L02b8b0.  int_v1:= int_v1 + int_v0  @kind int;                               //
-                #L02b8b2.  int_v2:= 600I;                                                     //
-                                                                                          //
-            //if 1                                                                        //
-                #L02b8b6.  if int_v1 >= int_v2 then goto L02b8ce;                             //
-                #L02b8ba.  int_v2:= 200I;                                                     //
-                                                                                          //
-            //if 2                                                                        //
-                #L02b8be.  if int_v1 >= int_v2 then goto L02b8dc;                             //
-                #L02b8c2.  int_v1:= int_v1 + 5;                                               //
-            #L02b8c6.  int_v2:= 500I;                                                     //
-                                                                                          //
-            // do Loop 2                                                                  //
-            #L02b8ca.  if int_v1 < int_v2 then goto L02b8ba;                              //
-                                                                                          //
-                #L02b8ce.  int_v0:= int_v0 + 1;                                               //
-                #L02b8d2.  int_v2:= 50I;                                                      //
-                                                                                          //
-            //do Loop 1                                                                   //
-                #L02b8d6.  if int_v0 < int_v2 then goto L02b8b0;                              //
-            #L02b8da.  return int_v1;                                                     //
-                                                                                          //
-                #L02b8dc.  int_v1:= int_v1 + 1;                                               //
-            #L02b8e0.  goto L02b8c6;                                                      //
+           `int` int_v2;
+              `int` int_v1;
+              `int` int_v0;
+
+                #L02b8ac.  int_v1:= 0I;
+                #L02b8ae.  int_v0:= 0I;
+                #L02b8b0.  int_v1:= int_v1 + int_v0  @kind int;
+                #L02b8b2.  int_v2:= 600I;
+
+            //if 1
+                #L02b8b6.  if int_v1 >= int_v2 then goto L02b8ce;
+                #L02b8ba.  int_v2:= 200I;
+
+            //if 2
+                #L02b8be.  if int_v1 >= int_v2 then goto L02b8dc;
+                #L02b8c2.  int_v1:= int_v1 + 5;
+            #L02b8c6.  int_v2:= 500I;
+
+            // do Loop 2
+            #L02b8ca.  if int_v1 < int_v2 then goto L02b8ba;
+
+                #L02b8ce.  int_v0:= int_v0 + 1;
+                #L02b8d2.  int_v2:= 50I;
+
+            //do Loop 1
+                #L02b8d6.  if int_v0 < int_v2 then goto L02b8b0;
+            #L02b8da.  return int_v1;
+
+                #L02b8dc.  int_v1:= int_v1 + 1;
+            #L02b8e0.  goto L02b8c6;
+   }
+
+   procedure `int` `com.fgwei.ForLoop1.doWhileNested3` (`com.fgwei.ForLoop1` ForLoop1 @kind `this`) @owner ^`com.fgwei.ForLoop1` @signature `Lcom/fgwei/ForLoop1;.doWhileNested3:()I` @AccessFlag PRIVATE {
+          `int` int_v2;
+             `int` int_v1;
+             `int` int_v0;
+
+           #L02b908.  int_v1:= 0I;
+           #L02b90a.  int_v0:= 0I;
+           #L02b90c.  int_v1:= int_v1 + int_v0  @kind int;
+           #L02b90e.  int_v2:= 100I;
+           #L02b912.  if int_v1 >= int_v2 then goto L02b91c;
+           #L02b916.  int_v1:= int_v1 + 5;
+           #L02b91a.  goto L02b90e;
+           #L02b91c.  int_v2:= 600I;
+           #L02b920.  if int_v1 >= int_v2 then goto L02b938;
+           #L02b924.  int_v2:= 200I;
+           #L02b928.  if int_v1 >= int_v2 then goto L02b946;
+           #L02b92c.  int_v1:= int_v1 + 5;
+           #L02b930.  int_v2:= 500I;
+           #L02b934.  if int_v1 < int_v2 then goto L02b924;
+           #L02b938.  int_v0:= int_v0 + 1;
+           #L02b93c.  int_v2:= 50I;
+           #L02b940.  if int_v0 < int_v2 then goto L02b90c;
+           #L02b944.  return int_v1;
+           #L02b946.  int_v1:= int_v1 + 1;
+           #L02b94a.  goto L02b930;
+   }
+
+   procedure `int` `com.fgwei.ForLoop1.doWhileNested4` (`com.fgwei.ForLoop1` ForLoop1 @kind `this`) @owner ^`com.fgwei.ForLoop1` @signature `Lcom/fgwei/ForLoop1;.doWhileNested4:()I` @AccessFlag PRIVATE {
+          `int` int_v2;
+            `int` int_v0;
+            `int` int_v3;
+            `int` int_v1;
+
+          #L02b968.  int_v3:= 50I;
+          #L02b96c.  int_v1:= 0I;
+          #L02b96e.  int_v0:= 0I;
+          #L02b970.  int_v1:= int_v1 + int_v0  @kind int;
+          #L02b972.  int_v2:= 100I;
+          #L02b976.  if int_v1 >= int_v2 then goto L02b990;
+          #L02b97a.  int_v1:= int_v1 + 5;
+          #L02b97e.  int_v2:= 20I;
+          #L02b982.  if int_v0 >= int_v2 then goto L02b98a;
+          #L02b986.  int_v1:= int_v1 + 3;
+          #L02b98a.  if int_v1 < int_v3 then goto L02b97e;
+          #L02b98e.  goto L02b972;
+          #L02b990.  int_v2:= 600I;
+          #L02b994.  if int_v1 >= int_v2 then goto L02b9ac;
+          #L02b998.  int_v2:= 200I;
+          #L02b99c.  if int_v1 >= int_v2 then goto L02b9b6;
+          #L02b9a0.  int_v1:= int_v1 + 5;
+          #L02b9a4.  int_v2:= 500I;
+          #L02b9a8.  if int_v1 < int_v2 then goto L02b998;
+          #L02b9ac.  int_v0:= int_v0 + 1;
+          #L02b9b0.  if int_v0 < int_v3 then goto L02b970;
+          #L02b9b4.  return int_v1;
+          #L02b9b6.  int_v1:= int_v1 + 1;
+          #L02b9ba.  goto L02b9a4;
    }
 
 

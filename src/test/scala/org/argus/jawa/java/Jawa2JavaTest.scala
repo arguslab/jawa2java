@@ -894,6 +894,11 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
         System.out.println("nestedWhile: " + nestedWhile());
         System.out.println("forConditional: " + forConditional());
         System.out.println("doWhileSum: " + doWhileSum());
+        System.out.println("doWhileNested: " + doWhileNested());
+        System.out.println("doWhileNested1: " + doWhileNested1());
+        System.out.println("doWhileNested2: " + doWhileNested2());
+        System.out.println("doWhileNested3: " + doWhileNested3());
+        System.out.println("doWhileNested4: " + doWhileNested4());
 
      }
 
@@ -1045,7 +1050,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
         return sum;
     }
 
-    private int doWhileNested() {
+    private static int doWhileNested() {
         int sum = 0;
         int i = 0;
         do {
@@ -1053,6 +1058,95 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
             do {
                 sum = sum + 1;
             } while(sum < 500);
+            i ++;
+        } while(i < 50);
+
+        return sum;
+    }
+
+    private static int doWhileNested1() {
+        int sum = 0;
+        int i = 0;
+        do {
+            sum = sum + i;
+            do {
+                if(sum < 200) {
+                    sum = sum + 5;
+                } else {
+                    sum = sum + 1;
+                }
+            } while(sum < 500);
+            i ++;
+        } while(i < 50);
+
+        return sum;
+    }
+
+      private static int doWhileNested2() {
+        int sum = 0;
+        int i = 0;
+        do {
+            sum = sum + i;
+            if(sum < 600) {
+                do {
+                    if(sum < 200) {
+                        sum = sum + 5;
+                    } else {
+                        sum = sum + 1;
+                    }
+                } while(sum < 500);
+            }
+            i ++;
+        } while(i < 50);
+
+        return sum;
+    }
+
+    private static int doWhileNested3() {
+        int sum = 0;
+        int i = 0;
+        do {
+            sum = sum + i;
+            while(sum < 100) {
+                sum = sum + 5;
+            }
+            if(sum < 600) {
+                do {
+                    if(sum < 200) {
+                        sum = sum + 5;
+                    } else {
+                        sum = sum + 1;
+                    }
+                } while(sum < 500);
+            }
+            i ++;
+        } while(i < 50);
+
+        return sum;
+    }
+
+    private static int doWhileNested4() {
+        int sum = 0;
+        int i = 0;
+        do {
+            sum = sum + i;
+            while(sum < 100) {
+                sum = sum + 5;
+                do {
+                    if(i < 20){
+                        sum = sum + 3;
+                    }
+                } while(sum < 50);
+            }
+            if(sum < 600) {
+                do {
+                    if(sum < 200) {
+                        sum = sum + 5;
+                    } else {
+                        sum = sum + 1;
+                    }
+                } while(sum < 500);
+            }
             i ++;
         } while(i < 50);
 
@@ -1434,6 +1528,85 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |      int_v0 = int_v0 + 1;
       |      int_v2 = 50;
       |    } while(int_v0 < int_v2);
+      |    return int_v1;
+      |  }
+      |
+      |  private int doWhileNested3() {
+      |     int int_v2;
+      |     int int_v1;
+      |     int int_v0;
+      |
+      |    int_v1 = 0;
+      |    int_v0 = 0;
+      |    do {
+      |      int_v1 = int_v1 + int_v0;
+      |      int_v2 = 100;
+      |      while(!(int_v1 >= int_v2)) {
+      |        int_v1 = int_v1 + 5;
+      |        int_v2 = 100;
+      |      }
+      |      int_v2 = 600;
+      |      if(int_v1 >= int_v2) {
+      |      }
+      |      else {
+      |        do {
+      |          int_v2 = 200;
+      |          if(int_v1 >= int_v2) {
+      |            int_v1 = int_v1 + 1;
+      |          }
+      |          else {
+      |            int_v1 = int_v1 + 5;
+      |          }
+      |          int_v2 = 500;
+      |        } while(int_v1 < int_v2);
+      |      }
+      |      int_v0 = int_v0 + 1;
+      |      int_v2 = 50;
+      |    } while(int_v0 < int_v2);
+      |    return int_v1;
+      |  }
+      |
+      |  private int doWhileNested4() {
+      |     int int_v2;
+      |     int int_v0;
+      |     int int_v3;
+      |     int int_v1;
+      |
+      |    int_v3 = 50;
+      |    int_v1 = 0;
+      |    int_v0 = 0;
+      |    do {
+      |      int_v1 = int_v1 + int_v0;
+      |      int_v2 = 100;
+      |      while(!(int_v1 >= int_v2)) {
+      |        int_v1 = int_v1 + 5;
+      |        do {
+      |          int_v2 = 20;
+      |          if(int_v0 >= int_v2) {
+      |          }
+      |          else {
+      |            int_v1 = int_v1 + 3;
+      |          }
+      |        } while(int_v1 < int_v3);
+      |        int_v2 = 100;
+      |      }
+      |      int_v2 = 600;
+      |      if(int_v1 >= int_v2) {
+      |      }
+      |      else {
+      |        do {
+      |          int_v2 = 200;
+      |          if(int_v1 >= int_v2) {
+      |            int_v1 = int_v1 + 1;
+      |          }
+      |          else {
+      |            int_v1 = int_v1 + 5;
+      |          }
+      |          int_v2 = 500;
+      |        } while(int_v1 < int_v2);
+      |      }
+      |      int_v0 = int_v0 + 1;
+      |    } while(int_v0 < int_v3);
       |    return int_v1;
       |  }
       |}""".stripMargin.trim
