@@ -1312,6 +1312,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |              int_v2 = int_v2 / 2;
       |            }
       |          }
+      |          int_v1 = int_v1 + 1;
       |        }
       |        else {
       |          int_v2 = int_v2 + 251;
@@ -1323,8 +1324,8 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |              int_v2 = int_v2 / 2;
       |            }
       |          }
+      |          int_v1 = int_v1 + 1;
       |        }
-      |        int_v1 = int_v1 + 1;
       |      }
       |      int_v0 = int_v0 + 1;
       |      int_v3 = 50;
