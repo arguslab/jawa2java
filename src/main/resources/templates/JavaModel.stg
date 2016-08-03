@@ -137,3 +137,22 @@ do {
   $body$
 } while($while$);
 >>
+
+SwitchStatement(exp, cases) ::= <<
+switch ($exp$) {
+  $cases ; separator="\n"$
+}
+>>
+
+SwitchCase(val, body) ::= <<
+case $val$ :
+  $body$
+  break;
+
+>>
+
+DefaultCase(body) ::= <<
+default:
+  $body$
+  break;
+>>

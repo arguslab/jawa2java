@@ -13,3 +13,57 @@ record `com.fgwei.SwitchJump1`  @kind class @AccessFlag PUBLIC {
                  | 0 => goto L026e5a
                  | else => goto L026eb0;
    }
+
+   procedure `int` `com.fgwei.SwitchJump1.SwitchJump2` (`com.fgwei.SwitchJump1` ForLoop1 @kind `this`) @owner ^`com.fgwei.SwitchJump1` @signature `Lcom/fgwei/SwitchJump1;.SwitchJump2:()I` @AccessFlag PRIVATE {
+     `java.lang.String` String_v3;
+         `java.lang.StringBuilder` StringBuilder_v2;
+         `java.io.PrintStream` PrintStream_v1;
+         `int` int_v0;
+         `java.lang.StringBuilder` StringBuilder_temp;
+         `java.lang.String` String_v2;
+         `java.lang.String` String_temp;
+         `char` char_v0;
+
+       #L02bd48.
+       #L02bd48_0.  int_v0:= 67I;
+       #L02bd48_1.  char_v0:= 67I;
+       #L02bd4c.  goto L02bdd0;
+       #L02bd52.  PrintStream_v1:= `@@java.lang.System.out`  @kind object @type ^`java.io.PrintStream`;
+       #L02bd56.  String_v2:= "Invalid grade" @kind object;
+       #L02bd5a.  call `java.io.PrintStream.println`(PrintStream_v1, String_v2) @signature `Ljava/io/PrintStream;.println:(Ljava/lang/String;)V` @classDescriptor ^`java.io.PrintStream` @kind virtual;
+       #L02bd60.  PrintStream_v1:= `@@java.lang.System.out`  @kind object @type ^`java.io.PrintStream`;
+       #L02bd64.  StringBuilder_v2:= new `java.lang.StringBuilder`;
+       #L02bd68.  call `java.lang.StringBuilder.<init>`(StringBuilder_v2) @signature `Ljava/lang/StringBuilder;.<init>:()V` @classDescriptor ^`java.lang.StringBuilder` @kind direct;
+       #L02bd6e.  String_v3:= "Your grade is " @kind object;
+       #L02bd72.  call StringBuilder_temp:=  `java.lang.StringBuilder.append`(StringBuilder_v2, String_v3) @signature `Ljava/lang/StringBuilder;.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;` @classDescriptor ^`java.lang.StringBuilder` @kind virtual;
+       #L02bd78.  StringBuilder_v2:= StringBuilder_temp  @kind object;
+       #L02bd7a.  call StringBuilder_temp:=  `java.lang.StringBuilder.append`(StringBuilder_v2, char_v0) @signature `Ljava/lang/StringBuilder;.append:(C)Ljava/lang/StringBuilder;` @classDescriptor ^`java.lang.StringBuilder` @kind virtual;
+       #L02bd80.  StringBuilder_v2:= StringBuilder_temp  @kind object;
+       #L02bd82.  call String_temp:=  `java.lang.StringBuilder.toString`(StringBuilder_v2) @signature `Ljava/lang/StringBuilder;.toString:()Ljava/lang/String;` @classDescriptor ^`java.lang.StringBuilder` @kind virtual;
+       #L02bd88.  String_v2:= String_temp  @kind object;
+       #L02bd8a.  call `java.io.PrintStream.println`(PrintStream_v1, String_v2) @signature `Ljava/io/PrintStream;.println:(Ljava/lang/String;)V` @classDescriptor ^`java.io.PrintStream` @kind virtual;
+       #L02bd90.  return char_v0;
+       #L02bd92.  PrintStream_v1:= `@@java.lang.System.out`  @kind object @type ^`java.io.PrintStream`;
+       #L02bd96.  String_v2:= "Excellent!" @kind object;
+       #L02bd9a.  call `java.io.PrintStream.println`(PrintStream_v1, String_v2) @signature `Ljava/io/PrintStream;.println:(Ljava/lang/String;)V` @classDescriptor ^`java.io.PrintStream` @kind virtual;
+       #L02bda0.  goto L02bd60;
+       #L02bda2.  PrintStream_v1:= `@@java.lang.System.out`  @kind object @type ^`java.io.PrintStream`;
+       #L02bda6.  String_v2:= "Well done" @kind object;
+       #L02bdaa.  call `java.io.PrintStream.println`(PrintStream_v1, String_v2) @signature `Ljava/io/PrintStream;.println:(Ljava/lang/String;)V` @classDescriptor ^`java.io.PrintStream` @kind virtual;
+       #L02bdb0.  goto L02bd60;
+       #L02bdb2.  PrintStream_v1:= `@@java.lang.System.out`  @kind object @type ^`java.io.PrintStream`;
+       #L02bdb6.  String_v2:= "You passed" @kind object;
+       #L02bdba.  call `java.io.PrintStream.println`(PrintStream_v1, String_v2) @signature `Ljava/io/PrintStream;.println:(Ljava/lang/String;)V` @classDescriptor ^`java.io.PrintStream` @kind virtual;
+       #L02bdc0.  PrintStream_v1:= `@@java.lang.System.out`  @kind object @type ^`java.io.PrintStream`;
+       #L02bdc4.  String_v2:= "Better try again" @kind object;
+       #L02bdc8.  call `java.io.PrintStream.println`(PrintStream_v1, String_v2) @signature `Ljava/io/PrintStream;.println:(Ljava/lang/String;)V` @classDescriptor ^`java.io.PrintStream` @kind virtual;
+       #L02bdce.  goto L02bd60;
+       #L02bdd0.  switch int_v0
+                       | 65 => goto L02bd92
+                       | 66 => goto L02bda2
+                       | 67 => goto L02bda2
+                       | 68 => goto L02bdb2
+                       | 69 => goto L02bd52
+                       | 70 => goto L02bdc0
+                       | else => goto L02bd52;
+   }

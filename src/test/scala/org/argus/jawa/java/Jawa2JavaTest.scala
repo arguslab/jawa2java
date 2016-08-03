@@ -1611,6 +1611,99 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |  }
       |}""".stripMargin.trim
 
+
+  new FgSourceFile(new PlainFile(new File("src/test/resources/jump/SwitchJump1.pilar"))) produceJavaClass
+  """package com.fgwei;
+    |
+    |import java.io.PrintStream;
+    |import java.lang.String;
+    |import java.lang.StringBuilder;
+    |import java.lang.System;
+    |
+    |public class SwitchJump1 {
+    |  public static int main() {
+    |     int int_v1;
+    |     int int_v2;
+    |
+    |    int_v1 = 2130903040;
+    |    int_v2 = 3;
+    |    switch (int_v2) {
+    |      case 0 :
+    |        int_v1 = 0;
+    |        break;
+    |
+    |      default:
+    |        break;
+    |    }
+    |    return int_v1;
+    |  }
+    |
+    |  private int SwitchJump2() {
+    |     String String_v3;
+    |     StringBuilder StringBuilder_v2;
+    |     PrintStream PrintStream_v1;
+    |     int int_v0;
+    |     StringBuilder StringBuilder_temp;
+    |     String String_v2;
+    |     String String_temp;
+    |     char char_v0;
+    |
+    |    int_v0 = 67;
+    |    char_v0 = 67;
+    |    switch (int_v0) {
+    |      case 65 :
+    |        PrintStream_v1 = System.out;
+    |        String_v2 = "Excellent!";
+    |        PrintStream_v1.println(String_v2);
+    |        break;
+    |
+    |      case 66 :
+    |        PrintStream_v1 = System.out;
+    |        String_v2 = "Well done";
+    |        PrintStream_v1.println(String_v2);
+    |        break;
+    |
+    |      case 67 :
+    |        PrintStream_v1 = System.out;
+    |        String_v2 = "Well done";
+    |        PrintStream_v1.println(String_v2);
+    |        break;
+    |
+    |      case 68 :
+    |        PrintStream_v1 = System.out;
+    |        String_v2 = "You passed";
+    |        PrintStream_v1.println(String_v2);
+    |        PrintStream_v1 = System.out;
+    |        String_v2 = "Better try again";
+    |        PrintStream_v1.println(String_v2);
+    |        break;
+    |
+    |      case 70 :
+    |        PrintStream_v1 = System.out;
+    |        String_v2 = "Better try again";
+    |        PrintStream_v1.println(String_v2);
+    |        break;
+    |
+    |      default:
+    |        PrintStream_v1 = System.out;
+    |        String_v2 = "Invalid grade";
+    |        PrintStream_v1.println(String_v2);
+    |        break;
+    |    }
+    |    PrintStream_v1 = System.out;
+    |    StringBuilder_v2 = new StringBuilder();
+    |    String_v3 = "Your grade is ";
+    |    StringBuilder_temp = StringBuilder_v2.append(String_v3);
+    |    StringBuilder_v2 = StringBuilder_temp;
+    |    StringBuilder_temp = StringBuilder_v2.append(char_v0);
+    |    StringBuilder_v2 = StringBuilder_temp;
+    |    String_temp = StringBuilder_v2.toString();
+    |    String_v2 = String_temp;
+    |    PrintStream_v1.println(String_v2);
+    |    return char_v0;
+    |  }
+    |}""".stripMargin.trim
+
   /*new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/jump/IfJump_nested_3_with_else_2.pilar"))) produceJavaClass
     """package com.fgwei;
       |
