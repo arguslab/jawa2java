@@ -45,6 +45,9 @@ class Jawa2JavaNew(reporter: Reporter) {
             println("This is a while loop block")
             val whileTask = WhileTask(loc, elseBodyLocations, mainTask, currentTask)
             whileTask.endOfBlock = ifCurrentState.endOfLoop
+            whileTask.loopInitialisers ++= ifCurrentState.loopInitialisers
+            whileTask.loopInitialisers foreach (l=> println("loop initialisers: " + l.locationIndex + " :: " + l.locationUri))
+            ifCurrentState.loopInitialisers foreach (l=> println("current State loop initialisers: " + l.locationIndex + " :: " + l.locationUri))
             println("THE END OF WHILE BLOCK at: "+ loc.locationIndex + " :: " + loc.locationUri+ " is ::::" + ifCurrentState.endOfLoop)
 
             whileTask
@@ -61,7 +64,7 @@ class Jawa2JavaNew(reporter: Reporter) {
                 //If goto target of do...while is before its parent, the parent is within the do...while loop.
                 if(wt.startOfLoop > startOfLoop) {
                   println("Removing locations from parent of Do... while")
-                  wt.isDoWhile = true
+                  wt.isPartOfBlock = true
                   //Clean the parent iterator
                   wt.locationIterator.locations = wt.locationIterator.locations filter (l=> l.locationIndex < startOfLoop)
                 }
@@ -73,7 +76,7 @@ class Jawa2JavaNew(reporter: Reporter) {
                 if(it.location.locationIndex > startOfLoop) {
                   println("Removing locations from parent of Do... while")
                   parentParadox = true
-                  it.isDoWhile = true
+                  it.isPartOfBlock = true
                   //Clean the parent iterator
                   it.locationIterator.locations = it.locationIterator.locations filter (l=> l.locationIndex < startOfLoop)
                 }
@@ -83,6 +86,8 @@ class Jawa2JavaNew(reporter: Reporter) {
             if (!parentParadox) {
               val doWhileTask = DoWhileTask(loc, elseBodyLocations, mainTask, currentTask)
               doWhileTask.endOfBlock = loc.locationIndex + 1
+//              doWhileTask.loopInitialisers ++= ifCurrentState.loopInitialisers
+
               println("THE END OF Do... WHILE BLOCK at: "+ loc.locationIndex + " :: " + loc.locationUri+ " is ::::" + doWhileTask.endOfBlock)
               doWhileTask
             } else {
@@ -151,11 +156,14 @@ class Jawa2JavaNew(reporter: Reporter) {
 
               val switchTask = SwitchTask(loc, ss, switchCases, defaultCase,  mainTask, parentTask)
               //todo Find end of block logic for switch statement
-              switchTask.endOfBlock = switchCurrentState.endOfLoop
+              //              switchTask.endOfBlock = switchCurrentState.endOfLoop
+              switchTask.endOfDefault = switchCurrentState.endOfLoop
+              switchTask.endOfBlock = mainTask.locationIterator.pos
 
               switchTask
             case _ =>
-              NoneTask()
+              //              NoneTask()
+              SimpleTask(loc, mainTask)
           }
 
         case _ =>
@@ -169,17 +177,25 @@ class Jawa2JavaNew(reporter: Reporter) {
       val loc = locationIter.next()
       println("End of Switch Block is: " + currentState.endOfLoop)
       if(loc.locationIndex == currentState.endOfLoop) {
+        println("Returning as this is end of block...")
         return
       }
 
       loc.statement match {
         case gs: GotoStatement =>
           println("Switch Statement Goto.")
-          if(gs.targetLocation.locationIndex < loc.locationIndex) {
+          val gotoTarget: Int = gs.targetLocation.locationIndex
+          if(gotoTarget < loc.locationIndex) {
             addLocation(loc, caseBodyLocations )
-            currentState.endOfLoop = gs.targetLocation.locationIndex
+            //todo Need to check this logic for end of loop. This is used to mark the end of default block.
+            //If the goto target location is not within this caseBodyLocation, it marks the end of switch statement.
+            if(!caseBodyLocations.exists(l => l.locationIndex == gotoTarget)) {
+              currentState.endOfLoop = gotoTarget
+            }
           } else {
             println("Forward Jump in Switch Case Body. Adding location to Case Body")
+            // adding it to locations
+            addLocation(loc, caseBodyLocations )
             retrieveCaseStatements(caseBodyLocations, locationIter, currentState)
           }
         case rs: ReturnStatement =>
@@ -223,6 +239,35 @@ class Jawa2JavaNew(reporter: Reporter) {
         retrieveIfBodyLocations(ifBodyLocations, elseBodyLocations, originalLocation, ifStatement.targetLocation.locationIndex, locationIter, currentState)
         processIfElseStatements(ifBodyLocations, elseBodyLocations, originalLocation, locationIter, currentState)
       }
+
+      // add loopInitialisers to parent if not present
+
+      /*currentState.parentTask match {
+        case Some(p) =>
+            currentState.loopInitialisers foreach {
+              l =>
+                println("current location initialiser: " + l.locationIndex + " :: " + l.locationUri)
+//                if (!p.checkLocation(l.locationIndex)) {
+                  println("Adding loop initialiser to parent.")
+                  p match {
+                    case wt: WhileTask =>
+                      wt.locationIterator.addLocation(l)
+                      wt.loopInitialisers += l
+                    case dwt: DoWhileTask =>
+                      dwt.locationIterator.addLocation(l)
+                      dwt.loopInitialisers += l
+
+                    case it: IfTask =>
+                      it.locationIterator.addLocation(l)
+                    case ct: CaseTask =>
+                      ct.locationIterator.addLocation(l)
+                    case _ =>
+                      println("No handler for Adding loop initialiser to parent. parent is : " + p.getClass)
+                  }
+//                }
+            }
+        case None =>
+      }*/
 
       // Reset the location iterator
       locationIter.setPos(originalLocation + 1)
@@ -296,8 +341,21 @@ class Jawa2JavaNew(reporter: Reporter) {
 
                 case it: IfTask =>
                   println ("IFSTATE while retrieving Backward If Else Body Location. Implement Later!!!!")
+                  if(gotoLocation > it.location.locationIndex ){
+                    callIdentifyLoop(gs)
+                  }
 
-                case _ => println("SHOULD NOT BE HERE!!!")
+                //todo add  case for caseTask
+                case ct: CaseTask =>
+                  println("This is Case Task.")
+                  if(gotoLocation > ct.location.locationIndex ){
+                    callIdentifyLoop(gs)
+                  }
+
+                case _ =>
+                  println("Case is: " + p.getClass)
+                  println("SHOULD NOT BE HERE!!!")
+
               }
 
             case None =>
@@ -460,6 +518,7 @@ class Jawa2JavaNew(reporter: Reporter) {
                       case _ => println("PARENT IS : " + p.getClass() + "!!!" + "::::" + l.locationIndex + " :: " + l.locationUri)
                     }
                 }
+
               }
               p match {
                 case wt: WhileTask =>
@@ -508,6 +567,33 @@ class Jawa2JavaNew(reporter: Reporter) {
         locationLimit match {
           case Some(limit) =>
             println("SOME LOCATION LIMIT: " + limit.locationIndex + " :: " + limit.locationUri)
+
+            // If there is a locationLimit -> Need to remove locations from @ifBodyLocations.
+            /*val targetLocation: Int = limit.statement match {
+              case gs: GotoStatement => gs.targetLocation.locationIndex
+              case is: IfStatement => is.targetLocation.locationIndex
+              case _ => -1
+            }
+            if (targetLocation != -1) {
+              val locationsToRemove = ifBodyLocations filter (l => l.locationIndex >= targetLocation)
+
+              for (r <- locationsToRemove) {
+                ifBodyLocations.remove(ifBodyLocations.indexOf(r))
+              }
+            }*/
+            val targetLocation: Int = limit.statement match {
+              case gs: GotoStatement => gs.targetLocation.locationIndex
+              case is: IfStatement => is.targetLocation.locationIndex
+              case _ => -1
+            }
+            if (targetLocation <= limit.locationIndex){
+              val locationsToRemove = ifBodyLocations filter (l => l.locationIndex >= limit.locationIndex)
+
+              for (r <- locationsToRemove) {
+                ifBodyLocations.remove(ifBodyLocations.indexOf(r))
+              }
+            }
+
           case None =>
             println(startLocation + "NO GOTO / IF STATEMENT IN IF BODY BLOCK")
             currentState.parentTask match {
@@ -633,7 +719,7 @@ class Jawa2JavaNew(reporter: Reporter) {
         case _ =>
           if(!elseBodyLocations.contains(loc)) {
             locationsToAdd += loc
-            locationsToAdd.foreach(l => println(l.locationIndex + " :: " + l.locationUri))
+            locationsToAdd.foreach(l => println("locationsTOAdd: " + l.locationIndex + " :: " + l.locationUri))
             //Resetting visited.
             currentState.resetVisitedLocation(loc.locationIndex)
           }
@@ -717,7 +803,7 @@ class Jawa2JavaNew(reporter: Reporter) {
   trait Task {
     var isResolved: Boolean = false
     var isLevel1: Boolean = true // use this to filter nested lines within some other block.
-    var isDoWhile: Boolean = false
+    var isPartOfBlock: Boolean = false
     def resolve(bodyStatements: MList[(Int, ST)]): Unit
   }
 
@@ -785,7 +871,7 @@ class Jawa2JavaNew(reporter: Reporter) {
     def resolve(bodyStatements: MList[(Int, ST)]): Unit = {
       taskMap foreach {
         case (loc, task) =>
-          if(getVisitedCount(loc) == 0 && !task.isDoWhile) {
+          if(getVisitedCount(loc) == 0 && !task.isPartOfBlock) {
             task.resolve(bodyStatements)
             visitLocation(loc)
           }
@@ -892,7 +978,7 @@ class Jawa2JavaNew(reporter: Reporter) {
         case (loc, task) =>
           println(location.locationIndex + " :: " + location.locationUri + "   isElse " + isElse +"  current IF TASK location is ###:  " + loc)
 
-          if(getVisitedCount(loc) == 0 && !task.isDoWhile) {
+          if(getVisitedCount(loc) == 0 && !task.isPartOfBlock) {
             task.resolve(ifBodyStatements)
             visitLocation(loc)
           } else {
@@ -941,6 +1027,8 @@ class Jawa2JavaNew(reporter: Reporter) {
     val ifStatement: IfStatement = location.statement.asInstanceOf[IfStatement]
     val startOfLoop: Int = location.locationIndex
 
+    val loopInitialisers: MSet[Location] = msetEmpty
+
     val level = parentTask.level + 1
 
     def identifyTasks(): Unit = {
@@ -948,6 +1036,10 @@ class Jawa2JavaNew(reporter: Reporter) {
         val loc: Location = locationIterator.next()
         val currentTask: Task = identifyTask(loc, locationIterator, mainTask, this, parentTask)
         taskMap += loc.locationIndex -> currentTask
+
+        if (parentTask.taskMap.contains(loc.locationIndex)) {
+          parentTask.taskMap(loc.locationIndex).isPartOfBlock = true
+        }
 
         currentTask match {
           case bt: BlockTask =>
@@ -968,19 +1060,27 @@ class Jawa2JavaNew(reporter: Reporter) {
     }
 
     def resolve(bodyStatements: MList[(Int, ST)]): Unit = {
+      val initialiserStatements: MList[(Int, ST)] = mlistEmpty
       val loopBodyStatements: MList[(Int, ST)] = mlistEmpty
 
       taskMap foreach {
         case (loc, task) =>
-          if(getVisitedCount(loc) == 0 && loc <= endOfBlock && !task.isDoWhile) {
-            //          if(getVisitedCount(loc) == 0 && (loc <= endOfBlock || addedLocations.contains(loc))&& !task.isDoWhile) {
+          if(getVisitedCount(loc) == 0 && loc <= endOfBlock && !task.isPartOfBlock) {
             task.resolve(loopBodyStatements)
+            if( loopInitialisers.exists(l => l.locationIndex == loc)) {
+              task.resolve(initialiserStatements)
+            }
             visitLocation(loc)
           }
       }
 
       parentTask.visitedLocations ++= visitedLocations
       val loopTemplate: ST = template.getInstanceOf("WhileLoop")
+
+      initialiserStatements map {
+        st =>
+          loopTemplate.add("initialisers", st._2)
+      }
 
       loopTemplate.add("cond", visitBinaryExpression(ifStatement.cond))
 
@@ -1007,6 +1107,8 @@ class Jawa2JavaNew(reporter: Reporter) {
     val ifStatement: IfStatement = location.statement.asInstanceOf[IfStatement]
     val startOfLoop: Int = ifStatement.targetLocation.locationIndex
     val locationIterator: LocationIterator = LocationIterator(Right(loopBodyLocations))
+    //todo is it required for do while loop???
+    //    val loopInitialisers: MSet[Location] = msetEmpty
 
     def identifyTasks(): Unit = {
       println("Identifying Do While Block Tasks")
@@ -1019,7 +1121,7 @@ class Jawa2JavaNew(reporter: Reporter) {
           taskMap += loc.locationIndex -> currentTask
 
           if (parentTask.taskMap.contains(loc.locationIndex)) {
-            parentTask.taskMap(loc.locationIndex).isDoWhile = true
+            parentTask.taskMap(loc.locationIndex).isPartOfBlock = true
           }
 
           currentTask match {
@@ -1048,7 +1150,7 @@ class Jawa2JavaNew(reporter: Reporter) {
 
       taskMap.toSeq.sortBy(_._1) foreach {
         case (loc, task) =>
-          if(getVisitedCount(loc) == 0 && loc <= endOfBlock && !task.isDoWhile) {
+          if(getVisitedCount(loc) == 0 && loc <= endOfBlock && !task.isPartOfBlock) {
             task.resolve(loopBodyStatements)
             visitLocation(loc)
           }
@@ -1079,6 +1181,8 @@ class Jawa2JavaNew(reporter: Reporter) {
                         parentTask: BlockTask) extends BlockTask with TaskHelper {
     override val level: Int = parentTask.level + 1
 
+    var endOfDefault: Int = _
+
     val caseTaskList = createCaseTasks()
 
     def createCaseTasks(): MList[CaseTask] = {
@@ -1087,6 +1191,10 @@ class Jawa2JavaNew(reporter: Reporter) {
 
       switchCases foreach {
         case(c, locations) =>
+          println("\n\nSwitch at: " + location.locationIndex + " :: " + location.locationUri)
+          println("Creating CaseTASk for Case : " + c)
+          locations.foreach(l=> println(l.locationIndex + " :: " + l.locationUri))
+          println("\n\n")
           caseTaskList += CaseTask(location, c, caseCount, locations, mainTask, parentTask )
           caseCount += 1
       }
@@ -1102,7 +1210,7 @@ class Jawa2JavaNew(reporter: Reporter) {
     }
 
     override def identifyTasks(): Unit = {
-      println("Identifying Switch Tasks.")
+      println("Identifying Switch Tasks at : " + location.locationIndex + " :: " + location.locationUri)
       caseTaskList foreach {
         task =>
           task.identifyTasks()
@@ -1151,7 +1259,8 @@ class Jawa2JavaNew(reporter: Reporter) {
       if (locationIterator.hasNext) {
 
         val loc: Location = locationIterator.next()
-        locationIterator.locations foreach (l=> println("Switch Task LOCATIONS ARE: " + l.locationIndex + " :: " + l.locationUri))
+        //        locationIterator.locations foreach (l=> println("Switch Task LOCATIONS ARE: " + l.locationIndex + " :: " + l.locationUri))
+        println("Case: " + switchCase + "   Current Case Task LOCATION is: " + loc.locationIndex + " :: " + loc.locationUri)
 
         val currentTask: Task = identifyTask(loc, locationIterator, mainTask, this, parentTask)
         taskMap += loc.locationIndex -> currentTask
@@ -1180,18 +1289,24 @@ class Jawa2JavaNew(reporter: Reporter) {
       //      val caseBodyStatements: MList[(Int, ST)] = mlistEmpty
       taskMap foreach {
         case (loc, task) =>
-          if(getVisitedCount(loc) == 0 && !task.isDoWhile) {
+          println("currentTask in CaseTask -> resolve:::" + loc)
+          if(getVisitedCount(loc) == 0 && !task.isPartOfBlock) {
+            println("resolvin " + loc)
             task.resolve(caseBodyStatements)
             visitLocation(loc)
           } else {
-            println("Already Visited.")
+            println("Already Visited. " + loc)
           }
       }
 
       parentTask.visitedLocations ++= visitedLocations
     }
 
-    override def checkLocation(locationIndex: Int): Boolean = caseBodyLocations.exists(loc=> loc.locationIndex == locationIndex)
+    override def checkLocation(locationIndex: Int): Boolean = {
+      val ret: Boolean = caseBodyLocations.exists(loc=> loc.locationIndex == locationIndex)
+      println("CaseTask checking loication: " +  locationIndex + " " + ret)
+      ret
+    }
   }
 
   case class LocationIterator (eitherLoc: Either[IList[Location], MList[Location]]) {

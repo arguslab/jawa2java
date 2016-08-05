@@ -67,3 +67,154 @@ record `com.fgwei.SwitchJump1`  @kind class @AccessFlag PUBLIC {
                        | 70 => goto L02bdc0
                        | else => goto L02bd52;
    }
+
+ procedure `int` `com.fgwei.SwitchJump1.switchStatement1` (`com.fgwei.SwitchJump1` ForLoop1 @kind `this`) @owner ^`com.fgwei.switchStatement1` @signature `Lcom/fgwei/SwitchJump1;.switchStatement1:()I` @AccessFlag PRIVATE {
+        `int` int_v2;
+           `int` int_v1;
+           `int` int_v0;
+
+         #L02be2c.  int_v0:= 67I;
+         #L02be30.  int_v1:= 0I;
+         #L02be32.  goto L02be70;
+         #L02be38.  int_v1:= int_v1 + 7;
+         #L02be3c.  int_v1:= int_v1 + 8;
+         #L02be40.  return int_v1;
+         #L02be42.  int_v1:= int_v1 + 1;
+         #L02be46.  int_v2:= 97I;
+         #L02be4a.  goto L02be90;
+         #L02be50.  goto L02be3c;
+         #L02be52.  int_v1:= int_v1 + 2;
+         #L02be56.  goto L02be3c;
+         #L02be58.  int_v1:= int_v1 + 3;
+         #L02be5c.  goto L02be3c;
+         #L02be5e.  int_v1:= int_v1 + 4;
+         #L02be62.  goto L02be3c;
+         #L02be64.  int_v1:= int_v1 + 5;
+         #L02be68.  int_v1:= int_v1 + 6;
+         #L02be6c.  goto L02be3c;
+         #L02be70.  switch int_v0
+                         | 65 => goto L02be42
+                         | 66 => goto L02be5e
+                         | 67 => goto L02be5e
+                         | 68 => goto L02be64
+                         | 69 => goto L02be38
+                         | 70 => goto L02be68
+                         | else => goto L02be38;
+         #L02be90.  switch int_v2
+                         | 97 => goto L02be52
+                         | 98 => goto L02be58
+                         | else => goto L02be50;
+   }
+
+ procedure `int` `com.fgwei.SwitchJump1.switchStatement2` (`com.fgwei.SwitchJump1` ForLoop1 @kind `this`) @owner ^`com.fgwei.switchStatement2` @signature `Lcom/fgwei/SwitchJump1;.switchStatement2:()I` @AccessFlag PRIVATE {
+    `int` int_v2;
+       `int` int_v0;
+       `int` int_v3;
+       `int` int_v1;
+
+     #L02beb0.  int_v0:= 67I;
+     #L02beb4.  int_v1:= 0I;
+     #L02beb6.  goto L02bf08;
+
+     // Switch 1: case default
+     #L02bebc.  int_v1:= int_v1 + 7;
+
+     //After Switch
+     #L02bec0.  int_v1:= int_v1 + 8;
+     #L02bec4.  return int_v1;
+
+     // Switch 1: case 65
+     #L02bec6.  int_v1:= int_v1 + 1;
+     #L02beca.  int_v2:= 97I;
+        //Switch 2:
+        #L02bece.  goto L02bf28;
+
+        //Switch 2: case default
+        #L02bed4.  goto L02bec0;
+
+        //Switch 2: case 97
+        #L02bed6.  int_v1:= int_v1 + 2;
+
+        //Switch 2: case 97, 98
+        #L02beda.  int_v1:= int_v1 + 3;
+        #L02bede.  int_v3:= 97I;
+
+            //Switch 2: case 97, 98 if statement
+            #L02bee2.  if int_v2 != int_v3 then goto L02beea;
+            #L02bee6.  int_v1:= int_v1 + 1;
+            #L02beea.  int_v3:= 8I;
+
+            //Switch 2: case 97, 98 while loop
+            #L02beee.  if int_v1 >= int_v3 then goto L02bec0;
+            #L02bef2.  int_v1:= int_v1 + 2;
+            #L02bef6.  goto L02beea;
+
+     // Switch 1: case 66, 67
+     #L02bef8.  int_v1:= int_v1 + 4;
+     #L02befc.  goto L02bec0;
+
+     // Switch 1: case 68
+     #L02befe.  int_v1:= int_v1 + 5;
+
+     // Switch 1: case 70
+     #L02bf02.  int_v1:= int_v1 + 6;
+     #L02bf06.  goto L02bec0;
+     #L02bf08.  switch int_v0
+                     | 65 => goto L02bec6
+                     | 66 => goto L02bef8
+                     | 67 => goto L02bef8
+                     | 68 => goto L02befe
+                     | 69 => goto L02bebc
+                     | 70 => goto L02bf02
+                     | else => goto L02bebc;
+     #L02bf28.  switch int_v2
+                     | 97 => goto L02bed6
+                     | 98 => goto L02beda
+                     | else => goto L02bed4;
+
+   }
+
+   procedure `int` `com.fgwei.SwitchJump1.switchStatement3` (`com.fgwei.SwitchJump1` ForLoop1 @kind `this`) @owner ^`com.fgwei.switchStatement3` @signature `Lcom/fgwei/SwitchJump1;.switchStatement3:()I` @AccessFlag PRIVATE {
+
+   `int` int_v2;
+       `int` int_v0;
+       `int` int_v3;
+       `int` int_v1;
+
+     #L02bf68.  int_v0:= 67I;
+     #L02bf6c.  int_v1:= 0I;
+     #L02bf6e.  goto L02bfc0;
+     #L02bf74.  int_v1:= int_v1 + 7;
+     #L02bf78.  int_v1:= int_v1 + 8;
+     #L02bf7c.  return int_v1;
+     #L02bf7e.  int_v1:= int_v1 + 1;
+     #L02bf82.  int_v2:= 97I;
+     #L02bf86.  goto L02bfe0;
+     #L02bf8c.  goto L02bf78;
+     #L02bf8e.  int_v1:= int_v1 + 2;
+     #L02bf92.  int_v1:= int_v1 + 3;
+     #L02bf96.  int_v3:= 97I;
+     #L02bf9a.  if int_v2 != int_v3 then goto L02bf78;
+     #L02bf9e.  int_v1:= int_v1 + 1;
+     #L02bfa2.  int_v3:= 8I;
+     #L02bfa6.  if int_v1 >= int_v3 then goto L02bf78;
+     #L02bfaa.  int_v1:= int_v1 + 2;
+     #L02bfae.  goto L02bfa2;
+     #L02bfb0.  int_v1:= int_v1 + 4;
+     #L02bfb4.  goto L02bf78;
+     #L02bfb6.  int_v1:= int_v1 + 5;
+     #L02bfba.  int_v1:= int_v1 + 6;
+     #L02bfbe.  goto L02bf78;
+     #L02bfc0.  switch int_v0
+                     | 65 => goto L02bf7e
+                     | 66 => goto L02bfb0
+                     | 67 => goto L02bfb0
+                     | 68 => goto L02bfb6
+                     | 69 => goto L02bf74
+                     | 70 => goto L02bfba
+                     | else => goto L02bf74;
+     #L02bfe0.  switch int_v2
+                     | 97 => goto L02bf8e
+                     | 98 => goto L02bf92
+                     | else => goto L02bf8c;
+     }

@@ -121,15 +121,11 @@ BracketVal(val) ::= <<
 ($val$)
 >>
 
-WhileLoop(cond, body) ::= <<
+WhileLoop(initialisers, cond, body) ::= <<
+$initialisers ; separator="\n"$
 while(!($cond$)) {
   $body$
 }
->>
-
-DoLoop(do) ::= <<
-do {
-$do$
 >>
 
 DoWhile(body, while) ::= <<

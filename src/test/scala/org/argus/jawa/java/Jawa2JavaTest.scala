@@ -1702,6 +1702,206 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     |    PrintStream_v1.println(String_v2);
     |    return char_v0;
     |  }
+    |
+    |  private int switchStatement1() {
+    |     int int_v2;
+    |     int int_v1;
+    |     int int_v0;
+    |
+    |    int_v0 = 67;
+    |    int_v1 = 0;
+    |    switch (int_v0) {
+    |      case 65 :
+    |        int_v1 = int_v1 + 1;
+    |        int_v2 = 97;
+    |        switch (int_v2) {
+    |          case 97 :
+    |            int_v1 = int_v1 + 2;
+    |            break;
+    |
+    |          case 98 :
+    |            int_v1 = int_v1 + 3;
+    |            break;
+    |
+    |          default:
+    |            break;
+    |        }
+    |        break;
+    |
+    |      case 66 :
+    |        int_v1 = int_v1 + 4;
+    |        break;
+    |
+    |      case 67 :
+    |        int_v1 = int_v1 + 4;
+    |        break;
+    |
+    |      case 68 :
+    |        int_v1 = int_v1 + 5;
+    |        int_v1 = int_v1 + 6;
+    |        break;
+    |
+    |      case 70 :
+    |        int_v1 = int_v1 + 6;
+    |        break;
+    |
+    |      default:
+    |        int_v1 = int_v1 + 7;
+    |        break;
+    |    }
+    |    int_v1 = int_v1 + 8;
+    |    return int_v1;
+    |  }
+    |
+    |   private int switchStatement2() {
+    |     int int_v2;
+    |     int int_v0;
+    |     int int_v3;
+    |     int int_v1;
+    |
+    |    int_v0 = 67;
+    |    int_v1 = 0;
+    |    switch (int_v0) {
+    |      case 65 :
+    |        int_v1 = int_v1 + 1;
+    |        int_v2 = 97;
+    |        switch (int_v2) {
+    |          case 97 :
+    |            int_v1 = int_v1 + 2;
+    |            int_v1 = int_v1 + 3;
+    |            int_v3 = 97;
+    |            if(int_v2 != int_v3) {
+    |              int_v3 = 8;
+    |            }
+    |            else {
+    |              int_v1 = int_v1 + 1;
+    |            }
+    |            int_v3 = 8;
+    |            while(!(int_v1 >= int_v3)) {
+    |              int_v1 = int_v1 + 2;
+    |              int_v3 = 8;
+    |            }
+    |            break;
+    |
+    |          case 98 :
+    |            int_v1 = int_v1 + 3;
+    |            int_v3 = 97;
+    |            if(int_v2 != int_v3) {
+    |              int_v3 = 8;
+    |            }
+    |            else {
+    |              int_v1 = int_v1 + 1;
+    |            }
+    |            int_v3 = 8;
+    |            while(!(int_v1 >= int_v3)) {
+    |              int_v1 = int_v1 + 2;
+    |              int_v3 = 8;
+    |            }
+    |            break;
+    |
+    |          default:
+    |            break;
+    |        }
+    |        break;
+    |
+    |      case 66 :
+    |        int_v1 = int_v1 + 4;
+    |        break;
+    |
+    |      case 67 :
+    |        int_v1 = int_v1 + 4;
+    |        break;
+    |
+    |      case 68 :
+    |        int_v1 = int_v1 + 5;
+    |        int_v1 = int_v1 + 6;
+    |        break;
+    |
+    |      case 70 :
+    |        int_v1 = int_v1 + 6;
+    |        break;
+    |
+    |      default:
+    |        int_v1 = int_v1 + 7;
+    |        break;
+    |    }
+    |    int_v1 = int_v1 + 8;
+    |    return int_v1;
+    |  }
+    |
+    |  private int switchStatement3() {
+    |     int int_v2;
+    |     int int_v0;
+    |     int int_v3;
+    |     int int_v1;
+    |
+    |    int_v0 = 67;
+    |    int_v1 = 0;
+    |    switch (int_v0) {
+    |      case 65 :
+    |        int_v1 = int_v1 + 1;
+    |        int_v2 = 97;
+    |        switch (int_v2) {
+    |          case 97 :
+    |            int_v1 = int_v1 + 2;
+    |            int_v1 = int_v1 + 3;
+    |            int_v3 = 97;
+    |            if(int_v2 != int_v3) {
+    |            }
+    |            else {
+    |              int_v1 = int_v1 + 1;
+    |              int_v3 = 8;
+    |              while(!(int_v1 >= int_v3)) {
+    |                int_v1 = int_v1 + 2;
+    |                int_v3 = 8;
+    |              }
+    |            }
+    |            break;
+    |
+    |          case 98 :
+    |            int_v1 = int_v1 + 3;
+    |            int_v3 = 97;
+    |            if(int_v2 != int_v3) {
+    |            }
+    |            else {
+    |              int_v1 = int_v1 + 1;
+    |              int_v3 = 8;
+    |              while(!(int_v1 >= int_v3)) {
+    |                int_v1 = int_v1 + 2;
+    |                int_v3 = 8;
+    |              }
+    |            }
+    |            break;
+    |
+    |          default:
+    |            break;
+    |        }
+    |        break;
+    |
+    |      case 66 :
+    |        int_v1 = int_v1 + 4;
+    |        break;
+    |
+    |      case 67 :
+    |        int_v1 = int_v1 + 4;
+    |        break;
+    |
+    |      case 68 :
+    |        int_v1 = int_v1 + 5;
+    |        int_v1 = int_v1 + 6;
+    |        break;
+    |
+    |      case 70 :
+    |        int_v1 = int_v1 + 6;
+    |        break;
+    |
+    |      default:
+    |        int_v1 = int_v1 + 7;
+    |        break;
+    |    }
+    |    int_v1 = int_v1 + 8;
+    |    return int_v1;
+    |  }
     |}""".stripMargin.trim
 
   /*new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/jump/IfJump_nested_3_with_else_2.pilar"))) produceJavaClass
