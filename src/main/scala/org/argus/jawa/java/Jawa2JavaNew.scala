@@ -240,35 +240,6 @@ class Jawa2JavaNew(reporter: Reporter) {
         processIfElseStatements(ifBodyLocations, elseBodyLocations, originalLocation, locationIter, currentState)
       }
 
-      // add loopInitialisers to parent if not present
-
-      /*currentState.parentTask match {
-        case Some(p) =>
-            currentState.loopInitialisers foreach {
-              l =>
-                println("current location initialiser: " + l.locationIndex + " :: " + l.locationUri)
-//                if (!p.checkLocation(l.locationIndex)) {
-                  println("Adding loop initialiser to parent.")
-                  p match {
-                    case wt: WhileTask =>
-                      wt.locationIterator.addLocation(l)
-                      wt.loopInitialisers += l
-                    case dwt: DoWhileTask =>
-                      dwt.locationIterator.addLocation(l)
-                      dwt.loopInitialisers += l
-
-                    case it: IfTask =>
-                      it.locationIterator.addLocation(l)
-                    case ct: CaseTask =>
-                      ct.locationIterator.addLocation(l)
-                    case _ =>
-                      println("No handler for Adding loop initialiser to parent. parent is : " + p.getClass)
-                  }
-//                }
-            }
-        case None =>
-      }*/
-
       // Reset the location iterator
       locationIter.setPos(originalLocation + 1)
       println("\n\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\nIDENTIFY LOOP RESULT: If at : " + loc.locationIndex + " :: " +loc.locationUri + " is a loop :: " + currentState.isLoop +  " :dowhile: " + currentState.isPartOfBlock + "\n$$$$$$$$$$$$$$$$$\n\n")
@@ -569,23 +540,12 @@ class Jawa2JavaNew(reporter: Reporter) {
             println("SOME LOCATION LIMIT: " + limit.locationIndex + " :: " + limit.locationUri)
 
             // If there is a locationLimit -> Need to remove locations from @ifBodyLocations.
-            /*val targetLocation: Int = limit.statement match {
-              case gs: GotoStatement => gs.targetLocation.locationIndex
-              case is: IfStatement => is.targetLocation.locationIndex
-              case _ => -1
-            }
-            if (targetLocation != -1) {
-              val locationsToRemove = ifBodyLocations filter (l => l.locationIndex >= targetLocation)
-
-              for (r <- locationsToRemove) {
-                ifBodyLocations.remove(ifBodyLocations.indexOf(r))
-              }
-            }*/
             val targetLocation: Int = limit.statement match {
               case gs: GotoStatement => gs.targetLocation.locationIndex
               case is: IfStatement => is.targetLocation.locationIndex
               case _ => -1
             }
+            //todo need to verify this logic. Is used in cases : if{} while{}
             if (targetLocation <= limit.locationIndex){
               val locationsToRemove = ifBodyLocations filter (l => l.locationIndex >= limit.locationIndex)
 
