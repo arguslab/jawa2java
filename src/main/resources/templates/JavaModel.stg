@@ -98,6 +98,10 @@ $! $func$($params ; separator=", "$)$if(!isAssignment)$;$endif$ !$
 $func$$params$$if(!isAssignment)$;$endif$
 >>
 
+ThrowStatement(exception) ::= <<
+throw $exception$;
+>>
+
 CastExpression(type, varName) ::= <<
 ($type$) $varName$
 >>
@@ -151,4 +155,25 @@ DefaultCase(body) ::= <<
 default:
   $body$
   break;
+>>
+
+TryCatchStatement(try, catch) ::= <<
+$try$
+$catch$
+>>
+
+TryStatement(body) ::= <<
+try {
+  $body$
+}
+>>
+
+CatchStatement(exception, body) ::= <<
+catch ($exception$) {
+  $body$
+}
+>>
+
+ExceptionExpression(exception) ::= <<
+$exception$
 >>

@@ -1904,6 +1904,8 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     |  }
     |}""".stripMargin.trim
 
+  new FgSourceFile(new PlainFile(new File("src/test/resources/exception/Exceptions1.pilar"))) produceJavaClass
+  """TEST""".stripMargin
   /*new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/jump/IfJump_nested_3_with_else_2.pilar"))) produceJavaClass
     """package com.fgwei;
       |
