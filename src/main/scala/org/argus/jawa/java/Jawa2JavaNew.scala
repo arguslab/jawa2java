@@ -439,6 +439,7 @@ class Jawa2JavaNew(reporter: Reporter) {
           elseBodyLocations ++= addLocations
 
         case ts: ThrowStatement =>
+          addLocation(loc, ifBodyLocations )
           /*ThrowStatement is also a location limit.
           So need to add elseBodyLocation same as in ReturnStatement*/
           val addLocations = locationIter.locations.filter (
@@ -591,10 +592,7 @@ class Jawa2JavaNew(reporter: Reporter) {
         this jump location is the initialisation part of do...while loop */
       if (ifBodyLocations.nonEmpty) {
         val locationLimit: Option[Location] = ifBodyLocations find (al => al.statement.isInstanceOf[GotoStatement]
-          || al.statement.isInstanceOf[IfStatement]
-          || al.statement.isInstanceOf[ThrowStatement])
-        /* todo This ThrowStatement might be redundant as throwStatement is already a
-          endOfBlock indicator in retrieveIfBodyLocations. CHECK! */
+          || al.statement.isInstanceOf[IfStatement])
         locationLimit match {
           case Some(limit) =>
             // If there is a locationLimit -> Need to remove locations from @ifBodyLocations.
