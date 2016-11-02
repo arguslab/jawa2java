@@ -174,6 +174,67 @@ record `com.fgwei.SwitchJump1`  @kind class @AccessFlag PUBLIC {
 
    }
 
+procedure `int` `com.fgwei.SwitchJump1.loops`(`com.fgwei.SwitchJump1` ForLoop1 @kind this, `int` int_v3 ) @owner ^`com.fgwei.switchStatement3` @signature `Lcom/fgwei/SwitchJump1;.loops:(I)I` @AccessFlag PRIVATE {
+    `int` int_v1;
+    `int` int_v0;
+
+  #L02bd78.  int_v1:= 5I;
+  #L02bd7a.  int_v0:= 0I;
+  #L02bd7c.  if int_v3 >= int_v1 then goto L02bd8c;
+  #L02bd80.  if int_v3 >= int_v1 then goto L02bd8c;
+  #L02bd84.  int_v0:= int_v0 + int_v3  @kind int;
+  #L02bd86.  int_v3:= int_v3 + 1;
+  #L02bd8a.  goto L02bd80;
+  #L02bd8c.  int_v0:= int_v3 + 100;
+  #L02bd90.  return int_v0;
+}
+
+procedure `int` `com.fgwei.SwitchJump1.loops2`(`com.fgwei.SwitchJump1` ForLoop1 @kind this, `int` int_v3 ) @owner ^`com.fgwei.switchStatement3` @signature `Lcom/fgwei/SwitchJump1;.loops2:(I)I` @AccessFlag PRIVATE {
+    `int` int_v1;
+    `int` int_v0;
+
+  #L02bda4.  int_v1:= 5I;
+  #L02bda6.  int_v0:= 0I;
+  #L02bda8.  if int_v3 >= int_v1 then goto L02bdb0;
+  #L02bdac.  int_v3:= int_v3 * 50;
+  #L02bdb0.  if int_v3 <= int_v1 then goto L02bdbc;
+  #L02bdb4.  int_v0:= int_v0 + int_v3  @kind int;
+  #L02bdb6.  int_v3:= int_v3 + 255;
+  #L02bdba.  goto L02bdb0;
+  #L02bdbc.  int_v0:= int_v0 + 700;
+  #L02bdc0.  return int_v0;
+}
+procedure `int` `com.fgwei.SwitchJump1.loops3`(`com.fgwei.SwitchJump1` ForLoop1 @kind this, `int` int_v3 ) @owner ^`com.fgwei.switchStatement3` @signature `Lcom/fgwei/SwitchJump1;.loops3:(I)I` @AccessFlag PRIVATE {
+    `int` int_v1;
+    `int` int_v0;
+
+  #L02bd98.  int_v1:= 5I;
+  #L02bd9a.  int_v0:= 0I;
+  #L02bd9c.  if int_v3 >= int_v1 then goto L02bdaa;
+  #L02bda0.  int_v3:= int_v3 * 100;
+  #L02bda4.  int_v0:= int_v3 + 600;
+  #L02bda8.  return int_v0;
+  #L02bdaa.  if int_v3 <= int_v1 then goto L02bda4;
+  #L02bdae.  int_v0:= int_v3 + 100;
+  #L02bdb2.  int_v3:= int_v3 + 255;
+  #L02bdb6.  goto L02bdaa;
+}
+
+procedure `int` `com.fgwei.SwitchJump1.ifElse`(`com.fgwei.SwitchJump1` ForLoop1 @kind this, `int` int_v3 ) @owner ^`com.fgwei.switchStatement3` @signature `Lcom/fgwei/SwitchJump1;.ifElse:(I)I` @AccessFlag PRIVATE {
+    `int` int_v1;
+    `int` int_v0;
+
+  #L02bd50.  int_v0:= 0I;
+  #L02bd52.  int_v1:= 5I;
+  #L02bd54.  if int_v3 >= int_v1 then goto L02bd60;
+  #L02bd58.  int_v3:= int_v3 * 100;
+  #L02bd5c.  int_v1:= int_v3;
+  #L02bd5e.  return int_v1;
+  #L02bd60.  int_v0:= int_v3 + 600;
+  #L02bd64.  int_v1:= int_v0;                         //needs int_v1:=int_v0;
+  #L02bd66.  goto L02bd5e;
+}
+
    procedure `int` `com.fgwei.SwitchJump1.switchStatement3` (`com.fgwei.SwitchJump1` ForLoop1 @kind `this`) @owner ^`com.fgwei.switchStatement3` @signature `Lcom/fgwei/SwitchJump1;.switchStatement3:()I` @AccessFlag PRIVATE {
 
    `int` int_v2;

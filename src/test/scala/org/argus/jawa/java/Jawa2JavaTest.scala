@@ -1771,7 +1771,6 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     |            int_v1 = int_v1 + 3;
     |            int_v3 = 97;
     |            if(int_v2 != int_v3) {
-    |              int_v3 = 8;
     |            }
     |            else {
     |              int_v1 = int_v1 + 1;
@@ -1787,7 +1786,6 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     |            int_v1 = int_v1 + 3;
     |            int_v3 = 97;
     |            if(int_v2 != int_v3) {
-    |              int_v3 = 8;
     |            }
     |            else {
     |              int_v1 = int_v1 + 1;
@@ -1826,6 +1824,80 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     |        break;
     |    }
     |    int_v1 = int_v1 + 8;
+    |    return int_v1;
+    |  }
+    |
+    |  private int loops(int int_v3) {
+    |     int int_v1;
+    |     int int_v0;
+    |
+    |    int_v1 = 5;
+    |    int_v0 = 0;
+    |    if(int_v3 >= int_v1) {
+    |    }
+    |    else {
+    |      while(!(int_v3 >= int_v1)) {
+    |        int_v0 = int_v0 + int_v3;
+    |        int_v3 = int_v3 + 1;
+    |      }
+    |    }
+    |    int_v0 = int_v3 + 100;
+    |    return int_v0;
+    |  }
+    |
+    |  private int loops2(int int_v3) {
+    |     int int_v1;
+    |     int int_v0;
+    |
+    |    int_v1 = 5;
+    |    int_v0 = 0;
+    |    if(int_v3 >= int_v1) {
+    |    }
+    |    else {
+    |      int_v3 = int_v3 * 50;
+    |    }
+    |
+    |    while(!(int_v3 <= int_v1)) {
+    |      int_v0 = int_v0 + int_v3;
+    |      int_v3 = int_v3 + 255;
+    |    }
+    |    int_v0 = int_v0 + 700;
+    |    return int_v0;
+    |  }
+    |
+    |  private int loops3(int int_v3) {
+    |     int int_v1;
+    |     int int_v0;
+    |
+    |    int_v1 = 5;
+    |    int_v0 = 0;
+    |    if(int_v3 >= int_v1) {
+    |      while(!(int_v3 <= int_v1)) {
+    |        int_v0 = int_v3 + 100;
+    |        int_v3 = int_v3 + 255;
+    |      }
+    |    }
+    |    else {
+    |      int_v3 = int_v3 * 100;
+    |    }
+    |    int_v0 = int_v3 + 600;
+    |    return int_v0;
+    |  }
+    |
+    |  private int ifElse(int int_v3) {
+    |     int int_v1;
+    |     int int_v0;
+    |
+    |    int_v0 = 0;
+    |    int_v1 = 5;
+    |    if(int_v3 >= int_v1) {
+    |      int_v0 = int_v3 + 600;
+    |      int_v1 = int_v0;
+    |    }
+    |    else {
+    |      int_v3 = int_v3 * 100;
+    |      int_v1 = int_v3;
+    |    }
     |    return int_v1;
     |  }
     |
@@ -1905,7 +1977,365 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     |}""".stripMargin.trim
 
   new FgSourceFile(new PlainFile(new File("src/test/resources/exception/Exceptions1.pilar"))) produceJavaClass
-  """TEST""".stripMargin
+  """package com.fgwei;
+    |
+    |import java.io.BufferedReader;
+    |import java.io.FileReader;
+    |import java.io.PrintStream;
+    |import java.lang.Exception;
+    |import java.lang.Object;
+    |import java.lang.RuntimeException;
+    |import java.lang.String;
+    |import java.lang.System;
+    |
+    |public class Exceptions1 {
+    |  public  Exceptions1() {
+    |
+    |  }
+    |
+    |  public static int main() {
+    |     RuntimeException Exception_v1;
+    |     int int_v2;
+    |     Exception Exception_v6;
+    |
+    |    try {
+    |      int_v2 = 0;
+    |      Exception_v1 = new RuntimeException();
+    |      throw Exception_v1;
+    |    }
+    |    catch (java.lang.RuntimeException Exception_v6) {
+    |      int_v2 = 1;
+    |    }
+    |    return int_v2;
+    |  }
+    |
+    |  public static int tryCatch() {
+    |     String String_v3;
+    |     Exception Exception_v2;
+    |     int int_v1;
+    |     Exception Exception_v0;
+    |
+    |    int_v1 = 6;
+    |    try {
+    |      Exception_v2 = new Exception();
+    |      String_v3 = new Exception(String_v3);
+    |      throw Exception_v2;
+    |    }
+    |    catch (java.lang.Exception Exception_v0) {
+    |      int_v1 = 7;
+    |    }
+    |    return int_v1;
+    |  }
+    |
+    |  public static int tryCatchBlock() {
+    |     String String_v3;
+    |     int int_v2;
+    |     Exception Exception_v2;
+    |     int int_v1;
+    |     Exception Exception_v0;
+    |
+    |    int_v2 = 5;
+    |    try {
+    |      if(int_v1 != int_v2) {
+    |        Exception_v2 = new Exception();
+    |        String_v3 = new Exception(String_v3);
+    |        throw Exception_v2;
+    |      }
+    |      else {
+    |        int_v1 = 6;
+    |        Exception_v2 = new Exception();
+    |        String_v3 = new Exception(String_v3);
+    |        throw Exception_v2;
+    |      }
+    |    }
+    |    catch (java.lang.Exception Exception_v0) {
+    |      int_v1 = 7;
+    |    }
+    |    return int_v1;
+    |  }
+    |
+    |  private int tryCatchBlock1(int int_v4) {
+    |     Exception Exception_v1;
+    |     String String_v2;
+    |     int int_v1;
+    |     Exception Exception_v0;
+    |
+    |    try {
+    |      if(int_v4 != int_v1) {
+    |        Exception_v1 = new Exception();
+    |        String_v2 = new Exception(String_v2);
+    |        throw Exception_v1;
+    |      }
+    |      else {
+    |        int_v4 = 6;
+    |        Exception_v1 = new Exception();
+    |        String_v2 = new Exception(String_v2);
+    |        throw Exception_v1;
+    |      }
+    |    }
+    |    catch (java.lang.Exception Exception_v0) {
+    |      int_v4 = 7;
+    |    }
+    |    return int_v4;
+    |  }
+    |
+    |  private int tryCatchBlock2(int int_v4) {
+    |     String String_v3;
+    |     int int_v5;
+    |     int int_v2;
+    |     FileReader FileReader_v2;
+    |     BufferedReader BufferedReader_v1;
+    |     int int_v4;
+    |     PrintStream PrintStream_temp;
+    |     Exception Exception_v0;
+    |     Object[] Object_arr1_v4;
+    |     PrintStream PrintStream_v2;
+    |     String String_v6;
+    |
+    |    try {
+    |      if(int_v8 != int_v2) {
+    |        BufferedReader_v1 = new BufferedReader();
+    |        FileReader_v2 = new FileReader();
+    |        String_v3 = new BufferedReader(FileReader_v2);
+    |      }
+    |      else {
+    |        BufferedReader_v1 = new BufferedReader();
+    |        FileReader_v2 = new FileReader();
+    |        String_v3 = new BufferedReader(FileReader_v2);
+    |      }
+    |      int_v8 = 6;
+    |      BufferedReader_v1.close();
+    |    }
+    |    catch (java.lang.Exception Exception_v0) {
+    |      PrintStream_v2 = System.err;
+    |      String_v3 = "Exception occurred trying to read '%s'.";
+    |      int_v4 = 1;
+    |      Object_arr1_v4 = new Object[int_v4];
+    |      int_v5 = 0;
+    |      String_v6 = "FileName";
+    |      Object_arr1_v4[int_v5] = String_v6;
+    |      PrintStream_temp = PrintStream_v2.format(String_v3, Object_arr1_v4);
+    |      Exception_v0.printStackTrace();
+    |    }
+    |    return int_v8;
+    |  }
+    |
+    |  private int tryCatchBlock3(int int_v4) {
+    |     int int_v5;
+    |     String String_v7;
+    |     Object[] Object_arr1_v5;
+    |     String String_v4;
+    |     int int_v6;
+    |     FileReader FileReader_v3;
+    |     BufferedReader BufferedReader_v2;
+    |     int int_v3;
+    |     BufferedReader BufferedReader_v1;
+    |     PrintStream PrintStream_v3;
+    |     PrintStream PrintStream_temp;
+    |     Exception Exception_v0;
+    |
+    |    try {
+    |      BufferedReader_v1 = new BufferedReader();
+    |      FileReader_v3 = new FileReader();
+    |      String_v4 = new BufferedReader(FileReader_v3);
+    |      int_v3 = 5;
+    |      if(int_v9 != int_v3) {
+    |        BufferedReader_v2 = new BufferedReader();
+    |        FileReader_v3 = new FileReader();
+    |        String_v4 = new BufferedReader(FileReader_v3);
+    |      }
+    |      else {
+    |        BufferedReader_v2 = new BufferedReader();
+    |        FileReader_v3 = new FileReader();
+    |        String_v4 = new BufferedReader(FileReader_v3);
+    |      }
+    |      int_v9 = 6;
+    |      BufferedReader_v1.close();
+    |      BufferedReader_v2.close();
+    |    }
+    |    catch (java.lang.Exception Exception_v0) {
+    |      PrintStream_v3 = System.err;
+    |      String_v4 = "Exception occurred trying to read '%s'.";
+    |      int_v5 = 1;
+    |      Object_arr1_v5 = new Object[int_v5];
+    |      int_v6 = 0;
+    |      String_v7 = "FileName";
+    |      Object_arr1_v5[int_v6] = String_v7;
+    |      PrintStream_temp = PrintStream_v3.format(String_v4, Object_arr1_v5);
+    |      Exception_v0.printStackTrace();
+    |    }
+    |    return int_v9;
+    |  }
+    |
+    |  private int tryCatchBlock4(int int_v4) {
+    |     int int_v2;
+    |     FileReader FileReader_v4;
+    |     String String_v4;
+    |     BufferedReader BufferedReader_v3;
+    |     FileReader FileReader_v3;
+    |     int int_v3;
+    |     BufferedReader BufferedReader_v1;
+    |     String String_v5;
+    |     Exception Exception_v0;
+    |
+    |    int_v3 = 5;
+    |    try {
+    |      if(int_v2 != int_v3) {
+    |        BufferedReader_v1 = new BufferedReader();
+    |        FileReader_v3 = new FileReader();
+    |        String_v4 = new BufferedReader(FileReader_v3);
+    |        BufferedReader_v3 = new BufferedReader();
+    |        FileReader_v4 = new FileReader();
+    |        String_v5 = new BufferedReader(FileReader_v4);
+    |      }
+    |      else {
+    |        int_v2 = 6;
+    |        BufferedReader_v1 = new BufferedReader();
+    |        FileReader_v3 = new FileReader();
+    |        String_v4 = new BufferedReader(FileReader_v3);
+    |        BufferedReader_v3 = new BufferedReader();
+    |        FileReader_v4 = new FileReader();
+    |        String_v5 = new BufferedReader(FileReader_v4);
+    |      }
+    |    }
+    |    catch (java.lang.Exception Exception_v0) {
+    |      int_v2 = 7;
+    |    }
+    |    return int_v2;
+    |  }
+    |
+    |  private int tryCatchBlock5(int int_v4) {
+    |     String String_v3;
+    |     PrintStream PrintStream_v4;
+    |     Object[] Object_arr1_v6;
+    |     FileReader FileReader_v4;
+    |     int int_v6;
+    |     String String_v8;
+    |     int int_v7;
+    |     BufferedReader BufferedReader_v2;
+    |     BufferedReader BufferedReader_v1;
+    |     int int_v4;
+    |     String String_v5;
+    |     String String_temp;
+    |     PrintStream PrintStream_temp;
+    |     Exception Exception_v0;
+    |
+    |    try {
+    |      BufferedReader_v1 = new BufferedReader();
+    |      FileReader_v4 = new FileReader();
+    |      String_v5 = new BufferedReader(FileReader_v4);
+    |      int_v4 = 5;
+    |      if(int_v10 != int_v4) {
+    |        int_v4 = 6;
+    |        if(int_v10 != int_v4) {
+    |          BufferedReader_v2 = new BufferedReader();
+    |          FileReader_v4 = new FileReader();
+    |          String_v5 = new BufferedReader(FileReader_v4);
+    |          String_v3 = String_temp;
+    |          String_temp = BufferedReader_v2.readLine();
+    |          while(!(String_v3 == null)) {
+    |            PrintStream_v4 = System.out;
+    |            PrintStream_v4.println(String_v3);
+    |            String_v3 = String_temp;
+    |            String_temp = BufferedReader_v2.readLine();
+    |          }
+    |        }
+    |        else {
+    |          BufferedReader_v2 = new BufferedReader();
+    |          FileReader_v4 = new FileReader();
+    |          String_v5 = new BufferedReader(FileReader_v4);
+    |        }
+    |      }
+    |      else {
+    |        BufferedReader_v2 = new BufferedReader();
+    |        FileReader_v4 = new FileReader();
+    |        String_v5 = new BufferedReader(FileReader_v4);
+    |      }
+    |      BufferedReader_v1.close();
+    |      BufferedReader_v2.close();
+    |    }
+    |    catch (java.lang.Exception Exception_v0) {
+    |      PrintStream_v4 = System.err;
+    |      String_v5 = "Exception occurred trying to read '%s'.";
+    |      int_v6 = 1;
+    |      Object_arr1_v6 = new Object[int_v6];
+    |      int_v7 = 0;
+    |      String_v8 = "FileName";
+    |      Object_arr1_v6[int_v7] = String_v8;
+    |      PrintStream_temp = PrintStream_v4.format(String_v5, Object_arr1_v6);
+    |      Exception_v0.printStackTrace();
+    |    }
+    |    return int_v10;
+    |  }
+    |
+    |  private int tryCatchBlock6(int int_v4) {
+    |     int int_v5;
+    |     PrintStream PrintStream_v5;
+    |     int int_v8;
+    |     String String_v4;
+    |     String String_v9;
+    |     BufferedReader BufferedReader_v3;
+    |     int int_v7;
+    |     BufferedReader BufferedReader_v2;
+    |     BufferedReader BufferedReader_v1;
+    |     Object[] Object_arr1_v7;
+    |     String String_temp;
+    |     PrintStream PrintStream_temp;
+    |     Exception Exception_v0;
+    |     FileReader FileReader_v5;
+    |     String String_v6;
+    |
+    |    try {
+    |      BufferedReader_v1 = new BufferedReader();
+    |      FileReader_v5 = new FileReader();
+    |      String_v6 = new BufferedReader(FileReader_v5);
+    |      int_v5 = 5;
+    |      if(int_v11 != int_v5) {
+    |        int_v5 = 6;
+    |        if(int_v11 != int_v5) {
+    |          BufferedReader_v2 = new BufferedReader();
+    |          FileReader_v5 = new FileReader();
+    |          String_v6 = new BufferedReader(FileReader_v5);
+    |          BufferedReader_v3 = new BufferedReader();
+    |          FileReader_v5 = new FileReader();
+    |          String_v6 = new BufferedReader(FileReader_v5);
+    |          String_temp = BufferedReader_v3.readLine();
+    |          String_v4 = String_temp;
+    |          while(!(String_v4 == null)) {
+    |            PrintStream_v5 = System.out;
+    |            PrintStream_v5.println(String_v4);
+    |            String_temp = BufferedReader_v3.readLine();
+    |            String_v4 = String_temp;
+    |          }
+    |        }
+    |        else {
+    |          BufferedReader_v2 = new BufferedReader();
+    |          FileReader_v5 = new FileReader();
+    |          String_v6 = new BufferedReader(FileReader_v5);
+    |        }
+    |      }
+    |      else {
+    |        BufferedReader_v2 = new BufferedReader();
+    |        FileReader_v5 = new FileReader();
+    |        String_v6 = new BufferedReader(FileReader_v5);
+    |      }
+    |      BufferedReader_v1.close();
+    |      BufferedReader_v2.close();
+    |    }
+    |    catch (java.lang.Exception Exception_v0) {
+    |      PrintStream_v5 = System.err;
+    |      String_v6 = "Exception occurred trying to read '%s'.";
+    |      int_v7 = 1;
+    |      Object_arr1_v7 = new Object[int_v7];
+    |      int_v8 = 0;
+    |      String_v9 = "FileName";
+    |      Object_arr1_v7[int_v8] = String_v9;
+    |      PrintStream_temp = PrintStream_v5.format(String_v6, Object_arr1_v7);
+    |      Exception_v0.printStackTrace();
+    |    }
+    |    return int_v11;
+    |  }
+    |}""".stripMargin
   /*new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/jump/IfJump_nested_3_with_else_2.pilar"))) produceJavaClass
     """package com.fgwei;
       |

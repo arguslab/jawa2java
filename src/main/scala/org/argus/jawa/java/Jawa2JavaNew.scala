@@ -62,8 +62,8 @@ class Jawa2JavaNew(reporter: Reporter) {
                       l=> l.locationIndex < startOfLoop)
                 }
 
-              case dwt: DoWhileTask =>
-                println("PARENT OF DO... WHILE Is DO WHILE.")   //Debug
+          /*    case dwt: DoWhileTask =>
+                println("PARENT OF DO... WHILE Is DO WHILE.")   //Debug*/
 
               case it: IfElseTask=>
                 //If goto target of do...while is before its parent, the parent is within the do...while loop.
@@ -84,7 +84,7 @@ class Jawa2JavaNew(reporter: Reporter) {
                       l=> l.locationIndex < startOfLoop)
                 }
               case _ =>
-                println("CurrentTask is: "+ currentTask.getClass) //Debug
+//                println("CurrentTask is: "+ currentTask.getClass) //Debug
             }
 
             if (!parentParadox) {
@@ -418,6 +418,13 @@ class Jawa2JavaNew(reporter: Reporter) {
             val addLocations = locationIter.locations.filter (
               l => l.locationIndex > startLocation && l.locationIndex < gotoLocation )
             elseBodyLocations ++= addLocations
+            // In this case the code jumps to this position from if, so whole if block need not be included in else.
+            //todo Handle this in a better way.
+            currentState.hasEndOfElseMarker = locationIter.locations.filter (
+              l => l.locationIndex > startLocation && l.locationIndex < originalTargetLocation )
+                .exists(l=> l.statement.isInstanceOf[GotoStatement]
+                    || l.statement.isInstanceOf[ReturnStatement]
+                    || l.statement.isInstanceOf[ThrowStatement])
           }
           // Backward jump, but jumps even before the initial If location
           // Add the location and all locations from initial If location(@startLocation)
@@ -468,7 +475,7 @@ class Jawa2JavaNew(reporter: Reporter) {
 
       def removeLocationsFromIfBlock(addLocations: List[Location]): Unit = {
         val locationLimit: Option[Location] = addLocations find (al => al.statement.isInstanceOf[GotoStatement]
-          || al.statement.isInstanceOf[IfStatement])
+            || al.statement.isInstanceOf[IfStatement])
 
         // If there is a locationLimit -> Need to remove locations from @ifBodyLocations.
         locationLimit match {
@@ -498,15 +505,27 @@ class Jawa2JavaNew(reporter: Reporter) {
                                 currentState: CurrentState): Unit = {
       if (elseBodyLocations.nonEmpty) {
         //Filtering elseBodyLocations for endOfBlock marker (throwStatement)
-        elseBodyLocations.find(l => l.statement.isInstanceOf[ThrowStatement]) match {
+        //        var hasEndOfBlockMarker: Boolean = false  //Added to currentState
+        elseBodyLocations.find(l => l.statement.isInstanceOf[ThrowStatement] || l.statement.isInstanceOf[ReturnStatement]) match {
           case Some(loc) =>
             //Throw Statement in Else Body Locations.
-            val locationsToRemove = elseBodyLocations filter (l => l.locationIndex > loc.locationIndex)
-            for (r <- locationsToRemove) {
-              elseBodyLocations.remove(elseBodyLocations.indexOf(r))
+            loc.statement match {
+              case ts: ThrowStatement =>
+                currentState.hasEndOfElseMarker = true
+                val locationsToRemove = elseBodyLocations filter (l => l.locationIndex > loc.locationIndex)
+                for (r <- locationsToRemove) {
+                  elseBodyLocations.remove(elseBodyLocations.indexOf(r))
+                }
+              case rs: ReturnStatement =>
+                currentState.hasEndOfElseMarker = true
+                val locationsToRemove = elseBodyLocations filter (l => l.locationIndex >= loc.locationIndex)
+                for (r <- locationsToRemove) {
+                  elseBodyLocations.remove(elseBodyLocations.indexOf(r))
+                }
+              case _ =>
             }
           case None =>
-            //No throw statement found.
+          //No throw statement found.
         }
 
         //last statement may not be a goto. Find the last goto.
@@ -521,7 +540,6 @@ class Jawa2JavaNew(reporter: Reporter) {
           }
 
           val currentLocation = locationIter.pos
-          //          val currentLocation = loc.locationIndex
           //Setting position to start of the else body for identifying the loop.
           locationIter.setPos(elseBodyLocations.head.locationIndex)
           identifyLoop(startLocation, locationIter, currentState, elseBodyLocations)
@@ -551,7 +569,7 @@ class Jawa2JavaNew(reporter: Reporter) {
                         }
 
                       case _ =>
-                        //"PARENT IS : " + p.getClass + "!!!" + "::::" + l.locationIndex + " :: " + l.locationUri
+                      //"PARENT IS : " + p.getClass + "!!!" + "::::" + l.locationIndex + " :: " + l.locationUri
                     }
                 }
               }
@@ -568,42 +586,58 @@ class Jawa2JavaNew(reporter: Reporter) {
             case None =>
           }
           locationIter.setPos(currentLocation)
-        } //else : This is not a loop as else block has no goto statement.")
-
-        currentState.parentTask match {
-          case Some(p) =>
-            p match {
-              case dwt: DoWhileTask =>
-                if (ifBodyLocations.contains(dwt.location)) {
-                  val locationsToRemove = ifBodyLocations filter (l => l.locationIndex >= dwt.location.locationIndex)
-                  // Removing Location due to DO.. WHILE
-                  for (r <- locationsToRemove) {
-                    ifBodyLocations.remove(ifBodyLocations.indexOf(r))
+          currentState.parentTask match {
+            case Some(p) =>
+              p match {
+                case dwt: DoWhileTask =>
+                  if (ifBodyLocations.contains(dwt.location)) {
+                    val locationsToRemove = ifBodyLocations filter (l => l.locationIndex >= dwt.location.locationIndex)
+                    // Removing Location due to DO.. WHILE
+                    for (r <- locationsToRemove) {
+                      ifBodyLocations.remove(ifBodyLocations.indexOf(r))
+                    }
                   }
-                }
-              case _ => //PARENT IS NOT A DO..WHILE LOOP!
-            }
+                case _ => //PARENT IS NOT A DO..WHILE LOOP!
+              }
 
-          case None =>
+            case None =>
+          }
         }
+        else if (!currentState.hasEndOfElseMarker){
+          // If the else block has no goto statement then
+          // all the if body blocks will also be executed in the pilar code.
+          // Need to add them to elseBodyLocations. OR Remove all the if tasks to parent.
+          ifBodyLocations.clear()
+        }//else : This is not a loop as else block has no goto statement.
       }
 
       /* todo Check this logic: If no jump statement found in the if body location and parent is a do...while loop,
         this jump location is the initialisation part of do...while loop */
       if (ifBodyLocations.nonEmpty) {
         val locationLimit: Option[Location] = ifBodyLocations find (al => al.statement.isInstanceOf[GotoStatement]
-          || al.statement.isInstanceOf[IfStatement])
+            || al.statement.isInstanceOf[IfStatement])
+
         locationLimit match {
           case Some(limit) =>
             // If there is a locationLimit -> Need to remove locations from @ifBodyLocations.
             val targetLocation: Int = limit.statement match {
               case gs: GotoStatement => gs.targetLocation.locationIndex
               case is: IfStatement =>
+                val isTargetLocation: Int = is.targetLocation.locationIndex
+
+                // If the target location is within the elseBodyLocations, Remove the rest as well.
+                if(isTargetLocation > startLocation && elseBodyLocations.nonEmpty) {
+                  val locationsToRemoveFromElse = elseBodyLocations.filter(
+                    l => l.locationIndex >= isTargetLocation)
+                  for (r <- locationsToRemoveFromElse) {
+                    elseBodyLocations.remove(elseBodyLocations.indexOf(r))
+                  }
+                }
                 currentState.parentTask match {
                   case Some(p) =>
                     p match {
                       case mt: MainTask => -1
-                      case _ => is.targetLocation.locationIndex
+                      case _ => isTargetLocation
                     }
                   case None => -1
                 }
@@ -617,8 +651,8 @@ class Jawa2JavaNew(reporter: Reporter) {
               // if (targetLocation <= limit.locationIndex){
               // val locationsToRemove = ifBodyLocations filter (l => l.locationIndex >= limit.locationIndex)
               // > Vs >=
-              val locationsToRemove = ifBodyLocations filter (l => l.locationIndex >= limit.locationIndex)
-//              val locationsToRemove = ifBodyLocations filter (l => l.locationIndex > limit.locationIndex)
+              //              val locationsToRemove = ifBodyLocations filter (l => l.locationIndex >= limit.locationIndex)
+              val locationsToRemove = ifBodyLocations filter (l => l.locationIndex > limit.locationIndex)
               for (r <- locationsToRemove) {
                 ifBodyLocations.remove(ifBodyLocations.indexOf(r))
               }
@@ -1570,17 +1604,17 @@ class Jawa2JavaNew(reporter: Reporter) {
   }
 
   //todo Clean up
-  case class CurrentState(
-                           isConstructor: Boolean = false,
-                           var isIfStatement: Boolean = false,
-                           var isElseIfStatement: Boolean = false,
-                           var isElseStatement: Boolean = false,
-                           var isLoop: Boolean = false,
-                           var isPartOfBlock: Boolean = false,
-                           var targetLocation: String = "",
-                           var locationOffset: Int = 0,
-                           parentState: Option[CurrentState] = None,
-                           parentTask: Option[BlockTask] = None) {
+  case class CurrentState(isConstructor: Boolean = false,
+                          var isIfStatement: Boolean = false,
+                          var isElseIfStatement: Boolean = false,
+                          var isElseStatement: Boolean = false,
+                          var isLoop: Boolean = false,
+                          var isPartOfBlock: Boolean = false,
+                          var hasEndOfElseMarker: Boolean = false,
+                          var targetLocation: String = "",
+                          var locationOffset: Int = 0,
+                          parentState: Option[CurrentState] = None,
+                          parentTask: Option[BlockTask] = None) {
     val visitedLocations: MMap[Int, Int] = mmapEmpty
     var nextLocation: Location = _
 
@@ -1704,7 +1738,7 @@ class Jawa2JavaNew(reporter: Reporter) {
     val bodyStatements: MList[(Int, ST)] = mlistEmpty
     val isConstructor: Boolean = md.isConstructor
 
-    println("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$\nCURRENT METHOD IS:" + md.name +"\n$$$$$$$$$$$$$$$$$$$$$$$$$$$ ")
+    //    println("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$\nCURRENT METHOD IS:" + md.name +"\n$$$$$$$$$$$$$$$$$$$$$$$$$$$ ")
     if(isConstructor) {
       methodTemplate.add("accessFlag",
         AccessFlag.toString(AccessFlag.getAccessFlags(md.accessModifier)).replace("constructor", "").trim)

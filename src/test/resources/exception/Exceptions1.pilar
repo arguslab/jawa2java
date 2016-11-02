@@ -1,16 +1,17 @@
 record `com.fgwei.Exceptions1`  @kind class @AccessFlag PUBLIC {
    }
-    procedure `void` `com.fgwei.Exceptions1.<init>` (`com.fgwei.Exceptions1` v0 @kind `this`) @owner ^`com.fgwei.Exceptions1` @signature `Lcom/fgwei/Exceptions1;.<init>:()V` @AccessFlag PUBLIC_CONSTRUCTOR {
+   procedure `void` `com.fgwei.Exceptions1.<init>` (`com.fgwei.Exceptions1` v0 @kind `this`) @owner ^`com.fgwei.Exceptions1` @signature `Lcom/fgwei/Exceptions1;.<init>:()V` @AccessFlag PUBLIC_CONSTRUCTOR {
 
 #L00e344.   call `java.lang.Object.<init>`(v0) @signature `Ljava/lang/Object;.<init>:()V` @classDescriptor ^`java.lang.Object` @kind direct;
 #L00e34a.   return  @kind void;
 
    }
+
     procedure `int` `com.fgwei.Exceptions1.main` () @owner ^`com.fgwei.Exceptions1` @signature `Lcom/fgwei/Exceptions1;.main:()I` @Access `PUBLIC_STATIC` {
       `java.lang.RuntimeException` Exception_v1;
       `int` int_v2;
       `java.lang.Exception` Exception_v6;
-      
+
 #L02c16c.   int_v2:= 0I;
 #L02c19a.   Exception_v1:= new `java.lang.RuntimeException`;
 #L02c19e.   call `java.lang.RuntimeException.<init>`(Exception_v1) @signature `Ljava/lang/RuntimeException;.<init>:()V` @classDescriptor ^`java.lang.RuntimeException` @kind direct;
@@ -21,3 +22,359 @@ record `com.fgwei.Exceptions1`  @kind class @AccessFlag PUBLIC {
   catch  `java.lang.RuntimeException` @[L02c16c..L02c1a6] goto L02c1a6;
 
    }
+
+   procedure `int` `com.fgwei.Exceptions1.tryCatch` (`com.fgwei.Exceptions1` Exceptions1 @kind `this`) @owner ^`com.fgwei.Exceptions1` @signature `Lcom/fgwei/Exceptions1;.tryCatch:()I` @AccessFlag `PUBLIC_STATIC` {
+
+      `java.lang.String` String_v3;
+       `java.lang.Exception` Exception_v2;
+       `int` int_v1;
+       `java.lang.Exception` Exception_v0;
+
+     #L02c05c.  int_v1:= 5I;
+     #L02c05e.  int_v1:= 6I;
+     #Try_start0.
+     #L02c060.  Exception_v2:= new `java.lang.Exception`;
+     #L02c064.  String_v3:= "Random" @kind object;
+     #L02c068.  call `java.lang.Exception.<init>`(Exception_v2, String_v3) @signature `Ljava/lang/Exception;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.lang.Exception` @kind direct;
+     #L02c06e.  throw Exception_v2;
+     #Try_end0.
+     #L02c070.  Exception_v0:= Exception  @kind object @type ^`java.lang.Exception`;
+     #L02c072.  int_v1:= 7I;
+     #L02c074.  return int_v1;
+     catch `java.lang.Exception` @[Try_start0..Try_end0] goto L02c070;
+   }
+
+   procedure `int` `com.fgwei.Exceptions1.tryCatchBlock` (`com.fgwei.Exceptions1` Exceptions1 @kind `this`) @owner ^`com.fgwei.Exceptions1` @signature `Lcom/fgwei/Exceptions1;.tryCatchBlock:()I` @AccessFlag `PUBLIC_STATIC` {
+        `java.lang.String` String_v3;
+            `int` int_v2;
+            `java.lang.Exception` Exception_v2;
+            `int` int_v1;
+            `java.lang.Exception` Exception_v0;
+
+          #L02c0b0.  int_v1:= 5I;
+          #L02c0b2.  int_v2:= 5I;
+          #L02c0b4.  if int_v1 != int_v2 then goto L02c0d0;
+          #L02c0b8.  int_v1:= 6I;
+          #Try_start0.
+          #L02c0ba.  Exception_v2:= new `java.lang.Exception`;
+          #L02c0be.  String_v3:= "Random" @kind object;
+          #L02c0c2.  call `java.lang.Exception.<init>`(Exception_v2, String_v3) @signature `Ljava/lang/Exception;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.lang.Exception` @kind direct;
+          #L02c0c8.  throw Exception_v2;
+          #L02c0ca.  Exception_v0:= Exception  @kind object @type ^`java.lang.Exception`;
+          #L02c0cc.  int_v1:= 7I;
+          #L02c0ce.  return int_v1;
+          #L02c0d0.  Exception_v2:= new `java.lang.Exception`;
+          #L02c0d4.  String_v3:= "Random Else" @kind object;
+          #L02c0d8.  call `java.lang.Exception.<init>`(Exception_v2, String_v3) @signature `Ljava/lang/Exception;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.lang.Exception` @kind direct;
+          #L02c0de.  throw Exception_v2;
+          #Try_end0.
+          catch `java.lang.Exception` @[Try_start0..Try_end0] goto L02c0ca;
+   }
+
+   procedure `int` `com.fgwei.Exceptions1.tryCatchBlock1`(`com.fgwei.Exceptions1`  Exceptions1 @kind `this`, `int` int_v4 ) @owner ^`com.fgwei.Exceptions1` @signature `Lcom/fgwei/Exceptions1;.tryCatchBlock1:(I)I` @AccessFlag PRIVATE {
+       `java.lang.Exception` Exception_v1;
+       `java.lang.String` String_v2;
+       `int` int_v1;
+       `java.lang.Exception` Exception_v0;
+
+     #L02c0c0.  int_v1:= 5I;
+     #L02c0c2.  if int_v4 != int_v1 then goto L02c0de;
+     #L02c0c6.  int_v4:= 6I;
+     #Try_start0.
+     #L02c0c8.  Exception_v1:= new `java.lang.Exception`;
+     #L02c0cc.  String_v2:= "Random" @kind object;
+     #L02c0d0.  call `java.lang.Exception.<init>`(Exception_v1, String_v2) @signature `Ljava/lang/Exception;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.lang.Exception` @kind direct;
+     #L02c0d6.  throw Exception_v1;
+     #L02c0d8.  Exception_v0:= Exception  @kind object @type ^`java.lang.Exception`;
+     #L02c0da.  int_v4:= 7I;
+     #L02c0dc.  return int_v4;
+     #L02c0de.  Exception_v1:= new `java.lang.Exception`;
+     #L02c0e2.  String_v2:= "Random Else" @kind object;
+     #L02c0e6.  call `java.lang.Exception.<init>`(Exception_v1, String_v2) @signature `Ljava/lang/Exception;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.lang.Exception` @kind direct;
+     #L02c0ec.  throw Exception_v1;
+     #Try_end0.
+     catch `java.lang.Exception` @[Try_start0..Try_end0] goto L02c0d8;
+   }
+
+   procedure `int` `com.fgwei.Exceptions1.tryCatchBlock2`(`com.fgwei.Exceptions1`  Exceptions1 @kind `this`, `int` int_v4 ) @owner ^`com.fgwei.Exceptions1` @signature `Lcom/fgwei/Exceptions1;.tryCatchBlock2:(I)I` @AccessFlag PRIVATE {
+        `java.lang.String` String_v3;
+           `int` int_v5;
+           `int` int_v2;
+           `java.io.FileReader` FileReader_v2;
+           `java.io.BufferedReader` BufferedReader_v1;
+           `int` int_v4;
+           `java.io.PrintStream` PrintStream_temp;
+           `java.lang.Exception` Exception_v0;
+           `java.lang.Object`[] Object_arr1_v4;
+           `java.io.PrintStream` PrintStream_v2;
+           `java.lang.String` String_v6;
+
+         #L02c1c0.  int_v2:= 5I;
+         #L02c1c2.  if int_v8 != int_v2 then goto L02c1e8;
+         #Try_start0.
+         #L02c1c6.  BufferedReader_v1:= new `java.io.BufferedReader`;
+         #L02c1ca.  FileReader_v2:= new `java.io.FileReader`;
+         #L02c1ce.  String_v3:= "filename" @kind object;
+         #L02c1d2.  call `java.io.FileReader.<init>`(FileReader_v2, String_v3) @signature `Ljava/io/FileReader;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.io.FileReader` @kind direct;
+         #L02c1d8.  call `java.io.BufferedReader.<init>`(BufferedReader_v1, FileReader_v2) @signature `Ljava/io/BufferedReader;.<init>:(Ljava/io/Reader;)V` @classDescriptor ^`java.io.BufferedReader` @kind direct;
+         #L02c1de.  int_v8:= 6I;
+         #L02c1e0.  call `java.io.BufferedReader.close`(BufferedReader_v1) @signature `Ljava/io/BufferedReader;.close:()V` @classDescriptor ^`java.io.BufferedReader` @kind virtual;
+         #L02c1e6.  return int_v8;
+         // nested constructor calls.
+         #L02c1e8.  BufferedReader_v1:= new `java.io.BufferedReader`;
+         #L02c1ec.  FileReader_v2:= new `java.io.FileReader`;
+         #L02c1f0.  String_v3:= "filenameELSE" @kind object;
+         #L02c1f4.  call `java.io.FileReader.<init>`(FileReader_v2, String_v3) @signature `Ljava/io/FileReader;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.io.FileReader` @kind direct;
+         #L02c1fa.  call `java.io.BufferedReader.<init>`(BufferedReader_v1, FileReader_v2) @signature `Ljava/io/BufferedReader;.<init>:(Ljava/io/Reader;)V` @classDescriptor ^`java.io.BufferedReader` @kind direct;
+         #Try_end0.
+         #L02c200.  goto L02c1de;
+         #L02c202.  Exception_v0:= Exception  @kind object @type ^`java.lang.Exception`;
+         #L02c204.  PrintStream_v2:= `@@java.lang.System.err`  @kind object @type ^`java.io.PrintStream`;
+         #L02c208.  String_v3:= "Exception occurred trying to read '%s'." @kind object;
+         #L02c20c.  int_v4:= 1I;
+         #L02c20e.  Object_arr1_v4:= new `java.lang.Object`[int_v4];
+         #L02c212.  int_v5:= 0I;
+         #L02c214.  String_v6:= "FileName" @kind object;
+         #L02c218.  Object_arr1_v4[int_v5]:= String_v6  @kind object;
+         #L02c21c.  call PrintStream_temp:=  `java.io.PrintStream.format`(PrintStream_v2, String_v3, Object_arr1_v4) @signature `Ljava/io/PrintStream;.format:(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;` @classDescriptor ^`java.io.PrintStream` @kind virtual;
+         #L02c222.  call `java.lang.Exception.printStackTrace`(Exception_v0) @signature `Ljava/lang/Exception;.printStackTrace:()V` @classDescriptor ^`java.lang.Exception` @kind virtual;
+         #L02c228.  goto L02c1e6;
+         catch `java.lang.Exception` @[Try_start0..Try_end0] goto L02c202;
+   }
+
+procedure `int` `com.fgwei.Exceptions1.tryCatchBlock3`(`com.fgwei.Exceptions1` Exceptions1 @kind this, `int` int_v9 ) @owner ^`com.fgwei.Exceptions1` @signature `Lcom/fgwei/Exceptions1;.tryCatchBlock3:(I)I` @AccessFlag PRIVATE {
+    `int` int_v5;
+    `java.lang.String` String_v7;
+    `java.lang.Object`[] Object_arr1_v5;
+    `java.lang.String` String_v4;
+    `int` int_v6;
+    `java.io.FileReader` FileReader_v3;
+    `java.io.BufferedReader` BufferedReader_v2;
+    `int` int_v3;
+    `java.io.BufferedReader` BufferedReader_v1;
+    `java.io.PrintStream` PrintStream_v3;
+    `java.io.PrintStream` PrintStream_temp;
+    `java.lang.Exception` Exception_v0;
+
+  #Try_start0.
+  #L02c308.  BufferedReader_v1:= new `java.io.BufferedReader`;
+  #L02c30c.  FileReader_v3:= new `java.io.FileReader`;
+  #L02c310.  String_v4:= "first" @kind object;
+  #L02c314.  call `java.io.FileReader.<init>`(FileReader_v3, String_v4) @signature `Ljava/io/FileReader;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.io.FileReader` @kind direct;
+  #L02c31a.  call `java.io.BufferedReader.<init>`(BufferedReader_v1, FileReader_v3) @signature `Ljava/io/BufferedReader;.<init>:(Ljava/io/Reader;)V` @classDescriptor ^`java.io.BufferedReader` @kind direct;
+  #L02c320.  int_v3:= 5I;
+  #L02c322.  if int_v9 != int_v3 then goto L02c34e;
+  #L02c326.  BufferedReader_v2:= new `java.io.BufferedReader`;
+  #L02c32a.  FileReader_v3:= new `java.io.FileReader`;
+  #L02c32e.  String_v4:= "filename" @kind object;
+  #L02c332.  call `java.io.FileReader.<init>`(FileReader_v3, String_v4) @signature `Ljava/io/FileReader;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.io.FileReader` @kind direct;
+  #L02c338.  call `java.io.BufferedReader.<init>`(BufferedReader_v2, FileReader_v3) @signature `Ljava/io/BufferedReader;.<init>:(Ljava/io/Reader;)V` @classDescriptor ^`java.io.BufferedReader` @kind direct;
+  #L02c33e.  int_v9:= 6I;
+  #L02c340.  call `java.io.BufferedReader.close`(BufferedReader_v1) @signature `Ljava/io/BufferedReader;.close:()V` @classDescriptor ^`java.io.BufferedReader` @kind virtual;
+  #L02c346.  call `java.io.BufferedReader.close`(BufferedReader_v2) @signature `Ljava/io/BufferedReader;.close:()V` @classDescriptor ^`java.io.BufferedReader` @kind virtual;
+  #L02c34c.  return int_v9;
+  #L02c34e.  BufferedReader_v2:= new `java.io.BufferedReader`;
+  #L02c352.  FileReader_v3:= new `java.io.FileReader`;
+  #L02c356.  String_v4:= "filenameELSE" @kind object;
+  #L02c35a.  call `java.io.FileReader.<init>`(FileReader_v3, String_v4) @signature `Ljava/io/FileReader;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.io.FileReader` @kind direct;
+  #L02c360.  call `java.io.BufferedReader.<init>`(BufferedReader_v2, FileReader_v3) @signature `Ljava/io/BufferedReader;.<init>:(Ljava/io/Reader;)V` @classDescriptor ^`java.io.BufferedReader` @kind direct;
+  #Try_end0.
+  #L02c366.  goto L02c33e;
+  #L02c368.  Exception_v0:= Exception  @kind object @type ^`java.lang.Exception`;
+  #L02c36a.  PrintStream_v3:= `@@java.lang.System.err`  @kind object @type ^`java.io.PrintStream`;
+  #L02c36e.  String_v4:= "Exception occurred trying to read '%s'." @kind object;
+  #L02c372.  int_v5:= 1I;
+  #L02c374.  Object_arr1_v5:= new `java.lang.Object`[int_v5];
+  #L02c378.  int_v6:= 0I;
+  #L02c37a.  String_v7:= "FileName" @kind object;
+  #L02c37e.  Object_arr1_v5[int_v6]:= String_v7  @kind object;
+  #L02c382.  call PrintStream_temp:=  `java.io.PrintStream.format`(PrintStream_v3, String_v4, Object_arr1_v5) @signature `Ljava/io/PrintStream;.format:(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;` @classDescriptor ^`java.io.PrintStream` @kind virtual;
+  #L02c388.  call `java.lang.Exception.printStackTrace`(Exception_v0) @signature `Ljava/lang/Exception;.printStackTrace:()V` @classDescriptor ^`java.lang.Exception` @kind virtual;
+  #L02c38e.  goto L02c34c;
+  catch `java.lang.Exception` @[Try_start0..Try_end0] goto L02c368;
+}
+
+
+   procedure `int` `com.fgwei.Exceptions1.tryCatchBlock4`(`com.fgwei.Exceptions1`  Exceptions1 @kind `this`, `int` int_v4 ) @owner ^`com.fgwei.Exceptions1` @signature `Lcom/fgwei/Exceptions1;.tryCatchBlock4:(I)I` @AccessFlag PRIVATE {
+ `int` int_v2;
+    `java.io.FileReader` FileReader_v4;
+    `java.lang.String` String_v4;
+    `java.io.BufferedReader` BufferedReader_v3;
+    `java.io.FileReader` FileReader_v3;
+    `int` int_v3;
+    `java.io.BufferedReader` BufferedReader_v1;
+    `java.lang.String` String_v5;
+    `java.lang.Exception` Exception_v0;
+
+  #L02c280.  int_v2:= 5I;
+  #L02c282.  int_v3:= 5I;
+  #L02c284.  if int_v2 != int_v3 then goto L02c2bc;
+  #L02c288.  int_v2:= 6I;
+  #Try_start0.
+  #L02c28a.  BufferedReader_v1:= new `java.io.BufferedReader`;
+  #L02c28e.  FileReader_v3:= new `java.io.FileReader`;
+  #L02c292.  String_v4:= "first" @kind object;
+  #L02c296.  call `java.io.FileReader.<init>`(FileReader_v3, String_v4) @signature `Ljava/io/FileReader;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.io.FileReader` @kind direct;
+  #L02c29c.  call `java.io.BufferedReader.<init>`(BufferedReader_v1, FileReader_v3) @signature `Ljava/io/BufferedReader;.<init>:(Ljava/io/Reader;)V` @classDescriptor ^`java.io.BufferedReader` @kind direct;
+  #L02c2a2.  BufferedReader_v3:= new `java.io.BufferedReader`;
+  #L02c2a6.  FileReader_v4:= new `java.io.FileReader`;
+  #L02c2aa.  String_v5:= "filename" @kind object;
+  #L02c2ae.  call `java.io.FileReader.<init>`(FileReader_v4, String_v5) @signature `Ljava/io/FileReader;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.io.FileReader` @kind direct;
+  #L02c2b4.  call `java.io.BufferedReader.<init>`(BufferedReader_v3, FileReader_v4) @signature `Ljava/io/BufferedReader;.<init>:(Ljava/io/Reader;)V` @classDescriptor ^`java.io.BufferedReader` @kind direct;
+  #L02c2ba.  return int_v2;
+  #L02c2bc.  BufferedReader_v1:= new `java.io.BufferedReader`;
+  #L02c2c0.  FileReader_v3:= new `java.io.FileReader`;
+  #L02c2c4.  String_v4:= "first" @kind object;
+  #L02c2c8.  call `java.io.FileReader.<init>`(FileReader_v3, String_v4) @signature `Ljava/io/FileReader;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.io.FileReader` @kind direct;
+  #L02c2ce.  call `java.io.BufferedReader.<init>`(BufferedReader_v1, FileReader_v3) @signature `Ljava/io/BufferedReader;.<init>:(Ljava/io/Reader;)V` @classDescriptor ^`java.io.BufferedReader` @kind direct;
+  #L02c2d4.  BufferedReader_v3:= new `java.io.BufferedReader`;
+  #L02c2d8.  FileReader_v4:= new `java.io.FileReader`;
+  #L02c2dc.  String_v5:= "filename" @kind object;
+  #L02c2e0.  call `java.io.FileReader.<init>`(FileReader_v4, String_v5) @signature `Ljava/io/FileReader;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.io.FileReader` @kind direct;
+  #L02c2e6.  call `java.io.BufferedReader.<init>`(BufferedReader_v3, FileReader_v4) @signature `Ljava/io/BufferedReader;.<init>:(Ljava/io/Reader;)V` @classDescriptor ^`java.io.BufferedReader` @kind direct;
+  #Try_end0.
+  #L02c2ec.  goto L02c2ba;
+  #L02c2ee.  Exception_v0:= Exception  @kind object @type ^`java.lang.Exception`;
+  #L02c2f0.  int_v2:= 7I;
+  #L02c2f2.  goto L02c2ba;
+  catch `java.lang.Exception` @[Try_start0..Try_end0] goto L02c2ee;
+   }
+
+   procedure `int` `com.fgwei.Exceptions1.tryCatchBlock5`(`com.fgwei.Exceptions1`  Exceptions1 @kind `this`, `int` int_v10 ) @owner ^`com.fgwei.Exceptions1` @signature `Lcom/fgwei/Exceptions1;.tryCatchBlock5:(I)I` @AccessFlag PRIVATE {
+        `java.lang.String` String_v3;
+        `java.io.PrintStream` PrintStream_v4;
+        `java.lang.Object`[] Object_arr1_v6;
+        `java.io.FileReader` FileReader_v4;
+        `int` int_v6;
+        `java.lang.String` String_v8;
+        `int` int_v7;
+        `java.io.BufferedReader` BufferedReader_v2;
+        `java.io.BufferedReader` BufferedReader_v1;
+        `int` int_v4;
+        `java.lang.String` String_v5;
+        `java.lang.String` String_temp;
+        `java.io.PrintStream` PrintStream_temp;
+        `java.lang.Exception` Exception_v0;
+
+      #Try_start0.
+      #L02c444.  BufferedReader_v1:= new `java.io.BufferedReader`;
+      #L02c448.  FileReader_v4:= new `java.io.FileReader`;
+      #L02c44c.  String_v5:= "first" @kind object;
+      #L02c450.  call `java.io.FileReader.<init>`(FileReader_v4, String_v5) @signature `Ljava/io/FileReader;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.io.FileReader` @kind direct;
+      #L02c456.  call `java.io.BufferedReader.<init>`(BufferedReader_v1, FileReader_v4) @signature `Ljava/io/BufferedReader;.<init>:(Ljava/io/Reader;)V` @classDescriptor ^`java.io.BufferedReader` @kind direct;
+      #L02c45c.  int_v4:= 5I;
+      #L02c45e.  if int_v10 != int_v4 then goto L02c488;
+      #L02c462.  BufferedReader_v2:= new `java.io.BufferedReader`;
+      #L02c466.  FileReader_v4:= new `java.io.FileReader`;
+      #L02c46a.  String_v5:= "filename" @kind object;
+      #L02c46e.  call `java.io.FileReader.<init>`(FileReader_v4, String_v5) @signature `Ljava/io/FileReader;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.io.FileReader` @kind direct;
+      #L02c474.  call `java.io.BufferedReader.<init>`(BufferedReader_v2, FileReader_v4) @signature `Ljava/io/BufferedReader;.<init>:(Ljava/io/Reader;)V` @classDescriptor ^`java.io.BufferedReader` @kind direct;
+      #L02c47a.  call `java.io.BufferedReader.close`(BufferedReader_v1) @signature `Ljava/io/BufferedReader;.close:()V` @classDescriptor ^`java.io.BufferedReader` @kind virtual;
+      #L02c480.  call `java.io.BufferedReader.close`(BufferedReader_v2) @signature `Ljava/io/BufferedReader;.close:()V` @classDescriptor ^`java.io.BufferedReader` @kind virtual;
+      #L02c486.  return int_v10;
+      #L02c488.  int_v4:= 6I;
+      #L02c48a.  if int_v10 != int_v4 then goto L02c4a8;
+      #L02c48e.  BufferedReader_v2:= new `java.io.BufferedReader`;
+      #L02c492.  FileReader_v4:= new `java.io.FileReader`;
+      #L02c496.  String_v5:= "filenameELSEIF" @kind object;
+      #L02c49a.  call `java.io.FileReader.<init>`(FileReader_v4, String_v5) @signature `Ljava/io/FileReader;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.io.FileReader` @kind direct;
+      #L02c4a0.  call `java.io.BufferedReader.<init>`(BufferedReader_v2, FileReader_v4) @signature `Ljava/io/BufferedReader;.<init>:(Ljava/io/Reader;)V` @classDescriptor ^`java.io.BufferedReader` @kind direct;
+      #L02c4a6.  goto L02c47a;
+      #L02c4a8.  BufferedReader_v2:= new `java.io.BufferedReader`;
+      #L02c4ac.  FileReader_v4:= new `java.io.FileReader`;
+      #L02c4b0.  String_v5:= "filenameELSE" @kind object;
+      #L02c4b4.  call `java.io.FileReader.<init>`(FileReader_v4, String_v5) @signature `Ljava/io/FileReader;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.io.FileReader` @kind direct;
+      #L02c4ba.  call `java.io.BufferedReader.<init>`(BufferedReader_v2, FileReader_v4) @signature `Ljava/io/BufferedReader;.<init>:(Ljava/io/Reader;)V` @classDescriptor ^`java.io.BufferedReader` @kind direct;
+      #L02c4c0.  call String_temp:=  `java.io.BufferedReader.readLine`(BufferedReader_v2) @signature `Ljava/io/BufferedReader;.readLine:()Ljava/lang/String;` @classDescriptor ^`java.io.BufferedReader` @kind virtual;
+      #L02c4c6.  String_v3:= String_temp  @kind object;
+      #L02c4c8.  if String_v3 == null then goto L02c47a;
+      #L02c4cc.  PrintStream_v4:= `@@java.lang.System.out`  @kind object @type ^`java.io.PrintStream`;
+      #L02c4d0.  call `java.io.PrintStream.println`(PrintStream_v4, String_v3) @signature `Ljava/io/PrintStream;.println:(Ljava/lang/String;)V` @classDescriptor ^`java.io.PrintStream` @kind virtual;
+      #Try_end0.
+      #L02c4d6.  goto L02c4c0;
+      #L02c4d8.  Exception_v0:= Exception  @kind object @type ^`java.lang.Exception`;
+      #L02c4da.  PrintStream_v4:= `@@java.lang.System.err`  @kind object @type ^`java.io.PrintStream`;
+      #L02c4de.  String_v5:= "Exception occurred trying to read '%s'." @kind object;
+      #L02c4e2.  int_v6:= 1I;
+      #L02c4e4.  Object_arr1_v6:= new `java.lang.Object`[int_v6];
+      #L02c4e8.  int_v7:= 0I;
+      #L02c4ea.  String_v8:= "FileName" @kind object;
+      #L02c4ee.  Object_arr1_v6[int_v7]:= String_v8  @kind object;
+      #L02c4f2.  call PrintStream_temp:=  `java.io.PrintStream.format`(PrintStream_v4, String_v5, Object_arr1_v6) @signature `Ljava/io/PrintStream;.format:(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;` @classDescriptor ^`java.io.PrintStream` @kind virtual;
+      #L02c4f8.  call `java.lang.Exception.printStackTrace`(Exception_v0) @signature `Ljava/lang/Exception;.printStackTrace:()V` @classDescriptor ^`java.lang.Exception` @kind virtual;
+      #L02c4fe.  goto L02c486;
+      catch `java.lang.Exception` @[Try_start0..Try_end0] goto L02c4d8;
+    }
+
+
+   procedure `int` `com.fgwei.Exceptions1.tryCatchBlock6`(`com.fgwei.Exceptions1`  Exceptions1 @kind `this`, `int` int_v11 ) @owner ^`com.fgwei.Exceptions1` @signature `Lcom/fgwei/Exceptions1;.tryCatchBlock6:(I)I` @AccessFlag PRIVATE {
+      `int` int_v5;
+         `java.io.PrintStream` PrintStream_v5;
+         `int` int_v8;
+         `java.lang.String` String_v4;
+         `java.lang.String` String_v9;
+         `java.io.BufferedReader` BufferedReader_v3;
+         `int` int_v7;
+         `java.io.BufferedReader` BufferedReader_v2;
+         `java.io.BufferedReader` BufferedReader_v1;
+         `java.lang.Object`[] Object_arr1_v7;
+         `java.lang.String` String_temp;
+         `java.io.PrintStream` PrintStream_temp;
+         `java.lang.Exception` Exception_v0;
+         `java.io.FileReader` FileReader_v5;
+         `java.lang.String` String_v6;
+
+       #Try_start0.
+       #L02c520.  BufferedReader_v1:= new `java.io.BufferedReader`;
+       #L02c524.  FileReader_v5:= new `java.io.FileReader`;
+       #L02c528.  String_v6:= "first" @kind object;
+       #L02c52c.  call `java.io.FileReader.<init>`(FileReader_v5, String_v6) @signature `Ljava/io/FileReader;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.io.FileReader` @kind direct;
+       #L02c532.  call `java.io.BufferedReader.<init>`(BufferedReader_v1, FileReader_v5) @signature `Ljava/io/BufferedReader;.<init>:(Ljava/io/Reader;)V` @classDescriptor ^`java.io.BufferedReader` @kind direct;
+       #L02c538.  int_v5:= 5I;
+       #L02c53a.  if int_v11 != int_v5 then goto L02c564;
+       #L02c53e.  BufferedReader_v2:= new `java.io.BufferedReader`;
+       #L02c542.  FileReader_v5:= new `java.io.FileReader`;
+       #L02c546.  String_v6:= "filename" @kind object;
+       #L02c54a.  call `java.io.FileReader.<init>`(FileReader_v5, String_v6) @signature `Ljava/io/FileReader;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.io.FileReader` @kind direct;
+       #L02c550.  call `java.io.BufferedReader.<init>`(BufferedReader_v2, FileReader_v5) @signature `Ljava/io/BufferedReader;.<init>:(Ljava/io/Reader;)V` @classDescriptor ^`java.io.BufferedReader` @kind direct;
+       #L02c556.  call `java.io.BufferedReader.close`(BufferedReader_v1) @signature `Ljava/io/BufferedReader;.close:()V` @classDescriptor ^`java.io.BufferedReader` @kind virtual;
+       #L02c55c.  call `java.io.BufferedReader.close`(BufferedReader_v2) @signature `Ljava/io/BufferedReader;.close:()V` @classDescriptor ^`java.io.BufferedReader` @kind virtual;
+       #L02c562.  return int_v11;
+       #L02c564.  int_v5:= 6I;
+       #L02c566.  if int_v11 != int_v5 then goto L02c584;
+       #L02c56a.  BufferedReader_v2:= new `java.io.BufferedReader`;
+       #L02c56e.  FileReader_v5:= new `java.io.FileReader`;
+       #L02c572.  String_v6:= "filenameELSEIF" @kind object;
+       #L02c576.  call `java.io.FileReader.<init>`(FileReader_v5, String_v6) @signature `Ljava/io/FileReader;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.io.FileReader` @kind direct;
+       #L02c57c.  call `java.io.BufferedReader.<init>`(BufferedReader_v2, FileReader_v5) @signature `Ljava/io/BufferedReader;.<init>:(Ljava/io/Reader;)V` @classDescriptor ^`java.io.BufferedReader` @kind direct;
+       #L02c582.  goto L02c556;
+       #L02c584.  BufferedReader_v2:= new `java.io.BufferedReader`;
+       #L02c588.  FileReader_v5:= new `java.io.FileReader`;
+       #L02c58c.  String_v6:= "filenameELSE" @kind object;
+       #L02c590.  call `java.io.FileReader.<init>`(FileReader_v5, String_v6) @signature `Ljava/io/FileReader;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.io.FileReader` @kind direct;
+       #L02c596.  call `java.io.BufferedReader.<init>`(BufferedReader_v2, FileReader_v5) @signature `Ljava/io/BufferedReader;.<init>:(Ljava/io/Reader;)V` @classDescriptor ^`java.io.BufferedReader` @kind direct;
+       #L02c59c.  BufferedReader_v3:= new `java.io.BufferedReader`;
+       #L02c5a0.  FileReader_v5:= new `java.io.FileReader`;
+       #L02c5a4.  String_v6:= "filenameELSE" @kind object;
+       #L02c5a8.  call `java.io.FileReader.<init>`(FileReader_v5, String_v6) @signature `Ljava/io/FileReader;.<init>:(Ljava/lang/String;)V` @classDescriptor ^`java.io.FileReader` @kind direct;
+       #L02c5ae.  call `java.io.BufferedReader.<init>`(BufferedReader_v3, FileReader_v5) @signature `Ljava/io/BufferedReader;.<init>:(Ljava/io/Reader;)V` @classDescriptor ^`java.io.BufferedReader` @kind direct;
+       #L02c5b4.  call String_temp:=  `java.io.BufferedReader.readLine`(BufferedReader_v3) @signature `Ljava/io/BufferedReader;.readLine:()Ljava/lang/String;` @classDescriptor ^`java.io.BufferedReader` @kind virtual;
+       #L02c5ba.  String_v4:= String_temp  @kind object;
+       #L02c5bc.  if String_v4 == null then goto L02c556;
+       #L02c5c0.  PrintStream_v5:= `@@java.lang.System.out`  @kind object @type ^`java.io.PrintStream`;
+       #L02c5c4.  call `java.io.PrintStream.println`(PrintStream_v5, String_v4) @signature `Ljava/io/PrintStream;.println:(Ljava/lang/String;)V` @classDescriptor ^`java.io.PrintStream` @kind virtual;
+       #Try_end0.
+       #L02c5ca.  goto L02c5b4;
+       #L02c5cc.  Exception_v0:= Exception  @kind object @type ^`java.lang.Exception`;
+       #L02c5ce.  PrintStream_v5:= `@@java.lang.System.err`  @kind object @type ^`java.io.PrintStream`;
+       #L02c5d2.  String_v6:= "Exception occurred trying to read '%s'." @kind object;
+       #L02c5d6.  int_v7:= 1I;
+       #L02c5d8.  Object_arr1_v7:= new `java.lang.Object`[int_v7];
+       #L02c5dc.  int_v8:= 0I;
+       #L02c5de.  String_v9:= "FileName" @kind object;
+       #L02c5e2.  Object_arr1_v7[int_v8]:= String_v9  @kind object;
+       #L02c5e6.  call PrintStream_temp:=  `java.io.PrintStream.format`(PrintStream_v5, String_v6, Object_arr1_v7) @signature `Ljava/io/PrintStream;.format:(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;` @classDescriptor ^`java.io.PrintStream` @kind virtual;
+       #L02c5ec.  call `java.lang.Exception.printStackTrace`(Exception_v0) @signature `Ljava/lang/Exception;.printStackTrace:()V` @classDescriptor ^`java.lang.Exception` @kind virtual;
+       #L02c5f2.  goto L02c562;
+       catch `java.lang.Exception` @[Try_start0..Try_end0] goto L02c5cc;
+     }
