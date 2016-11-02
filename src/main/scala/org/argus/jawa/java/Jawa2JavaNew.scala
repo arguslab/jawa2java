@@ -1869,9 +1869,13 @@ class Jawa2JavaNew(reporter: Reporter) {
       case ee: ExceptionExpression =>
         visitExceptionExpression(ee)
 
+      case le: LengthExpression =>
+        println("varSymbol: " + le.varSymbol.varName)
+        visitLengthExpression(le)
+
       case _ =>
         throw new Jawa2JavaTranslateException("No matching RHS expression on line: "
-            + rhs.pos.line + ":" + rhs.pos.column )
+            + rhs.pos.line + ":" + rhs.pos.column + "\n Expression is: " + rhs.getClass)
     }
   }
 
@@ -2024,6 +2028,12 @@ class Jawa2JavaNew(reporter: Reporter) {
     val exceptionTemplate = template.getInstanceOf("ExceptionExpression")
     exceptionTemplate.add("exception", ee.exception.rawtext)
     exceptionTemplate
+  }
+
+  private def visitLengthExpression(le: LengthExpression): ST = {
+    val lengthTemplate = template.getInstanceOf("LengthExpression")
+    lengthTemplate.add("var", le.varSymbol.varName)
+    lengthTemplate
   }
 
   private def visitConstructorCall(cc: CallStatement, imports: MSet[JawaType]): ST = {

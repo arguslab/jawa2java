@@ -177,3 +177,7 @@ catch ($exception$) {
 ExceptionExpression(exception) ::= <<
 $exception$
 >>
+
+LengthExpression(var) ::= <<
+$var$.length
+>>

@@ -225,6 +225,23 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
       |}
     """.stripMargin.trim
 
+  new FgSourceFile(new PlainFile(new File("src/test/resources/array/ArrayLength1.pilar"))) produceJavaClass
+      """package com.fgwei;
+        |
+        |
+        |public class ArrayLength1 {
+        |  public static int main() {
+        |     int int_v0;
+        |     int int_v1;
+        |     String[] String_arr1_v1;
+        |
+        |    int_v1 = 10;
+        |    String_arr1_v1 = new String[int_v1];
+        |    int_v0 = String_arr1_v1.length;
+        |    return int_v0;
+        |  }
+        |}""".stripMargin
+
   new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/simple/RecodDecl4_call_with_assignment.pilar"))) produceJavaClass
     """package com.fgwei;
       |
@@ -2120,7 +2137,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     |    return int_v8;
     |  }
     |
-    |  private int tryCatchBlock3(int int_v4) {
+    |  private int tryCatchBlock3(int int_v9) {
     |     int int_v5;
     |     String String_v7;
     |     Object[] Object_arr1_v5;
@@ -2204,7 +2221,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     |    return int_v2;
     |  }
     |
-    |  private int tryCatchBlock5(int int_v4) {
+    |  private int tryCatchBlock5(int int_v10) {
     |     String String_v3;
     |     PrintStream PrintStream_v4;
     |     Object[] Object_arr1_v6;
@@ -2231,13 +2248,13 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     |          BufferedReader_v2 = new BufferedReader();
     |          FileReader_v4 = new FileReader();
     |          String_v5 = new BufferedReader(FileReader_v4);
-    |          String_v3 = String_temp;
     |          String_temp = BufferedReader_v2.readLine();
+    |          String_v3 = String_temp;
     |          while(!(String_v3 == null)) {
     |            PrintStream_v4 = System.out;
     |            PrintStream_v4.println(String_v3);
-    |            String_v3 = String_temp;
     |            String_temp = BufferedReader_v2.readLine();
+    |            String_v3 = String_temp;
     |          }
     |        }
     |        else {
@@ -2268,7 +2285,7 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     |    return int_v10;
     |  }
     |
-    |  private int tryCatchBlock6(int int_v4) {
+    |  private int tryCatchBlock6(int int_v11) {
     |     int int_v5;
     |     PrintStream PrintStream_v5;
     |     int int_v8;
@@ -2299,13 +2316,13 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     |          BufferedReader_v3 = new BufferedReader();
     |          FileReader_v5 = new FileReader();
     |          String_v6 = new BufferedReader(FileReader_v5);
-    |          String_temp = BufferedReader_v3.readLine();
     |          String_v4 = String_temp;
+    |          String_temp = BufferedReader_v3.readLine();
     |          while(!(String_v4 == null)) {
     |            PrintStream_v5 = System.out;
     |            PrintStream_v5.println(String_v4);
-    |            String_temp = BufferedReader_v3.readLine();
     |            String_v4 = String_temp;
+    |            String_temp = BufferedReader_v3.readLine();
     |          }
     |        }
     |        else {
@@ -2336,6 +2353,8 @@ class Jawa2JavaTest extends FlatSpec with ShouldMatchers {
     |    return int_v11;
     |  }
     |}""".stripMargin
+
+
   /*new FgSourceFile(new PlainFile(new File("/Users/atuladhar/projects/jawa2java/src/test/resources/jump/IfJump_nested_3_with_else_2.pilar"))) produceJavaClass
     """package com.fgwei;
       |
